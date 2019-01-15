@@ -25,6 +25,7 @@ package animatedledstrip.client
 
 import animatedledstrip.leds.Animation
 import animatedledstrip.leds.Direction
+import animatedledstrip.leds.parseHex
 import org.pmw.tinylog.Logger
 import java.lang.IllegalArgumentException
 
@@ -265,5 +266,7 @@ class AnimationData {
         sender.send(animationMap)
         Logger.debug("$animationMap sent")
     }
+
+    override fun toString(): String = animationMap.toString()
 
 }
