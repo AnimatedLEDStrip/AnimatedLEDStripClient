@@ -6,7 +6,7 @@
 
     <groupId>io.github.animatedledstrip</groupId>
     <artifactId>animatedledstrip-client</artifactId>
-    <version>0.2</version>
+    <version>0.3-SNAPSHOT</version>
 
     <name>${project.groupId}:${project.artifactId}</name>
     <description>A helper library for communicating with an AnimatedLEDStripServer</description>
@@ -184,7 +184,7 @@
         <dependency>
             <groupId>io.github.animatedledstrip</groupId>
             <artifactId>animatedledstrip-kotlin-pi</artifactId>
-            <version>0.2</version>
+            <version>0.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlinx</groupId>
