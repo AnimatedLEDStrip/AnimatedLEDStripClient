@@ -52,6 +52,7 @@ object AnimationSenderFactory {
         private var stopSocket = false
         private var started = false
         private var loopThread: Job? = null
+        private val senderCoroutineScope = newSingleThreadContext("Animation Sender port $port")
 
         fun <R> setOnReceiveCallback(action: (Map<*, *>) -> R): AnimationSender {
             this.action = action
@@ -65,7 +66,7 @@ object AnimationSenderFactory {
 
         fun start(): AnimationSender {
             if (!started) {
-                loopThread = GlobalScope.launch(newSingleThreadContext("AnimationSender")) {
+                loopThread = GlobalScope.launch(senderCoroutineScope) {
                     loop()
                 }
                 started = true
@@ -80,37 +81,42 @@ object AnimationSenderFactory {
         private suspend fun loop() {
             while (!stopSocket) {
                 connect()
-                try {
-                    out = ObjectOutputStream(socket.getOutputStream())
-                    socIn = ObjectInputStream(BufferedInputStream(socket.getInputStream()))
-                    var input: Map<*, *>
-                    while (true) {
-                        input = socIn!!.readObject() as Map<*, *>
-                        Logger.debug("Received: $input")
-                        action?.invoke(input)
+                withContext(Dispatchers.IO) {
+                    try {
+                        out = ObjectOutputStream(socket.getOutputStream())
+                        socIn = ObjectInputStream(BufferedInputStream(socket.getInputStream()))
+                        out!!.writeObject(mapOf("ClientData" to true, "TextBased" to false))
+                        var input: Map<*, *>
+                        while (true) {
+                            input = socIn!!.readObject() as Map<*, *>
+                            Logger.debug("Received: $input")
+                            action?.invoke(input) ?: println("Null pointer")
+                        }
+                    } catch (e: Exception) {        // TODO: Limit types of exceptions
+                        socket = Socket()
+                        disconnected = true
                     }
-                } catch (e: Exception) {
-                    socket = Socket()
-                    disconnected = true
                 }
             }
         }
 
         private suspend fun connect() {
-            try {
-                socket.connect(InetSocketAddress(ipAddress, port), 5000)
-                Logger.info("Connected to server at $ipAddress")
-                disconnected = false
-                connectionTries = 0
-            } catch (e: Exception) {
-                connectionTries++
-                Logger.warn("Connection attempt $connectionTries: Server not found at $ipAddress: $e")
-                delay(10000)
-                if (connectionTries <= connectAttemptLimit) {
-                    socket = Socket()
-                    connect()
-                } else {
-                    Logger.error("Could not locate server at $ipAddress after $connectionTries tries")
+            withContext(Dispatchers.IO) {
+                try {
+                    socket.connect(InetSocketAddress(ipAddress, port), 5000)
+                    Logger.info("Connected to server at $ipAddress")
+                    disconnected = false
+                    connectionTries = 0
+                } catch (e: Exception) {
+                    connectionTries++
+                    Logger.warn("Connection attempt $connectionTries: Server not found at $ipAddress: $e")
+                    delay(10000)
+                    if (connectionTries <= connectAttemptLimit) {
+                        socket = Socket()
+                        connect()
+                    } else {
+                        Logger.error("Could not locate server at $ipAddress after $connectionTries tries")
+                    }
                 }
             }
         }
