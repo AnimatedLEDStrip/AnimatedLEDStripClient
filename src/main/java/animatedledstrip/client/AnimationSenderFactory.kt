@@ -48,14 +48,26 @@ object AnimationSenderFactory {
         private var socIn: ObjectInputStream? = null
         private var disconnected = true
         private var connectionTries = 0
-        private var action: ((Map<*, *>) -> Any?)? = null
+        private var receiveAction: ((Map<*, *>) -> Any?)? = null
+        private var connectAction: (() -> Unit)? = null
+        private var disconnectAction: (() -> Unit)? = null
         private var stopSocket = false
         private var started = false
         private var loopThread: Job? = null
         private val senderCoroutineScope = newSingleThreadContext("Animation Sender port $port")
 
         fun <R> setOnReceiveCallback(action: (Map<*, *>) -> R): AnimationSender {
-            this.action = action
+            this.receiveAction = action
+            return this
+        }
+
+        fun setOnConnectCallback(action: () -> Unit): AnimationSender {
+            this.connectAction = action
+            return this
+        }
+
+        fun setOnDisconnectCallback(action: () -> Unit): AnimationSender {
+            this.disconnectAction = action
             return this
         }
 
@@ -66,6 +78,7 @@ object AnimationSenderFactory {
 
         fun start(): AnimationSender {
             if (!started) {
+                stopSocket = false
                 loopThread = GlobalScope.launch(senderCoroutineScope) {
                     loop()
                 }
@@ -76,6 +89,10 @@ object AnimationSenderFactory {
 
         fun end() {
             loopThread?.cancel()
+            started = false
+            stopSocket = true
+            socket.close()
+            socket = Socket()
         }
 
         private suspend fun loop() {
@@ -86,15 +103,22 @@ object AnimationSenderFactory {
                         out = ObjectOutputStream(socket.getOutputStream())
                         socIn = ObjectInputStream(BufferedInputStream(socket.getInputStream()))
                         out!!.writeObject(mapOf("ClientData" to true, "TextBased" to false))
+//                        sendAnimation("""
+//                                setStripColor(animation.color1)
+//                                Thread.sleep(1000)
+//                                setStripColor(animation.color2)
+//                                run(AnimationData(mapOf("Animation" to "WIP", "Color1" to animation.color3.hex, "Direction" to 'F')))
+//                                """.trimIndent(), "COL2")
                         var input: Map<*, *>
                         while (true) {
                             input = socIn!!.readObject() as Map<*, *>
                             Logger.debug("Received: $input")
-                            action?.invoke(input) ?: println("Null pointer")
+                            receiveAction?.invoke(input) ?: println("Null pointer")
                         }
                     } catch (e: Exception) {        // TODO: Limit types of exceptions
                         socket = Socket()
                         disconnected = true
+                        disconnectAction?.invoke()
                     }
                 }
             }
@@ -106,6 +130,7 @@ object AnimationSenderFactory {
                     socket.connect(InetSocketAddress(ipAddress, port), 5000)
                     Logger.info("Connected to server at $ipAddress")
                     disconnected = false
+                    connectAction?.invoke()
                     connectionTries = 0
                 } catch (e: Exception) {
                     connectionTries++
@@ -116,6 +141,7 @@ object AnimationSenderFactory {
                         connect()
                     } else {
                         Logger.error("Could not locate server at $ipAddress after $connectionTries tries")
+                        stopSocket = true
                     }
                 }
             }
@@ -123,7 +149,11 @@ object AnimationSenderFactory {
 
         fun send(args: Map<*, *>) {
             try {
-                out!!.writeObject(args)
+                GlobalScope.launch {
+                    withContext(Dispatchers.IO) {
+                        out!!.writeObject(args)
+                    }
+                }
             } catch (e: Exception) {
                 Logger.error("Error sending animation: $e")
             }
