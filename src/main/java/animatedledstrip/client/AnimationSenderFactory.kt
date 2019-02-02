@@ -33,10 +33,7 @@ import java.net.Socket
 
 object AnimationSenderFactory {
 
-    var defaultSender: AnimationSender? = null
-        get() {
-            return field ?: throw NullPointerException()
-        }
+    lateinit var defaultSender: AnimationSender
 
     fun create(ipAddress: String = "10.0.0.254", port: Int = 5, connectAttemptLimit: Int = 5): AnimationSender {
         return AnimationSender(ipAddress, port, connectAttemptLimit)
