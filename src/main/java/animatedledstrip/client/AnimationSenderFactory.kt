@@ -42,8 +42,7 @@ object AnimationSenderFactory {
         return AnimationSender(ipAddress, port, connectAttemptLimit)
     }
 
-    @Suppress("EXPERIMENTAL_API_USAGE")
-    class AnimationSender(val ipAddress: String, val port: Int, val connectAttemptLimit: Int) {
+    class AnimationSender(var ipAddress: String, val port: Int, val connectAttemptLimit: Int) {
         private var socket: Socket = Socket()
         private var out: ObjectOutputStream? = null
         private var socIn: ObjectInputStream? = null
@@ -55,6 +54,7 @@ object AnimationSenderFactory {
         private var stopSocket = false
         private var started = false
         private var loopThread: Job? = null
+        @Suppress("EXPERIMENTAL_API_USAGE")
         private val senderCoroutineScope = newSingleThreadContext("Animation Sender port $port")
 
         fun <R> setOnReceiveCallback(action: (Map<*, *>) -> R): AnimationSender {
@@ -74,6 +74,11 @@ object AnimationSenderFactory {
 
         fun setAsDefaultSender(): AnimationSender {
             defaultSender = this
+            return this
+        }
+
+        fun setIPAddress(address: String): AnimationSender {
+            ipAddress = address
             return this
         }
 
@@ -137,12 +142,12 @@ object AnimationSenderFactory {
                     connectionTries++
                     Logger.warn("Connection attempt $connectionTries: Server not found at $ipAddress: $e")
                     delay(10000)
-                    if (connectionTries <= connectAttemptLimit) {
+                    if (connectionTries < connectAttemptLimit) {
                         socket = Socket()
                         connect()
                     } else {
                         Logger.error("Could not locate server at $ipAddress after $connectionTries tries")
-                        stopSocket = true
+                        end()
                     }
                 }
             }
