@@ -42,6 +42,7 @@ object AnimationSenderFactory {
         return AnimationSender(ipAddress, port, connectAttemptLimit)
     }
 
+    @Suppress("EXPERIMENTAL_API_USAGE")
     class AnimationSender(val ipAddress: String, val port: Int, val connectAttemptLimit: Int) {
         private var socket: Socket = Socket()
         private var out: ObjectOutputStream? = null
