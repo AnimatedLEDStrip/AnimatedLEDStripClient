@@ -42,19 +42,33 @@ object AnimationSenderFactory {
         return AnimationSender(ipAddress, port, connectAttemptLimit)
     }
 
+    @Suppress("EXPERIMENTAL_API_USAGE")
     class AnimationSender(val ipAddress: String, val port: Int, val connectAttemptLimit: Int) {
         private var socket: Socket = Socket()
         private var out: ObjectOutputStream? = null
         private var socIn: ObjectInputStream? = null
         private var disconnected = true
         private var connectionTries = 0
-        private var action: ((Map<*, *>) -> Any?)? = null
+        private var receiveAction: ((Map<*, *>) -> Any?)? = null
+        private var connectAction: (() -> Unit)? = null
+        private var disconnectAction: (() -> Unit)? = null
         private var stopSocket = false
         private var started = false
         private var loopThread: Job? = null
+        private val senderCoroutineScope = newSingleThreadContext("Animation Sender port $port")
 
         fun <R> setOnReceiveCallback(action: (Map<*, *>) -> R): AnimationSender {
-            this.action = action
+            this.receiveAction = action
+            return this
+        }
+
+        fun setOnConnectCallback(action: () -> Unit): AnimationSender {
+            this.connectAction = action
+            return this
+        }
+
+        fun setOnDisconnectCallback(action: () -> Unit): AnimationSender {
+            this.disconnectAction = action
             return this
         }
 
@@ -65,7 +79,8 @@ object AnimationSenderFactory {
 
         fun start(): AnimationSender {
             if (!started) {
-                loopThread = GlobalScope.launch(newSingleThreadContext("AnimationSender")) {
+                stopSocket = false
+                loopThread = GlobalScope.launch(senderCoroutineScope) {
                     loop()
                 }
                 started = true
@@ -75,52 +90,82 @@ object AnimationSenderFactory {
 
         fun end() {
             loopThread?.cancel()
+            started = false
+            stopSocket = true
+            socket.close()
+            socket = Socket()
         }
 
         private suspend fun loop() {
             while (!stopSocket) {
                 connect()
-                try {
-                    out = ObjectOutputStream(socket.getOutputStream())
-                    socIn = ObjectInputStream(BufferedInputStream(socket.getInputStream()))
-                    var input: Map<*, *>
-                    while (true) {
-                        input = socIn!!.readObject() as Map<*, *>
-                        Logger.debug("Received: $input")
-                        action?.invoke(input)
+                withContext(Dispatchers.IO) {
+                    try {
+                        out = ObjectOutputStream(socket.getOutputStream())
+                        socIn = ObjectInputStream(BufferedInputStream(socket.getInputStream()))
+                        out!!.writeObject(mapOf("ClientData" to true, "TextBased" to false))
+//                        sendAnimation("""
+//                                setStripColor(animation.color1)
+//                                Thread.sleep(1000)
+//                                setStripColor(animation.color2)
+//                                run(AnimationData(mapOf("Animation" to "WIP", "Color1" to animation.color3.hex, "Direction" to 'F')))
+//                                """.trimIndent(), "COL2")
+                        var input: Map<*, *>
+                        while (true) {
+                            input = socIn!!.readObject() as Map<*, *>
+                            Logger.debug("Received: $input")
+                            receiveAction?.invoke(input) ?: println("Null pointer")
+                        }
+                    } catch (e: Exception) {        // TODO: Limit types of exceptions
+                        socket = Socket()
+                        disconnected = true
+                        disconnectAction?.invoke()
                     }
-                } catch (e: Exception) {
-                    socket = Socket()
-                    disconnected = true
                 }
             }
         }
 
         private suspend fun connect() {
-            try {
-                socket.connect(InetSocketAddress(ipAddress, port), 5000)
-                Logger.info("Connected to server at $ipAddress")
-                disconnected = false
-                connectionTries = 0
-            } catch (e: Exception) {
-                connectionTries++
-                Logger.warn("Connection attempt $connectionTries: Server not found at $ipAddress: $e")
-                delay(10000)
-                if (connectionTries <= connectAttemptLimit) {
-                    socket = Socket()
-                    connect()
-                } else {
-                    Logger.error("Could not locate server at $ipAddress after $connectionTries tries")
+            withContext(Dispatchers.IO) {
+                try {
+                    socket.connect(InetSocketAddress(ipAddress, port), 5000)
+                    Logger.info("Connected to server at $ipAddress")
+                    disconnected = false
+                    connectAction?.invoke()
+                    connectionTries = 0
+                } catch (e: Exception) {
+                    connectionTries++
+                    Logger.warn("Connection attempt $connectionTries: Server not found at $ipAddress: $e")
+                    delay(10000)
+                    if (connectionTries <= connectAttemptLimit) {
+                        socket = Socket()
+                        connect()
+                    } else {
+                        Logger.error("Could not locate server at $ipAddress after $connectionTries tries")
+                        stopSocket = true
+                    }
                 }
             }
         }
 
         fun send(args: Map<*, *>) {
             try {
-                out!!.writeObject(args)
+                GlobalScope.launch {
+                    withContext(Dispatchers.IO) {
+                        out!!.writeObject(args)
+                    }
+                }
             } catch (e: Exception) {
                 Logger.error("Error sending animation: $e")
             }
+        }
+
+        fun sendAnimation(code: String, name: String) {
+            send(mapOf(
+                    "AnimationDefinition" to true,
+                    "AnimationCode" to code.trimIndent(),
+                    "CustomAnimationID" to name)
+            )
         }
 
         fun isDisconnected() = disconnected
