@@ -129,6 +129,14 @@ object AnimationSenderFactory {
             }
         }
 
+        fun sendAnimation(code: String, name: String) {
+            send(mapOf(
+                    "AnimationDefinition" to true,
+                    "AnimationCode" to code.trimIndent(),
+                    "CustomAnimationID" to name)
+            )
+        }
+
         fun isDisconnected() = disconnected
 
     }
