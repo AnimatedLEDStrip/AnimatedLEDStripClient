@@ -1,0 +1,126 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>AnimationSenderFactory.AnimationSender - animatedledstrip-client</title>
+<link rel="stylesheet" href="../../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../../index.html">animatedledstrip-client</a>&nbsp;/&nbsp;<a href="../../index.html">animatedledstrip.client</a>&nbsp;/&nbsp;<a href="../index.html">AnimationSenderFactory</a>&nbsp;/&nbsp;<a href="./index.html">AnimationSender</a><br/>
+<br/>
+<h1>AnimationSender</h1>
+<code><span class="keyword">class </span><span class="identifier">AnimationSender</span></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="-init-.html">&lt;init&gt;</a></p>
+</td>
+<td>
+<code><span class="identifier">AnimationSender</span><span class="symbol">(</span><span class="identifier" id="animatedledstrip.client.AnimationSenderFactory.AnimationSender$<init>(kotlin.String, kotlin.Int, kotlin.Int)/ipAddress">ipAddress</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="animatedledstrip.client.AnimationSenderFactory.AnimationSender$<init>(kotlin.String, kotlin.Int, kotlin.Int)/port">port</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="animatedledstrip.client.AnimationSenderFactory.AnimationSender$<init>(kotlin.String, kotlin.Int, kotlin.Int)/connectAttemptLimit">connectAttemptLimit</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="connect-attempt-limit.html">connectAttemptLimit</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">connectAttemptLimit</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="ip-address.html">ipAddress</a></p>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">ipAddress</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="port.html">port</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">port</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="end.html">end</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">end</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="is-disconnected.html">isDisconnected</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">isDisconnected</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="send.html">send</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">send</span><span class="symbol">(</span><span class="identifier" id="animatedledstrip.client.AnimationSenderFactory.AnimationSender$send(kotlin.collections.Map((kotlin.Any, )))/args">args</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">,</span>&nbsp;<span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="send-animation.html">sendAnimation</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">sendAnimation</span><span class="symbol">(</span><span class="identifier" id="animatedledstrip.client.AnimationSenderFactory.AnimationSender$sendAnimation(kotlin.String, kotlin.String)/code">code</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="animatedledstrip.client.AnimationSenderFactory.AnimationSender$sendAnimation(kotlin.String, kotlin.String)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="set-as-default-sender.html">setAsDefaultSender</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">setAsDefaultSender</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">AnimationSender</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="set-i-p-address.html">setIPAddress</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">setIPAddress</span><span class="symbol">(</span><span class="identifier" id="animatedledstrip.client.AnimationSenderFactory.AnimationSender$setIPAddress(kotlin.String)/address">address</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">AnimationSender</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="set-on-connect-callback.html">setOnConnectCallback</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">setOnConnectCallback</span><span class="symbol">(</span><span class="identifier" id="animatedledstrip.client.AnimationSenderFactory.AnimationSender$setOnConnectCallback(kotlin.Function0((kotlin.Unit)))/action">action</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">AnimationSender</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="set-on-disconnect-callback.html">setOnDisconnectCallback</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">setOnDisconnectCallback</span><span class="symbol">(</span><span class="identifier" id="animatedledstrip.client.AnimationSenderFactory.AnimationSender$setOnDisconnectCallback(kotlin.Function0((kotlin.Unit)))/action">action</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">AnimationSender</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="set-on-receive-callback.html">setOnReceiveCallback</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">R</span><span class="symbol">&gt;</span> <span class="identifier">setOnReceiveCallback</span><span class="symbol">(</span><span class="identifier" id="animatedledstrip.client.AnimationSenderFactory.AnimationSender$setOnReceiveCallback(kotlin.Function1((kotlin.collections.Map((kotlin.Any, )), animatedledstrip.client.AnimationSenderFactory.AnimationSender.setOnReceiveCallback.R)))/action">action</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">,</span>&nbsp;<span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="set-on-receive-callback.html#R"><span class="identifier">R</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">AnimationSender</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="start.html">start</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">start</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">AnimationSender</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>
