@@ -7,7 +7,6 @@ import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.net.InetAddress
 import java.net.ServerSocket
-import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
 class AnimationSenderFactoryTest {
@@ -15,9 +14,9 @@ class AnimationSenderFactoryTest {
     @Test
     fun testDefaultSender() {
         AnimationSenderFactory
-        assertFailsWith(UninitializedPropertyAccessException::class) {
-            AnimationSenderFactory.defaultSender
-        }
+//        assertFailsWith(UninitializedPropertyAccessException::class) {
+//            AnimationSenderFactory.defaultSender
+//        }
 
         val testSender = AnimationSenderFactory.create("0.0.0.0", 5).setAsDefaultSender()
         assertTrue { AnimationSenderFactory.defaultSender === testSender }
@@ -37,9 +36,7 @@ class AnimationSenderFactoryTest {
                 val input: Any? = socIn.readObject()
                 val inMap = input as Map<*, *>
                 assertTrue { inMap["ClientData"] == true }
-                println("test passed")
                 assertTrue { inMap["TextBased"] == false }
-                println("Test2 passed")
             }
         }
 
