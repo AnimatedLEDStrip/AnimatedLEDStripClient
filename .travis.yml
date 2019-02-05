@@ -1,8 +1,6 @@
 ---
 language: java
 
-sudo: enabled
-
 before_install:
   - echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import
   - echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
@@ -22,6 +20,7 @@ jobs:
     - stage: test
       install:
         -
+      test: sudo mvn test -B
       after_success: bash <(curl -s https://codecov.io/bash)
     - stage: deploy
       install:
