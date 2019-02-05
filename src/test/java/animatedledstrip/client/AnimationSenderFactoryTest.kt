@@ -118,4 +118,11 @@ class AnimationSenderFactoryTest {
         }
     }
 
+    @Test
+    fun testAutoReconnect() {
+        AnimationSenderFactory.create("0.0.0.0", 0, 1).start()
+
+        runBlocking { delay(15000) }
+    }
+
 }
