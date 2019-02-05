@@ -116,10 +116,11 @@ object AnimationSenderFactory {
                         while (true) {
                             input = socIn!!.readObject() as Map<*, *>
                             Logger.debug("Received: $input")
-                            receiveAction?.invoke(input) ?: println("Null pointer")
+                            receiveAction?.invoke(input)
                         }
                     } catch (e: Exception) {        // TODO: Limit types of exceptions
                         socket = Socket()
+                        Logger.error("Exception $e occurred")
                         disconnected = true
                         disconnectAction?.invoke()
                     }
@@ -131,7 +132,7 @@ object AnimationSenderFactory {
             withContext(Dispatchers.IO) {
                 try {
                     socket.connect(InetSocketAddress(ipAddress, port), 5000)
-                    Logger.info("Connected to server at $ipAddress")
+                    Logger.info("Connected to server at $ipAddress port $port")
                     disconnected = false
                     connectAction?.invoke()
                     connectionTries = 0
