@@ -5,8 +5,8 @@ import org.junit.Test
 import java.io.BufferedInputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
+import java.net.InetAddress
 import java.net.ServerSocket
-import java.net.SocketAddress
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
@@ -19,7 +19,7 @@ class AnimationSenderFactoryTest {
             AnimationSenderFactory.defaultSender
         }
 
-        val testSender = AnimationSenderFactory.create("localhost", 5).setAsDefaultSender()
+        val testSender = AnimationSenderFactory.create("0.0.0.0", 5).setAsDefaultSender()
         assertTrue { AnimationSenderFactory.defaultSender === testSender }
     }
 
@@ -29,7 +29,7 @@ class AnimationSenderFactoryTest {
 
         val job = GlobalScope.launch {
             withContext(Dispatchers.IO) {
-                val socket = ServerSocket(port).accept()
+                val socket = ServerSocket(port, 0, InetAddress.getByName("0.0.0.0")).accept()
                 val socIn = ObjectInputStream(BufferedInputStream(socket!!.getInputStream()))
                 ObjectOutputStream(socket.getOutputStream())
 
@@ -45,7 +45,7 @@ class AnimationSenderFactoryTest {
 
         runBlocking { delay(2000) }
 
-        AnimationSenderFactory.create("localhost", port).start()
+        AnimationSenderFactory.create("0.0.0.0", port).start()
 
         runBlocking { job.join() }
     }
@@ -55,17 +55,17 @@ class AnimationSenderFactoryTest {
         var testBoolean = false
         val port = 6
 
-        val job = GlobalScope.launch {
+        GlobalScope.launch {
             withContext(Dispatchers.IO) {
-                val socket = ServerSocket(port).accept()
-                val socIn = ObjectInputStream(BufferedInputStream(socket!!.getInputStream()))
+                val socket = ServerSocket(port, 0, InetAddress.getByName("0.0.0.0")).accept()
+                ObjectInputStream(BufferedInputStream(socket!!.getInputStream()))
                 ObjectOutputStream(socket.getOutputStream())
             }
         }
 
         runBlocking { delay(2000) }
 
-        AnimationSenderFactory.create("localhost", port)
+        AnimationSenderFactory.create("0.0.0.0", port)
                 .setOnConnectCallback {
                     testBoolean = true
                 }
@@ -83,7 +83,7 @@ class AnimationSenderFactoryTest {
 
         val job = GlobalScope.launch {
             withContext(Dispatchers.IO) {
-                val ss = ServerSocket(port)
+                val ss = ServerSocket(port, 0, InetAddress.getByName("0.0.0.0"))
                 val socket = ss.accept()
                 val socIn = ObjectInputStream(BufferedInputStream(socket!!.getInputStream()))
                 ObjectOutputStream(socket.getOutputStream())
@@ -96,7 +96,7 @@ class AnimationSenderFactoryTest {
 
         runBlocking { delay(5000) }
 
-        AnimationSenderFactory.create("localhost", port)
+        AnimationSenderFactory.create("0.0.0.0", port)
                 .setAsDefaultSender()
                 .setOnDisconnectCallback {
                     testBoolean = true
