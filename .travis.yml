@@ -20,7 +20,6 @@ jobs:
     - stage: test
       install:
         -
-      test: sudo mvn test -B
       after_success: bash <(curl -s https://codecov.io/bash)
     - stage: deploy
       install:

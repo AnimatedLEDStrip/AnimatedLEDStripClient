@@ -18,13 +18,13 @@ class AnimationSenderFactoryTest {
 //            AnimationSenderFactory.defaultSender
 //        }
 
-        val testSender = AnimationSenderFactory.create("0.0.0.0", 5).setAsDefaultSender()
+        val testSender = AnimationSenderFactory.create("0.0.0.0", 1104).setAsDefaultSender()
         assertTrue { AnimationSenderFactory.defaultSender === testSender }
     }
 
     @Test
     fun testStart() {
-        val port = 5
+        val port = 1105
 
         val job = GlobalScope.launch {
             withContext(Dispatchers.IO) {
@@ -50,7 +50,7 @@ class AnimationSenderFactoryTest {
     @Test
     fun testConnectCallback() {
         var testBoolean = false
-        val port = 6
+        val port = 1106
 
         GlobalScope.launch {
             withContext(Dispatchers.IO) {
@@ -76,7 +76,7 @@ class AnimationSenderFactoryTest {
     @Test
     fun testDisconnectCallback() {
         var testBoolean = false
-        val port = 7
+        val port = 1107
 
         val job = GlobalScope.launch {
             withContext(Dispatchers.IO) {
