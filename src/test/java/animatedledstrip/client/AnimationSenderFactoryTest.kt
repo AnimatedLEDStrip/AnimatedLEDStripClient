@@ -3,10 +3,12 @@ package animatedledstrip.client
 import kotlinx.coroutines.*
 import org.junit.Test
 import java.io.BufferedInputStream
+import java.io.IOException
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.net.InetAddress
 import java.net.ServerSocket
+import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
 class AnimationSenderFactoryTest {
@@ -102,8 +104,18 @@ class AnimationSenderFactoryTest {
                 .start()
 
         runBlocking { job.join() }
+        runBlocking { delay(1000) }
         assertTrue { testBoolean }
 
+    }
+
+    @Test
+    fun testMultipleStarts() {
+        val testSender = AnimationSenderFactory.create("0.0.0.0").start()
+
+        assertFailsWith(Exception::class) {
+            testSender.start()
+        }
     }
 
 }

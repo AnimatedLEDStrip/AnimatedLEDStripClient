@@ -86,7 +86,7 @@ object AnimationSenderFactory {
                     loop()
                 }
                 started = true
-            }
+            } else throw Exception("Sender started already")
             return this
         }
 
@@ -120,7 +120,7 @@ object AnimationSenderFactory {
                         }
                     } catch (e: Exception) {        // TODO: Limit types of exceptions
                         socket = Socket()
-                        Logger.error("Exception $e occurred")
+                        Logger.error("Exception $e occurred: $ipAddress:$port")
                         disconnected = true
                         disconnectAction?.invoke()
                     }
