@@ -116,7 +116,7 @@ object AnimationSenderFactory {
                         while (true) {
                             input = socIn!!.readObject() as Map<*, *>
                             Logger.debug("Received: $input")
-                            receiveAction?.invoke(input)
+                            receiveAction?.invoke(input) ?: println("No action defined")
                         }
                     } catch (e: Exception) {        // TODO: Limit types of exceptions
                         socket = Socket()
