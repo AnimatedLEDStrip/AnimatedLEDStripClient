@@ -1,4 +1,4 @@
 $dokka.format:html
 $dokka.linkExtension:html
-$dokka.location:animatedledstrip.client$send(animatedledstrip.leds.AnimationData, animatedledstrip.client.AnimationSenderFactory.AnimationSender)animatedledstrip.client/animatedledstrip.leds.-animation-data/send.html
+$dokka.location:animatedledstrip.client$send(animatedledstrip.animationutils.AnimationData, animatedledstrip.client.AnimationSenderFactory.AnimationSender)animatedledstrip.client/animatedledstrip.animationutils.-animation-data/send.html
 animatedledstrip.client
