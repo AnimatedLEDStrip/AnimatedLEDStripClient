@@ -1,6 +1,6 @@
 package animatedledstrip.client
 
-import animatedledstrip.leds.AnimationData
+import animatedledstrip.animationutils.AnimationData
 import org.pmw.tinylog.Logger
 
 /*
@@ -30,7 +30,7 @@ import org.pmw.tinylog.Logger
  * Functions to send animation and set default server
  */
 
-fun AnimationData.send(sender: AnimationSenderFactory.AnimationSender = AnimationSenderFactory.defaultSender!!) {
+fun AnimationData.send(sender: AnimationSenderFactory.AnimationSender = AnimationSenderFactory.defaultSender) {
     val animationMap = this.toMap()
     sender.send(animationMap)
     Logger.debug("$animationMap sent")

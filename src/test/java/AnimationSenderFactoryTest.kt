@@ -1,9 +1,9 @@
-package animatedledstrip.client
+package animatedledstrip.test
 
+import animatedledstrip.client.AnimationSenderFactory
 import kotlinx.coroutines.*
 import org.junit.Test
 import java.io.BufferedInputStream
-import java.io.IOException
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.net.InetAddress
@@ -107,6 +107,32 @@ class AnimationSenderFactoryTest {
         runBlocking { delay(1000) }
         assertTrue { testBoolean }
 
+    }
+
+    @Test
+    fun testReceiveCallback() {
+        var testBoolean = false
+        val port = 1106
+
+        GlobalScope.launch {
+            withContext(Dispatchers.IO) {
+                val socket = ServerSocket(port, 0, InetAddress.getByName("0.0.0.0")).accept()
+                ObjectInputStream(BufferedInputStream(socket!!.getInputStream()))
+                ObjectOutputStream(socket.getOutputStream())
+            }
+        }
+
+        runBlocking { delay(2000) }
+
+        AnimationSenderFactory.create("0.0.0.0", port)
+                .setOnConnectCallback {
+                    testBoolean = true
+                }
+                .start()
+
+        runBlocking { delay(2000) }
+
+        assertTrue { testBoolean }
     }
 
     @Test
