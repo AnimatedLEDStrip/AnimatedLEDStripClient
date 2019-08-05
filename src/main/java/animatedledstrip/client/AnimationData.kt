@@ -26,12 +26,10 @@ import org.pmw.tinylog.Logger
  */
 
 
-/*
- * Functions to send animation and set default server
+/**
+ * Extension function to send the animation
  */
-
 fun AnimationData.send(sender: AnimationSenderFactory.AnimationSender = AnimationSenderFactory.defaultSender) {
-    val animationMap = this.toMap()
-    sender.send(animationMap)
-    Logger.debug("$animationMap sent")
+    sender.send(this)
+    Logger.debug("$this sent")
 }

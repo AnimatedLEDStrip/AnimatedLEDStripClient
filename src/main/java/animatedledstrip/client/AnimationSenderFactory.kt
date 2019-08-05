@@ -23,6 +23,7 @@ package animatedledstrip.client
  */
 
 
+import animatedledstrip.animationutils.AnimationData
 import kotlinx.coroutines.*
 import org.pmw.tinylog.Logger
 import java.io.BufferedInputStream
@@ -33,11 +34,22 @@ import java.net.Socket
 
 object AnimationSenderFactory {
 
+    /**
+     * The default sender if none is specified
+     */
     lateinit var defaultSender: AnimationSender
 
-    fun create(ipAddress: String = "10.0.0.254", port: Int = 5, connectAttemptLimit: Int = 5): AnimationSender {
-        return AnimationSender(ipAddress, port, connectAttemptLimit)
-    }
+
+    /**
+     * Create a new AnimationSender
+     *
+     * @param ipAddress The IP of the server
+     * @param port The port of the server
+     * @param connectAttemptLimit The number of times to attempt a connection before giving up
+     * @return The new AnimationSender
+     */
+    fun create(ipAddress: String = "10.0.0.254", port: Int = 5, connectAttemptLimit: Int = 5) =
+            AnimationSender(ipAddress, port, connectAttemptLimit)
 
     class AnimationSender(var ipAddress: String, val port: Int, val connectAttemptLimit: Int) {
         private var socket: Socket = Socket()
@@ -54,31 +66,67 @@ object AnimationSenderFactory {
         @Suppress("EXPERIMENTAL_API_USAGE")
         private val senderCoroutineScope = newSingleThreadContext("Animation Sender port $port")
 
+
+        /**
+         * Specify an action to perform when data is received from the server
+         *
+         * @param R The return type of your function
+         * @param action A function to run
+         * @return this
+         */
         fun <R> setOnReceiveCallback(action: (Map<*, *>) -> R): AnimationSender {
             this.receiveAction = action
             return this
         }
 
+        /**
+         * Specify an action to perform when a connection is established
+         *
+         * @param action A function to run
+         * @return this
+         */
         fun setOnConnectCallback(action: () -> Unit): AnimationSender {
             this.connectAction = action
             return this
         }
 
+        /**
+         * Specify an action to perform when a connection is lost
+         *
+         * @param action A function to run
+         * @return this
+         */
         fun setOnDisconnectCallback(action: () -> Unit): AnimationSender {
             this.disconnectAction = action
             return this
         }
 
+        /**
+         * Set this sender as the default sender
+         *
+         * @return this
+         */
         fun setAsDefaultSender(): AnimationSender {
             defaultSender = this
             return this
         }
 
+        /**
+         * Set this connection's IP address
+         *
+         * @param address A string representing an IPv4 address
+         * @return this
+         */
         fun setIPAddress(address: String): AnimationSender {
             ipAddress = address
             return this
         }
 
+        /**
+         * Start this connection
+         *
+         * @return this
+         */
         fun start(): AnimationSender {
             if (!started) {
                 stopSocket = false
@@ -90,6 +138,9 @@ object AnimationSenderFactory {
             return this
         }
 
+        /**
+         * Stop this connection
+         */
         fun end() {
             loopThread?.cancel()
             started = false
@@ -103,31 +154,32 @@ object AnimationSenderFactory {
                 connect()
                 withContext(Dispatchers.IO) {
                     try {
+                        // Create streams
                         out = ObjectOutputStream(socket.getOutputStream())
                         socIn = ObjectInputStream(BufferedInputStream(socket.getInputStream()))
-                        out!!.writeObject(mapOf("ClientData" to true, "TextBased" to false))
-//                        sendAnimation("""
-//                                setStripColor(animation.color1)
-//                                Thread.sleep(1000)
-//                                setStripColor(animation.color2)
-//                                run(AnimationData(mapOf("Animation" to "WIP", "Color1" to animation.color3.hex, "Direction" to 'F')))
-//                                """.trimIndent(), "COL2")
                         var input: Map<*, *>
+
                         while (true) {
+                            // Wait for input
                             input = socIn!!.readObject() as Map<*, *>
                             Logger.debug("Received: $input")
-                            receiveAction?.invoke(input) ?: println("No action defined")
+                            // Run receive action
+                            receiveAction?.invoke(input) ?: Logger.debug("No receive action defined")
                         }
-                    } catch (e: Exception) {        // TODO: Limit types of exceptions
-                        socket = Socket()
+
+                    } catch (e: Exception) {            // TODO: Limit types of exceptions
+                        socket = Socket()               // Reset socket
                         Logger.error("Exception $e occurred: $ipAddress:$port")
                         disconnected = true
-                        disconnectAction?.invoke()
+                        disconnectAction?.invoke()      // Run disconnect action
                     }
                 }
             }
         }
 
+        /**
+         * Attempt to create a connection to the server
+         */
         private suspend fun connect() {
             withContext(Dispatchers.IO) {
                 try {
@@ -151,24 +203,22 @@ object AnimationSenderFactory {
             }
         }
 
-        fun send(args: Map<*, *>) {
+        /**
+         * Send an animation via this connection
+         *
+         * @param args The animation
+         */
+        fun send(args: AnimationData) {
             try {
                 GlobalScope.launch {
                     withContext(Dispatchers.IO) {
-                        out!!.writeObject(args)
+                        out?.writeObject(args) ?: Logger.error("Output stream not defined")
+                        Logger.debug(args)
                     }
                 }
             } catch (e: Exception) {
                 Logger.error("Error sending animation: $e")
             }
-        }
-
-        fun sendAnimation(code: String, name: String) {
-            send(mapOf(
-                    "AnimationDefinition" to true,
-                    "AnimationCode" to code.trimIndent(),
-                    "CustomAnimationID" to name)
-            )
         }
 
         fun isDisconnected() = disconnected
