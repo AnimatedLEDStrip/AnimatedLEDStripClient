@@ -15,7 +15,6 @@ import kotlin.test.assertTrue
 class AnimationSenderFactoryTest {
 
     @Test
-    @Ignore
     fun testDefaultSender() {
         AnimationSenderFactory
 //        assertFailsWith(UninitializedPropertyAccessException::class) {
@@ -27,7 +26,6 @@ class AnimationSenderFactoryTest {
     }
 
     @Test
-    @Ignore
     fun testStart() {
         val port = 1105
 
@@ -53,7 +51,6 @@ class AnimationSenderFactoryTest {
     }
 
     @Test
-    @Ignore
     fun testConnectCallback() {
         var testBoolean = false
         val port = 1106
@@ -115,7 +112,6 @@ class AnimationSenderFactoryTest {
     }
 
     @Test
-    @Ignore
     fun testReceiveCallback() {
         var testBoolean = false
         val port = 1106
