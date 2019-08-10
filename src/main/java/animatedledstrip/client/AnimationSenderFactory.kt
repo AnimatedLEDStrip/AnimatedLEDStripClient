@@ -23,6 +23,7 @@ package animatedledstrip.client
  */
 
 
+import animatedledstrip.animationutils.Animation
 import animatedledstrip.animationutils.AnimationData
 import kotlinx.coroutines.*
 import org.pmw.tinylog.Logger
@@ -55,17 +56,22 @@ object AnimationSenderFactory {
         private var socket: Socket = Socket()
         private var out: ObjectOutputStream? = null
         private var socIn: ObjectInputStream? = null
-        private var disconnected = true
         private var connectionTries = 0
-        private var receiveAction: ((Map<*, *>) -> Any?)? = null
+
+        private var receiveAction: ((AnimationData) -> Any?)? = null
+        private var newAnimationAction: ((AnimationData) -> Any?)? = null
+        private var endAnimationAction: ((AnimationData) -> Any?)? = null
         private var connectAction: (() -> Unit)? = null
         private var disconnectAction: (() -> Unit)? = null
+
         private var stopSocket = false
         private var started = false
+        var connected: Boolean = true
+            private set
+
         private var loopThread: Job? = null
         @Suppress("EXPERIMENTAL_API_USAGE")
         private val senderCoroutineScope = newSingleThreadContext("Animation Sender port $port")
-
 
         /**
          * Specify an action to perform when data is received from the server
@@ -74,8 +80,34 @@ object AnimationSenderFactory {
          * @param action A function to run
          * @return this
          */
-        fun <R> setOnReceiveCallback(action: (Map<*, *>) -> R): AnimationSender {
-            this.receiveAction = action
+        fun <R> setOnReceiveCallback(action: (AnimationData) -> R): AnimationSender {
+            receiveAction = action
+            return this
+        }
+
+        /**
+         * Specify an action to perform when an animation starting message is received from the server.
+         * Runs after onReceive callback.
+         *
+         * @param R The return type of your function
+         * @param action A function to run
+         * @return this
+         */
+        fun <R> setOnNewAnimationCallback(action: (AnimationData) -> R): AnimationSender {
+            newAnimationAction = action
+            return this
+        }
+
+        /**
+         * Specify an action to perform when an animation ending message is received from the server.
+         * Runs after onReceive callback.
+         *
+         * @param R The return type of your function
+         * @param action A function to run
+         * @return this
+         */
+        fun <R> setOnEndAnimationCallback(action: (AnimationData) -> R): AnimationSender {
+            endAnimationAction = action
             return this
         }
 
@@ -86,7 +118,7 @@ object AnimationSenderFactory {
          * @return this
          */
         fun setOnConnectCallback(action: () -> Unit): AnimationSender {
-            this.connectAction = action
+            connectAction = action
             return this
         }
 
@@ -97,7 +129,7 @@ object AnimationSenderFactory {
          * @return this
          */
         fun setOnDisconnectCallback(action: () -> Unit): AnimationSender {
-            this.disconnectAction = action
+            disconnectAction = action
             return this
         }
 
@@ -157,20 +189,27 @@ object AnimationSenderFactory {
                         // Create streams
                         out = ObjectOutputStream(socket.getOutputStream())
                         socIn = ObjectInputStream(BufferedInputStream(socket.getInputStream()))
-                        var input: Map<*, *>
+                        var input: AnimationData
 
                         while (true) {
                             // Wait for input
-                            input = socIn!!.readObject() as Map<*, *>
+                            input = socIn!!.readObject() as AnimationData
                             Logger.debug("Received: $input")
                             // Run receive action
                             receiveAction?.invoke(input) ?: Logger.debug("No receive action defined")
+                            // Run new or end animation action
+                            when (input.animation) {
+                                Animation.ENDANIMATION -> endAnimationAction?.invoke(input)
+                                        ?: Logger.debug("No end animation action defined")
+                                else -> newAnimationAction?.invoke(input)
+                                        ?: Logger.debug("No new animation action defined")
+                            }
                         }
 
                     } catch (e: Exception) {            // TODO: Limit types of exceptions
                         socket = Socket()               // Reset socket
                         Logger.error("Exception $e occurred: $ipAddress:$port")
-                        disconnected = true
+                        connected = false
                         disconnectAction?.invoke()      // Run disconnect action
                     }
                 }
@@ -185,7 +224,7 @@ object AnimationSenderFactory {
                 try {
                     socket.connect(InetSocketAddress(ipAddress, port), 5000)
                     Logger.info("Connected to server at $ipAddress port $port")
-                    disconnected = false
+                    connected = true
                     connectAction?.invoke()
                     connectionTries = 0
                 } catch (e: Exception) {
@@ -220,8 +259,6 @@ object AnimationSenderFactory {
                 Logger.error("Error sending animation: $e")
             }
         }
-
-        fun isDisconnected() = disconnected
 
     }
 

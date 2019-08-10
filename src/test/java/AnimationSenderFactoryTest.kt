@@ -1,9 +1,13 @@
 package animatedledstrip.test
 
+import animatedledstrip.animationutils.Animation
+import animatedledstrip.animationutils.AnimationData
 import animatedledstrip.client.AnimationSenderFactory
 import kotlinx.coroutines.*
 import org.junit.Ignore
 import org.junit.Test
+import org.pmw.tinylog.Configurator
+import org.pmw.tinylog.Level
 import java.io.BufferedInputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
@@ -14,32 +18,27 @@ import kotlin.test.assertTrue
 
 class AnimationSenderFactoryTest {
 
+    init {
+        Configurator.defaultConfig().level(Level.OFF).activate()
+    }
+
     @Test
     fun testDefaultSender() {
+        val port = 1100
         AnimationSenderFactory
-//        assertFailsWith(UninitializedPropertyAccessException::class) {
-//            AnimationSenderFactory.defaultSender
-//        }
 
-        val testSender = AnimationSenderFactory.create("0.0.0.0", 1104).setAsDefaultSender()
+        val testSender = AnimationSenderFactory.create("0.0.0.0", port).setAsDefaultSender()
         assertTrue { AnimationSenderFactory.defaultSender === testSender }
     }
 
     @Test
     fun testStart() {
-        val port = 1105
+        val port = 1101
 
         val job = GlobalScope.launch {
             withContext(Dispatchers.IO) {
                 val socket = ServerSocket(port, 0, InetAddress.getByName("0.0.0.0")).accept()
-//                val socIn = ObjectInputStream(BufferedInputStream(socket!!.getInputStream()))
                 ObjectOutputStream(socket.getOutputStream())
-
-
-//                val input: Any? = socIn.readObject()
-//                val inMap = input as Map<*, *>
-//                assertTrue { inMap["ClientData"] == true }
-//                assertTrue { inMap["TextBased"] == false }
             }
         }
 
@@ -53,7 +52,7 @@ class AnimationSenderFactoryTest {
     @Test
     fun testConnectCallback() {
         var testBoolean = false
-        val port = 1106
+        val port = 1102
 
         GlobalScope.launch {
             withContext(Dispatchers.IO) {
@@ -77,19 +76,17 @@ class AnimationSenderFactoryTest {
     }
 
     @Test
-    @Ignore
     fun testDisconnectCallback() {
         var testBoolean = false
-        val port = 1107
+        val port = 1103
 
         val job = GlobalScope.launch {
             withContext(Dispatchers.IO) {
-                val ss = ServerSocket(port, 0, InetAddress.getByName("0.0.0.0"))
-                val socket = ss.accept()
-                val socIn = ObjectInputStream(BufferedInputStream(socket!!.getInputStream()))
+                val socket = ServerSocket(port, 0, InetAddress.getByName("0.0.0.0")).accept()
+                ObjectInputStream(BufferedInputStream(socket!!.getInputStream()))
                 ObjectOutputStream(socket.getOutputStream())
 
-                socIn.readObject()
+//                    socIn.readObject()
 
                 socket.shutdownOutput()
             }
@@ -108,26 +105,26 @@ class AnimationSenderFactoryTest {
         runBlocking { job.join() }
         runBlocking { delay(1000) }
         assertTrue { testBoolean }
-
     }
 
     @Test
     fun testReceiveCallback() {
         var testBoolean = false
-        val port = 1106
+        val port = 1104
 
         GlobalScope.launch {
             withContext(Dispatchers.IO) {
                 val socket = ServerSocket(port, 0, InetAddress.getByName("0.0.0.0")).accept()
                 ObjectInputStream(BufferedInputStream(socket!!.getInputStream()))
-                ObjectOutputStream(socket.getOutputStream())
+                val out = ObjectOutputStream(socket.getOutputStream())
+                out.writeObject(AnimationData().animation(Animation.COLOR))
             }
         }
 
         runBlocking { delay(2000) }
 
         AnimationSenderFactory.create("0.0.0.0", port)
-                .setOnConnectCallback {
+                .setOnReceiveCallback {
                     testBoolean = true
                 }
                 .start()
@@ -138,7 +135,71 @@ class AnimationSenderFactoryTest {
     }
 
     @Test
-    @Ignore
+    fun testNewAnimationCallback() {
+        var testBoolean1 = false
+        var testBoolean2 = true
+        val port = 1105
+
+        GlobalScope.launch {
+            withContext(Dispatchers.IO) {
+                val socket = ServerSocket(port, 0, InetAddress.getByName("0.0.0.0")).accept()
+                ObjectInputStream(BufferedInputStream(socket!!.getInputStream()))
+                val out = ObjectOutputStream(socket.getOutputStream())
+                out.writeObject(AnimationData().animation(Animation.COLOR))
+            }
+        }
+
+        runBlocking { delay(2000) }
+
+        AnimationSenderFactory.create("0.0.0.0", port)
+                .setOnNewAnimationCallback {
+                    testBoolean1 = true
+                }
+                .setOnEndAnimationCallback {
+                    testBoolean2 = false
+                }
+                .start()
+
+        runBlocking { delay(2000) }
+
+        assertTrue { testBoolean1 }
+        assertTrue { testBoolean2 }
+    }
+
+    @Test
+    fun testEndAnimationCallback() {
+        var testBoolean1 = false
+        var testBoolean2 = true
+        val port = 1106
+
+        GlobalScope.launch {
+            withContext(Dispatchers.IO) {
+                val socket = ServerSocket(port, 0, InetAddress.getByName("0.0.0.0")).accept()
+                ObjectInputStream(BufferedInputStream(socket!!.getInputStream()))
+                val out = ObjectOutputStream(socket.getOutputStream())
+                out.writeObject(AnimationData().animation(Animation.ENDANIMATION))
+            }
+        }
+
+        runBlocking { delay(2000) }
+
+        AnimationSenderFactory.create("0.0.0.0", port)
+                .setOnNewAnimationCallback {
+                    testBoolean2 = false
+                }
+                .setOnEndAnimationCallback {
+                    testBoolean1 = true
+                }
+                .start()
+
+        runBlocking { delay(2000) }
+
+        assertTrue { testBoolean1 }
+        assertTrue { testBoolean2 }
+
+    }
+
+    @Test
     fun testMultipleStarts() {
         val testSender = AnimationSenderFactory.create("0.0.0.0").start()
 
