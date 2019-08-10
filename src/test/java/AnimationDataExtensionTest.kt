@@ -51,6 +51,8 @@ class AnimationDataExtensionTest {
             }
         }
 
+        runBlocking { delay(2000) }
+
         val sender = AnimationSenderFactory.create("0.0.0.0", port)
                 .start()
 
