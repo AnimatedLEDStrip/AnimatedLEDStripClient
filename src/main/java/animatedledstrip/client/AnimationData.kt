@@ -1,5 +1,6 @@
 package animatedledstrip.client
 
+import animatedledstrip.animationutils.Animation
 import animatedledstrip.animationutils.AnimationData
 import org.pmw.tinylog.Logger
 
@@ -32,4 +33,10 @@ import org.pmw.tinylog.Logger
 fun AnimationData.send(sender: AnimationSenderFactory.AnimationSender = AnimationSenderFactory.defaultSender) {
     sender.send(this)
     Logger.debug("$this sent")
+}
+
+fun AnimationData.endAnimation(sender: AnimationSenderFactory.AnimationSender = AnimationSenderFactory.defaultSender) {
+    animation = Animation.ENDANIMATION
+    Logger.debug("$this ending")
+    send(sender)
 }
