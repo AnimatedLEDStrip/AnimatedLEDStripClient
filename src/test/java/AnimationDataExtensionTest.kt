@@ -30,16 +30,16 @@ class AnimationDataExtensionTest {
         val port = 1200
 
         val testAnimation = AnimationData().animation(Animation.STACK)
-                .color(ColorContainer(0xFF, 0xFFFF).prepare(5), index = 0)
-                .color(0xFF, index = 1)
-                .color(0xFF, index = 2)
-                .color(0xFF, index = 3)
-                .color(0xFF, index = 4)
-                .continuous(true)
-                .delay(50)
-                .direction(Direction.FORWARD)
-                .id("TEST")
-                .spacing(5)
+            .color(ColorContainer(0xFF, 0xFFFF).prepare(5), index = 0)
+            .color(0xFF, index = 1)
+            .color(0xFF, index = 2)
+            .color(0xFF, index = 3)
+            .color(0xFF, index = 4)
+            .continuous(true)
+            .delay(50)
+            .direction(Direction.FORWARD)
+            .id("TEST")
+            .spacing(5)
 
         GlobalScope.launch {
             withContext(Dispatchers.IO) {
@@ -54,7 +54,7 @@ class AnimationDataExtensionTest {
         runBlocking { delay(2000) }
 
         val sender = AnimationSenderFactory.create("0.0.0.0", port)
-                .start()
+            .start()
 
         runBlocking { delay(2000) }
 
@@ -71,16 +71,16 @@ class AnimationDataExtensionTest {
         val port = 1201
 
         val testAnimation = AnimationData().animation(Animation.STACK)
-                .color(ColorContainer(0xFF, 0xFFFF).prepare(5), index = 0)
-                .color(0xFF, index = 1)
-                .color(0xFF, index = 2)
-                .color(0xFF, index = 3)
-                .color(0xFF, index = 4)
-                .continuous(true)
-                .delay(50)
-                .direction(Direction.FORWARD)
-                .id("TEST")
-                .spacing(5)
+            .color(ColorContainer(0xFF, 0xFFFF).prepare(5), index = 0)
+            .color(0xFF, index = 1)
+            .color(0xFF, index = 2)
+            .color(0xFF, index = 3)
+            .color(0xFF, index = 4)
+            .continuous(true)
+            .delay(50)
+            .direction(Direction.FORWARD)
+            .id("TEST")
+            .spacing(5)
 
         GlobalScope.launch {
             withContext(Dispatchers.IO) {
@@ -93,7 +93,7 @@ class AnimationDataExtensionTest {
         }
 
         val sender = AnimationSenderFactory.create("0.0.0.0", port)
-                .start()
+            .start()
 
         runBlocking { delay(2000) }
 

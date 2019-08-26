@@ -50,7 +50,7 @@ object AnimationSenderFactory {
      * @return The new AnimationSender
      */
     fun create(ipAddress: String = "10.0.0.254", port: Int = 5, connectAttemptLimit: Int = 5) =
-            AnimationSender(ipAddress, port, connectAttemptLimit)
+        AnimationSender(ipAddress, port, connectAttemptLimit)
 
     class AnimationSender(var ipAddress: String, val port: Int, val connectAttemptLimit: Int) {
         private var socket: Socket = Socket()
@@ -200,9 +200,9 @@ object AnimationSenderFactory {
                             // Run new or end animation action
                             when (input.animation) {
                                 Animation.ENDANIMATION -> endAnimationAction?.invoke(input)
-                                        ?: Logger.debug("No end animation action defined")
+                                    ?: Logger.debug("No end animation action defined")
                                 else -> newAnimationAction?.invoke(input)
-                                        ?: Logger.debug("No new animation action defined")
+                                    ?: Logger.debug("No new animation action defined")
                             }
                         }
 

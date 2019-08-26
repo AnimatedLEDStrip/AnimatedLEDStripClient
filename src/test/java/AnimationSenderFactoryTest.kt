@@ -65,10 +65,10 @@ class AnimationSenderFactoryTest {
         runBlocking { delay(2000) }
 
         AnimationSenderFactory.create("0.0.0.0", port)
-                .setOnConnectCallback {
-                    testBoolean = true
-                }
-                .start()
+            .setOnConnectCallback {
+                testBoolean = true
+            }
+            .start()
 
         runBlocking { delay(2000) }
 
@@ -95,12 +95,12 @@ class AnimationSenderFactoryTest {
         runBlocking { delay(5000) }
 
         AnimationSenderFactory.create("0.0.0.0", port)
-                .setAsDefaultSender()
-                .setOnDisconnectCallback {
-                    testBoolean = true
-                    AnimationSenderFactory.defaultSender.end()
-                }
-                .start()
+            .setAsDefaultSender()
+            .setOnDisconnectCallback {
+                testBoolean = true
+                AnimationSenderFactory.defaultSender.end()
+            }
+            .start()
 
         runBlocking { job.join() }
         runBlocking { delay(1000) }
@@ -124,10 +124,10 @@ class AnimationSenderFactoryTest {
         runBlocking { delay(2000) }
 
         AnimationSenderFactory.create("0.0.0.0", port)
-                .setOnReceiveCallback {
-                    testBoolean = true
-                }
-                .start()
+            .setOnReceiveCallback {
+                testBoolean = true
+            }
+            .start()
 
         runBlocking { delay(2000) }
 
@@ -152,13 +152,13 @@ class AnimationSenderFactoryTest {
         runBlocking { delay(2000) }
 
         AnimationSenderFactory.create("0.0.0.0", port)
-                .setOnNewAnimationCallback {
-                    testBoolean1 = true
-                }
-                .setOnEndAnimationCallback {
-                    testBoolean2 = false
-                }
-                .start()
+            .setOnNewAnimationCallback {
+                testBoolean1 = true
+            }
+            .setOnEndAnimationCallback {
+                testBoolean2 = false
+            }
+            .start()
 
         runBlocking { delay(2000) }
 
@@ -184,13 +184,13 @@ class AnimationSenderFactoryTest {
         runBlocking { delay(2000) }
 
         AnimationSenderFactory.create("0.0.0.0", port)
-                .setOnNewAnimationCallback {
-                    testBoolean2 = false
-                }
-                .setOnEndAnimationCallback {
-                    testBoolean1 = true
-                }
-                .start()
+            .setOnNewAnimationCallback {
+                testBoolean2 = false
+            }
+            .setOnEndAnimationCallback {
+                testBoolean1 = true
+            }
+            .start()
 
         runBlocking { delay(2000) }
 
