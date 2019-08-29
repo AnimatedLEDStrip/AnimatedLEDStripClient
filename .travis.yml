@@ -24,7 +24,7 @@ jobs:
         -
       after_success: bash <(curl -s https://codecov.io/bash)
     - stage: deploy
-      install: mvn install -DskipTests=true -B
+      install: mvn clean -B
       deploy:
         - provider: script
           script: mvn --settings .maven.xml site -DskipTests=true -B && git add dokka

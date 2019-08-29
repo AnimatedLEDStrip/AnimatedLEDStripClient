@@ -15,7 +15,7 @@ Use the following dependency to use this library in your project
 > <dependency>
 >   <groupId>io.github.animatedledstrip</groupId>
 >   <artifactId>animatedledstrip-client</artifactId>
->   <version>0.2</version>
+>   <version>0.3</version>
 > </dependency>
 > ```
 
@@ -38,6 +38,6 @@ Development versions of the AnimatedLEDStripClient library are available from th
 >   <dependency>
 >     <groupId>io.github.animatedledstrip</groupId>
 >     <artifactId>animatedledstrip-client</artifactId>
->     <version>0.3-SNAPSHOT</version>
+>     <version>0.4-SNAPSHOT</version>
 >   </dependency>
 > </dependencies>
