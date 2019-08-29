@@ -2,6 +2,7 @@ package animatedledstrip.test
 
 import animatedledstrip.animationutils.Animation
 import animatedledstrip.animationutils.AnimationData
+import animatedledstrip.animationutils.animation
 import animatedledstrip.client.AnimationSenderFactory
 import kotlinx.coroutines.*
 import org.junit.Ignore

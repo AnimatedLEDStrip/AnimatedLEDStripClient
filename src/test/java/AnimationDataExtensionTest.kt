@@ -1,8 +1,6 @@
 package animatedledstrip.test
 
-import animatedledstrip.animationutils.Animation
-import animatedledstrip.animationutils.AnimationData
-import animatedledstrip.animationutils.Direction
+import animatedledstrip.animationutils.*
 import animatedledstrip.client.AnimationSenderFactory
 import animatedledstrip.client.endAnimation
 import animatedledstrip.client.send
