@@ -194,7 +194,7 @@ object AnimationSenderFactory {
                         while (true) {
                             checkNotNull(out)
                             // Wait for input
-                            input = (socIn.readObject() ?: error("Something has gone horribly wrong")) as AnimationData
+                            input = socIn.readObject() as AnimationData
                             Logger.debug("Received: $input")
                             receiveAction?.invoke(input) ?: Logger.debug("No receive action defined")
                             // Run new or end animation action
