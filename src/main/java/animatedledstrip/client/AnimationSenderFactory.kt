@@ -193,12 +193,10 @@ object AnimationSenderFactory {
                         var input: AnimationData
                         while (true) {
                             checkNotNull(out)
-                            // Wait for input
-                            input = socIn.readObject() as AnimationData
+                            input = socIn.readObject() as AnimationData // Wait for input
                             Logger.debug("Received: $input")
                             receiveAction?.invoke(input) ?: Logger.debug("No receive action defined")
-                            // Run new or end animation action
-                            when (input.animation) {
+                            when (input.animation) {    // Run new or end animation action
                                 Animation.ENDANIMATION -> endAnimationAction?.invoke(input)
                                     ?: Logger.debug("No end animation action defined")
                                 else -> newAnimationAction?.invoke(input)
