@@ -55,7 +55,6 @@ object AnimationSenderFactory {
     class AnimationSender(var ipAddress: String, val port: Int, val connectAttemptLimit: Int) {
         private var socket: Socket = Socket()
         private var out: ObjectOutputStream? = null
-        private var socIn: ObjectInputStream? = null
         private var connectionTries = 0
 
         private var receiveAction: ((AnimationData) -> Any?)? = null
@@ -66,7 +65,7 @@ object AnimationSenderFactory {
 
         private var stopSocket = false
         private var started = false
-        var connected: Boolean = true
+        var connected: Boolean = false
             private set
 
         private var loopThread: Job? = null
@@ -144,13 +143,15 @@ object AnimationSenderFactory {
         }
 
         /**
-         * Set this connection's IP address
+         * Set this connection's IP address. Restarts connection if connected.
          *
          * @param address A string representing an IPv4 address
          * @return this
          */
         fun setIPAddress(address: String): AnimationSender {
+            end()
             ipAddress = address
+            start()
             return this
         }
 
@@ -179,6 +180,7 @@ object AnimationSenderFactory {
             stopSocket = true
             socket.close()
             socket = Socket()
+            assert(!connected)
         }
 
         private suspend fun loop() {
@@ -186,16 +188,14 @@ object AnimationSenderFactory {
                 connect()
                 withContext(Dispatchers.IO) {
                     try {
-                        // Create streams
                         out = ObjectOutputStream(socket.getOutputStream())
-                        socIn = ObjectInputStream(BufferedInputStream(socket.getInputStream()))
+                        val socIn = ObjectInputStream(BufferedInputStream(socket.getInputStream()))
                         var input: AnimationData
-
                         while (true) {
+                            checkNotNull(out)
                             // Wait for input
-                            input = socIn!!.readObject() as AnimationData
+                            input = (socIn.readObject() ?: error("Something has gone horribly wrong")) as AnimationData
                             Logger.debug("Received: $input")
-                            // Run receive action
                             receiveAction?.invoke(input) ?: Logger.debug("No receive action defined")
                             // Run new or end animation action
                             when (input.animation) {
@@ -205,7 +205,6 @@ object AnimationSenderFactory {
                                     ?: Logger.debug("No new animation action defined")
                             }
                         }
-
                     } catch (e: Exception) {            // TODO: Limit types of exceptions
                         socket = Socket()               // Reset socket
                         Logger.error("Exception $e occurred: $ipAddress:$port")
@@ -259,7 +258,5 @@ object AnimationSenderFactory {
                 Logger.error("Error sending animation: $e")
             }
         }
-
     }
-
 }
