@@ -248,7 +248,7 @@ object AnimationSenderFactory {
             try {
                 GlobalScope.launch {
                     withContext(Dispatchers.IO) {
-                        out?.writeObject(args) ?: Logger.error("Output stream not defined")
+                        out?.writeObject(args) ?: error("Output stream not defined")
                         Logger.debug(args)
                     }
                 }
