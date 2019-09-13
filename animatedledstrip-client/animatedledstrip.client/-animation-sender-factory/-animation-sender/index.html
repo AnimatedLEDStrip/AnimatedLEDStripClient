@@ -52,6 +52,20 @@
 <td>
 <code><span class="keyword">val </span><span class="identifier">port</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
 </tr>
+<tr>
+<td>
+<p><a href="running-animations.html">runningAnimations</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">runningAnimations</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/index.html"><span class="identifier">MutableMap</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">AnimationData</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="started.html">started</a></p>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">started</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
 </tbody>
 </table>
 <h3>Functions</h3>
@@ -90,7 +104,7 @@
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">setIPAddress</span><span class="symbol">(</span><span class="identifier" id="animatedledstrip.client.AnimationSenderFactory.AnimationSender$setIPAddress(kotlin.String)/address">address</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">AnimationSender</span></a></code>
-<p>Set this connection's IP address</p>
+<p>Set this connection's IP address. Restarts connection if connected.</p>
 </td>
 </tr>
 <tr>
