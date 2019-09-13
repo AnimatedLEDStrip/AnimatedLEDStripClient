@@ -7,8 +7,7 @@ import animatedledstrip.client.AnimationSenderFactory
 import kotlinx.coroutines.*
 import org.junit.Ignore
 import org.junit.Test
-import org.pmw.tinylog.Configurator
-import org.pmw.tinylog.Level
+import org.tinylog.configuration.Configuration
 import java.io.BufferedInputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
@@ -20,7 +19,7 @@ import kotlin.test.assertTrue
 class AnimationSenderFactoryTest {
 
     init {
-        Configurator.defaultConfig().level(Level.OFF).activate()
+        Configuration.set("level", "off")
     }
 
     @Test

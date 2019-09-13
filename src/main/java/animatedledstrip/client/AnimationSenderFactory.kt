@@ -26,7 +26,7 @@ package animatedledstrip.client
 import animatedledstrip.animationutils.Animation
 import animatedledstrip.animationutils.AnimationData
 import kotlinx.coroutines.*
-import org.pmw.tinylog.Logger
+import org.tinylog.Logger
 import java.io.BufferedInputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
@@ -57,20 +57,23 @@ object AnimationSenderFactory {
         private var out: ObjectOutputStream? = null
         private var connectionTries = 0
 
-        private var receiveAction: ((AnimationData) -> Any?)? = null
-        private var newAnimationAction: ((AnimationData) -> Any?)? = null
-        private var endAnimationAction: ((AnimationData) -> Any?)? = null
-        private var connectAction: (() -> Unit)? = null
-        private var disconnectAction: (() -> Unit)? = null
-
         private var stopSocket = false
-        private var started = false
+        var started = false
+            private set
         var connected: Boolean = false
             private set
 
         private var loopThread: Job? = null
         @Suppress("EXPERIMENTAL_API_USAGE")
         private val senderCoroutineScope = newSingleThreadContext("Animation Sender port $port")
+
+        private var receiveAction: ((AnimationData) -> Any?)? = null
+        private var newAnimationAction: ((AnimationData) -> Any?)? = null
+        private var endAnimationAction: ((AnimationData) -> Any?)? = null
+        private var connectAction: (() -> Unit)? = null
+        private var disconnectAction: (() -> Unit)? = null
+
+        val runningAnimations = mutableMapOf<String, AnimationData>()
 
         /**
          * Specify an action to perform when data is received from the server
@@ -194,18 +197,24 @@ object AnimationSenderFactory {
                         while (true) {
                             checkNotNull(out)
                             input = socIn.readObject() as AnimationData // Wait for input
-                            Logger.debug("Received: $input")
-                            receiveAction?.invoke(input) ?: Logger.debug("No receive action defined")
+                            Logger.info { "Received: $input" }
+                            receiveAction?.invoke(input) ?: Logger.debug { "No receive action defined" }
                             when (input.animation) {    // Run new or end animation action
-                                Animation.ENDANIMATION -> endAnimationAction?.invoke(input)
-                                    ?: Logger.debug("No end animation action defined")
-                                else -> newAnimationAction?.invoke(input)
-                                    ?: Logger.debug("No new animation action defined")
+                                Animation.ENDANIMATION -> {
+                                    endAnimationAction?.invoke(input)
+                                        ?: Logger.debug { "No end animation action defined" }
+                                    runningAnimations.remove(input.id)
+                                }
+                                else -> {
+                                    newAnimationAction?.invoke(input)
+                                        ?: Logger.debug { "No new animation action defined" }
+                                    runningAnimations[input.id] = input
+                                }
                             }
                         }
                     } catch (e: Exception) {            // TODO: Limit types of exceptions
                         socket = Socket()               // Reset socket
-                        Logger.error("Exception $e occurred: $ipAddress:$port")
+                        Logger.error { "Exception $e occurred: $ipAddress:$port" }
                         connected = false
                         disconnectAction?.invoke()      // Run disconnect action
                     }
@@ -220,19 +229,19 @@ object AnimationSenderFactory {
             withContext(Dispatchers.IO) {
                 try {
                     socket.connect(InetSocketAddress(ipAddress, port), 5000)
-                    Logger.info("Connected to server at $ipAddress port $port")
+                    Logger.info { "Connected to server at $ipAddress port $port" }
                     connected = true
                     connectAction?.invoke()
                     connectionTries = 0
                 } catch (e: Exception) {
                     connectionTries++
-                    Logger.warn("Connection attempt $connectionTries: Server not found at $ipAddress: $e")
+                    Logger.warn { "Connection attempt $connectionTries: Server not found at $ipAddress: $e" }
                     delay(10000)
                     if (connectionTries < connectAttemptLimit) {
                         socket = Socket()
                         connect()
                     } else {
-                        Logger.error("Could not locate server at $ipAddress after $connectionTries tries")
+                        Logger.error { "Could not locate server at $ipAddress after $connectionTries tries" }
                         end()
                     }
                 }
@@ -253,7 +262,7 @@ object AnimationSenderFactory {
                     }
                 }
             } catch (e: Exception) {
-                Logger.error("Error sending animation: $e")
+                Logger.error { "Error sending animation: $e" }
             }
         }
     }

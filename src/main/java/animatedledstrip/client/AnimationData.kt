@@ -2,7 +2,7 @@ package animatedledstrip.client
 
 import animatedledstrip.animationutils.Animation
 import animatedledstrip.animationutils.AnimationData
-import org.pmw.tinylog.Logger
+import org.tinylog.Logger
 
 /*
  *  Copyright (c) 2019 AnimatedLEDStrip
@@ -32,11 +32,11 @@ import org.pmw.tinylog.Logger
  */
 fun AnimationData.send(sender: AnimationSenderFactory.AnimationSender = AnimationSenderFactory.defaultSender) {
     sender.send(this)
-    Logger.debug("$this sent")
+    Logger.debug { "$this sent" }
 }
 
 fun AnimationData.endAnimation(sender: AnimationSenderFactory.AnimationSender = AnimationSenderFactory.defaultSender) {
     animation = Animation.ENDANIMATION
-    Logger.debug("$this ending")
+    Logger.debug { "$this ending" }
     send(sender)
 }
