@@ -26,7 +26,7 @@ package animatedledstrip.client
 import animatedledstrip.animationutils.Animation
 import animatedledstrip.animationutils.AnimationData
 import kotlinx.coroutines.*
-import org.tinylog.Logger
+import org.pmw.tinylog.Logger
 import java.io.BufferedInputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
