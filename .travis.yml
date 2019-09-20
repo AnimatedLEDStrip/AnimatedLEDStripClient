@@ -20,7 +20,7 @@ branches:
 stages:
   - name: test
   - name: deploy
-    if: branch = master AND type != pull_request AND ($PROJECT_VERSION =~ /^*-SNAPSHOT/ OR tag IS present)
+    if: branch = master AND type != pull_request AND ("$PROJECT_VERSION" =~ /^*-SNAPSHOT/ OR tag IS present)
 
 jobs:
   include:
