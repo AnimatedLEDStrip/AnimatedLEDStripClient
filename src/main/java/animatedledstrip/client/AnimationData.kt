@@ -2,7 +2,7 @@ package animatedledstrip.client
 
 import animatedledstrip.animationutils.Animation
 import animatedledstrip.animationutils.AnimationData
-import org.tinylog.Logger
+import org.pmw.tinylog.Logger
 
 /*
  *  Copyright (c) 2019 AnimatedLEDStrip

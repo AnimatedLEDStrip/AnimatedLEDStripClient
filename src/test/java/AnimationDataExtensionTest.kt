@@ -7,7 +7,6 @@ import animatedledstrip.client.send
 import animatedledstrip.colors.ColorContainer
 import kotlinx.coroutines.*
 import org.junit.Test
-import org.tinylog.configuration.Configuration
 import java.io.BufferedInputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
@@ -16,10 +15,6 @@ import java.net.ServerSocket
 import kotlin.test.assertTrue
 
 class AnimationDataExtensionTest {
-
-    init {
-        Configuration.set("level", "off")
-    }
 
     @Test
     fun testSend() {

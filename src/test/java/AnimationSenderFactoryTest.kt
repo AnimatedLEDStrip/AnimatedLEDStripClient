@@ -7,7 +7,6 @@ import animatedledstrip.client.AnimationSenderFactory
 import kotlinx.coroutines.*
 import org.junit.Ignore
 import org.junit.Test
-import org.tinylog.configuration.Configuration
 import java.io.BufferedInputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
@@ -17,10 +16,6 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
 class AnimationSenderFactoryTest {
-
-    init {
-        Configuration.set("level", "off")
-    }
 
     @Test
     fun testDefaultSender() {
