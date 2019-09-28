@@ -1,9 +1,5 @@
 package animatedledstrip.client
 
-import animatedledstrip.animationutils.Animation
-import animatedledstrip.animationutils.AnimationData
-import org.pmw.tinylog.Logger
-
 /*
  *  Copyright (c) 2019 AnimatedLEDStrip
  *
@@ -26,6 +22,10 @@ import org.pmw.tinylog.Logger
  *  THE SOFTWARE.
  */
 
+
+import animatedledstrip.animationutils.Animation
+import animatedledstrip.animationutils.AnimationData
+import org.pmw.tinylog.Logger
 
 /**
  * Extension function to send the animation
