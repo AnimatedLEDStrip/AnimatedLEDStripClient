@@ -72,8 +72,8 @@ object AnimationSenderFactory {
         private var receiveAction: ((AnimationData) -> Any?)? = null
         private var newAnimationAction: ((AnimationData) -> Any?)? = null
         private var endAnimationAction: ((AnimationData) -> Any?)? = null
-        private var connectAction: (() -> Unit)? = null
-        private var disconnectAction: (() -> Unit)? = null
+        private var connectAction: ((String) -> Unit)? = null
+        private var disconnectAction: ((String) -> Unit)? = null
 
         val runningAnimations = mutableMapOf<String, AnimationData>()
 
@@ -123,7 +123,7 @@ object AnimationSenderFactory {
          * @param action A function to run
          * @return this
          */
-        fun setOnConnectCallback(action: () -> Unit): AnimationSender {
+        fun setOnConnectCallback(action: (String) -> Unit): AnimationSender {
             connectAction = action
             return this
         }
@@ -134,7 +134,7 @@ object AnimationSenderFactory {
          * @param action A function to run
          * @return this
          */
-        fun setOnDisconnectCallback(action: () -> Unit): AnimationSender {
+        fun setOnDisconnectCallback(action: (String) -> Unit): AnimationSender {
             disconnectAction = action
             return this
         }
@@ -192,7 +192,7 @@ object AnimationSenderFactory {
 
         private suspend fun loop() {
             while (!stopSocket) {
-                connect()
+                val connectedIp = connect()
                 withContext(Dispatchers.IO) {
                     try {
                         out = ObjectOutputStream(socket.getOutputStream())
@@ -228,7 +228,7 @@ object AnimationSenderFactory {
                         socket = Socket()               // Reset socket
                         Logger.error("Exception $e occurred: $ipAddress:$port")
                         connected = false
-                        disconnectAction?.invoke()      // Run disconnect action
+                        disconnectAction?.invoke(connectedIp)      // Run disconnect action
                         runningAnimations.clear()
                     }
                 }
@@ -238,14 +238,15 @@ object AnimationSenderFactory {
         /**
          * Attempt to create a connection to the server
          */
-        private suspend fun connect() {
-            withContext(Dispatchers.IO) {
+        private suspend fun connect(): String {
+            return withContext(Dispatchers.IO) {
                 try {
                     socket.connect(InetSocketAddress(ipAddress, port), 5000)
                     Logger.info { "Connected to server at $ipAddress port $port" }
                     connected = true
-                    connectAction?.invoke()
+                    connectAction?.invoke(ipAddress)
                     connectionTries = 0
+                    ipAddress
                 } catch (e: SocketException) {
                     connectionTries++
                     Logger.warn { "Connection attempt $connectionTries: Server not found at $ipAddress: $e" }
@@ -257,6 +258,7 @@ object AnimationSenderFactory {
                         Logger.error { "Could not locate server at $ipAddress after $connectionTries tries" }
                         end()
                     }
+                    ""
                 }
             }
         }
