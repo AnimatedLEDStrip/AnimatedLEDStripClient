@@ -174,7 +174,7 @@ object AnimationSenderFactory {
                     loop()
                 }
                 started = true
-            } else throw Exception("Sender started already")
+            } else Logger.warn("Sender started already")
             return this
         }
 
@@ -256,6 +256,7 @@ object AnimationSenderFactory {
                         connect()
                     } else {
                         Logger.error { "Could not locate server at $ipAddress after $connectionTries tries" }
+                        connectionTries = 0
                         end()
                     }
                     ""
