@@ -35,7 +35,6 @@ import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.net.InetAddress
 import java.net.ServerSocket
-import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
 class AnimationSenderFactoryTest {
@@ -221,9 +220,7 @@ class AnimationSenderFactoryTest {
     fun testMultipleStarts() {
         val testSender = AnimationSenderFactory.create("0.0.0.0").start()
 
-        assertFailsWith(Exception::class) {
-            testSender.start()
-        }
+        testSender.start()
     }
 
     @Test
