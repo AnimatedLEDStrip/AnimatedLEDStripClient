@@ -203,7 +203,7 @@ object AnimationSenderFactory {
                         read@ while (true) {
                             checkNotNull(out)
                             val count = socIn.read(input) // Wait for input
-                            if (count == -1) break
+                            if (count == -1) throw SocketException("Connection closed")
 
                             val data: AnimationData
                             when (input.getDataTypePrefix()) {
@@ -216,7 +216,7 @@ object AnimationSenderFactory {
                                 }
                                 else -> continue@read
                             }
-                            Logger.info("Received: $input")
+                            Logger.debug("Received: $data")
                             receiveAction?.invoke(data) ?: Logger.debug("No receive action defined")
                             when (data.animation) {    // Run new or end animation action
                                 Animation.ENDANIMATION -> {
@@ -232,9 +232,9 @@ object AnimationSenderFactory {
                             }
                             input = ByteArray(1000)
                         }
-                    } catch (e: Exception) {            // TODO: Limit types of exceptions
+                    } catch (e: SocketException) {            // TODO: Limit types of exceptions
                         socket = Socket()               // Reset socket
-                        Logger.error("Exception $e occurred: $ipAddress:$port")
+                        Logger.error("Exception occurred: $ipAddress:$port: $e")
                         connected = false
                         disconnectAction?.invoke(connectedIp)      // Run disconnect action
                         runningAnimations.clear()
@@ -250,20 +250,20 @@ object AnimationSenderFactory {
             return withContext(Dispatchers.IO) {
                 try {
                     socket.connect(InetSocketAddress(ipAddress, port), 5000)
-                    Logger.info { "Connected to server at $ipAddress port $port" }
+                    Logger.info { "Connected to server at $ipAddress:$port" }
                     connected = true
                     connectAction?.invoke(ipAddress)
                     connectionTries = 0
                     ipAddress
                 } catch (e: SocketException) {
                     connectionTries++
-                    Logger.warn { "Connection attempt $connectionTries: Server not found at $ipAddress: $e" }
+                    Logger.warn { "Connection attempt $connectionTries: Error connecting to server at $ipAddress:$port: $e" }
                     delay(10000)
                     if (connectionTries < connectAttemptLimit) {
                         socket = Socket()
                         connect()
                     } else {
-                        Logger.error { "Could not locate server at $ipAddress after $connectionTries tries" }
+                        Logger.error { "Could not locate server at $ipAddress:$port after $connectionTries tries" }
                         connectionTries = 0
                         end()
                     }

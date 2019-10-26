@@ -96,13 +96,14 @@ class AnimationSenderFactoryTest {
             withContext(Dispatchers.IO) {
                 val socket = ServerSocket(port, 0, InetAddress.getByName("0.0.0.0")).accept()
                 delay(3000)
-                socket.shutdownOutput()
+                socket.close()
             }
         }
 
         runBlocking { delay(2000) }
 
-        AnimationSenderFactory.create("0.0.0.0", port)
+        AnimationSenderFactory
+            .create("0.0.0.0", port)
             .setAsDefaultSender()
             .setOnDisconnectCallback {
                 testBoolean = true
