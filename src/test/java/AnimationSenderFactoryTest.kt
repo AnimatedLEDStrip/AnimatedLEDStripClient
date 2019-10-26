@@ -314,8 +314,11 @@ class AnimationSenderFactoryTest {
         assertTrue { testBoolean }
 
         println(
-            tempOut.toString("utf-8")
+            tempOut.toString("utf-8").replace("\r\n", "\n").toByteArray().map { it.toString() }
         )
+
+        println("WARNING: Connection attempt 1: Error connecting to server at 0.0.0.0:$port: java.net.ConnectException: " +
+                "Connection refused: connect\n".toByteArray().map { it.toString() })
 
         assertTrue {
             tempOut
@@ -352,8 +355,14 @@ class AnimationSenderFactoryTest {
         delayBlocking(25000)
 
         println(
-            tempOut.toString("utf-8")
+            tempOut.toString("utf-8").replace("\r\n", "\n").toByteArray().map { it.toString() }
         )
+
+        println("WARNING: Connection attempt 1: Error connecting to server at 0.0.0.0:$port: java.net.ConnectException: " +
+                "Connection refused: connect\n" +
+                "WARNING: Connection attempt 2: Error connecting to server at 0.0.0.0:$port: java.net.ConnectException: " +
+                "Connection refused: connect\n" +
+                "ERROR:   Could not locate server at 0.0.0.0:$port after 2 tries\n".toByteArray().map { it.toString() })
 
         assertTrue {
             tempOut
