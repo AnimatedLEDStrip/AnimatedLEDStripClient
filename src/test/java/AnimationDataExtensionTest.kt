@@ -31,11 +31,19 @@ import animatedledstrip.colors.ColorContainer
 import animatedledstrip.utils.jsonToAnimationData
 import kotlinx.coroutines.*
 import org.junit.Test
+import org.pmw.tinylog.Configurator
+import org.pmw.tinylog.Level
 import java.net.InetAddress
 import java.net.ServerSocket
 import kotlin.test.assertTrue
 
 class AnimationDataExtensionTest {
+
+    init {
+        Configurator.defaultConfig()
+            .level(Level.OFF)
+            .activate()
+    }
 
     @Test
     fun testSend() {
