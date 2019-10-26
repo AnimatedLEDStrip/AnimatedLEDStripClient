@@ -27,12 +27,10 @@ import animatedledstrip.animationutils.Animation
 import animatedledstrip.animationutils.AnimationData
 import animatedledstrip.animationutils.animation
 import animatedledstrip.client.AnimationSenderFactory
+import animatedledstrip.utils.json
 import kotlinx.coroutines.*
 import org.junit.Ignore
 import org.junit.Test
-import java.io.BufferedInputStream
-import java.io.ObjectInputStream
-import java.io.ObjectOutputStream
 import java.net.InetAddress
 import java.net.ServerSocket
 import kotlin.test.assertTrue
@@ -54,8 +52,7 @@ class AnimationSenderFactoryTest {
 
         val job = GlobalScope.launch {
             withContext(Dispatchers.IO) {
-                val socket = ServerSocket(port, 0, InetAddress.getByName("0.0.0.0")).accept()
-                ObjectOutputStream(socket.getOutputStream())
+                ServerSocket(port, 0, InetAddress.getByName("0.0.0.0")).accept()
             }
         }
 
@@ -73,9 +70,7 @@ class AnimationSenderFactoryTest {
 
         GlobalScope.launch {
             withContext(Dispatchers.IO) {
-                val socket = ServerSocket(port, 0, InetAddress.getByName("0.0.0.0")).accept()
-                ObjectInputStream(BufferedInputStream(socket!!.getInputStream()))
-                ObjectOutputStream(socket.getOutputStream())
+                ServerSocket(port, 0, InetAddress.getByName("0.0.0.0")).accept()
             }
         }
 
@@ -100,16 +95,12 @@ class AnimationSenderFactoryTest {
         val job = GlobalScope.launch {
             withContext(Dispatchers.IO) {
                 val socket = ServerSocket(port, 0, InetAddress.getByName("0.0.0.0")).accept()
-                ObjectInputStream(BufferedInputStream(socket!!.getInputStream()))
-                ObjectOutputStream(socket.getOutputStream())
-
-//                    socIn.readObject()
-
+                delay(3000)
                 socket.shutdownOutput()
             }
         }
 
-        runBlocking { delay(5000) }
+        runBlocking { delay(2000) }
 
         AnimationSenderFactory.create("0.0.0.0", port)
             .setAsDefaultSender()
@@ -132,9 +123,8 @@ class AnimationSenderFactoryTest {
         GlobalScope.launch {
             withContext(Dispatchers.IO) {
                 val socket = ServerSocket(port, 0, InetAddress.getByName("0.0.0.0")).accept()
-                ObjectInputStream(BufferedInputStream(socket!!.getInputStream()))
-                val out = ObjectOutputStream(socket.getOutputStream())
-                out.writeObject(AnimationData().animation(Animation.COLOR))
+                val out = socket.getOutputStream()
+                out.write(AnimationData().animation(Animation.COLOR).json())
             }
         }
 
@@ -160,9 +150,8 @@ class AnimationSenderFactoryTest {
         GlobalScope.launch {
             withContext(Dispatchers.IO) {
                 val socket = ServerSocket(port, 0, InetAddress.getByName("0.0.0.0")).accept()
-                ObjectInputStream(BufferedInputStream(socket!!.getInputStream()))
-                val out = ObjectOutputStream(socket.getOutputStream())
-                out.writeObject(AnimationData().animation(Animation.COLOR))
+                val out = socket.getOutputStream()
+                out.write(AnimationData().animation(Animation.COLOR).json())
             }
         }
 
@@ -192,9 +181,8 @@ class AnimationSenderFactoryTest {
         GlobalScope.launch {
             withContext(Dispatchers.IO) {
                 val socket = ServerSocket(port, 0, InetAddress.getByName("0.0.0.0")).accept()
-                ObjectInputStream(BufferedInputStream(socket!!.getInputStream()))
-                val out = ObjectOutputStream(socket.getOutputStream())
-                out.writeObject(AnimationData().animation(Animation.ENDANIMATION))
+                val out = socket.getOutputStream()
+                out.write(AnimationData().animation(Animation.ENDANIMATION).json())
             }
         }
 

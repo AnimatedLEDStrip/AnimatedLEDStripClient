@@ -26,11 +26,13 @@ package animatedledstrip.client
 import animatedledstrip.animationutils.Animation
 import animatedledstrip.animationutils.AnimationData
 import animatedledstrip.leds.StripInfo
+import animatedledstrip.utils.getDataTypePrefix
+import animatedledstrip.utils.json
+import animatedledstrip.utils.jsonToAnimationData
+import animatedledstrip.utils.jsonToStripInfo
 import kotlinx.coroutines.*
 import org.pmw.tinylog.Logger
-import java.io.BufferedInputStream
-import java.io.ObjectInputStream
-import java.io.ObjectOutputStream
+import java.io.OutputStream
 import java.net.InetSocketAddress
 import java.net.Socket
 import java.net.SocketException
@@ -56,7 +58,7 @@ object AnimationSenderFactory {
 
     class AnimationSender(var ipAddress: String, val port: Int, val connectAttemptLimit: Int) {
         private var socket: Socket = Socket()
-        private var out: ObjectOutputStream? = null
+        private var out: OutputStream? = null
         private var connectionTries = 0
 
         private var stopSocket = false
@@ -195,34 +197,40 @@ object AnimationSenderFactory {
                 val connectedIp = connect()
                 withContext(Dispatchers.IO) {
                     try {
-                        out = ObjectOutputStream(socket.getOutputStream())
-                        val socIn = ObjectInputStream(BufferedInputStream(socket.getInputStream()))
-                        var input: Any?
+                        out = socket.getOutputStream()
+                        val socIn = socket.getInputStream()
+                        var input = ByteArray(1000)
                         read@ while (true) {
                             checkNotNull(out)
-                            input = socIn.readObject() // Wait for input
-                            when (input) {
-                                is AnimationData -> {}
-                                is StripInfo -> {
-                                    stripInfo = input
+                            val count = socIn.read(input) // Wait for input
+                            if (count == -1) break
+
+                            val data: AnimationData
+                            when (input.getDataTypePrefix()) {
+                                "DATA" -> {
+                                    data = input.jsonToAnimationData(count)
+                                }
+                                "INFO" -> {
+                                    stripInfo = input.jsonToStripInfo(count)
                                     continue@read
                                 }
                                 else -> continue@read
                             }
                             Logger.info("Received: $input")
-                            receiveAction?.invoke(input) ?: Logger.debug("No receive action defined")
-                            when (input.animation) {    // Run new or end animation action
+                            receiveAction?.invoke(data) ?: Logger.debug("No receive action defined")
+                            when (data.animation) {    // Run new or end animation action
                                 Animation.ENDANIMATION -> {
-                                    endAnimationAction?.invoke(input)
+                                    endAnimationAction?.invoke(data)
                                         ?: Logger.debug("No end animation action defined")
-                                    runningAnimations.remove(input.id)
+                                    runningAnimations.remove(data.id)
                                 }
                                 else -> {
-                                    newAnimationAction?.invoke(input)
+                                    newAnimationAction?.invoke(data)
                                         ?: Logger.debug("No new animation action defined")
-                                    runningAnimations[input.id] = input
+                                    runningAnimations[data.id] = data
                                 }
                             }
+                            input = ByteArray(1000)
                         }
                     } catch (e: Exception) {            // TODO: Limit types of exceptions
                         socket = Socket()               // Reset socket
@@ -273,7 +281,7 @@ object AnimationSenderFactory {
             try {
                 GlobalScope.launch {
                     withContext(Dispatchers.IO) {
-                        out?.writeObject(args) ?: Logger.warn("Output stream null")
+                        out?.write(args.json()) ?: Logger.warn("Output stream null")
                         Logger.debug(args)
                     }
                 }
