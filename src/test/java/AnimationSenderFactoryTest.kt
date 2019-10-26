@@ -313,6 +313,10 @@ class AnimationSenderFactoryTest {
         runBlocking { job.join() }
         assertTrue { testBoolean }
 
+        println(
+            tempOut.toString("utf-8")
+        )
+
         assertTrue {
             tempOut
                 .toString("utf-8")
@@ -346,6 +350,10 @@ class AnimationSenderFactoryTest {
             .start()
 
         delayBlocking(25000)
+
+        println(
+            tempOut.toString("utf-8")
+        )
 
         assertTrue {
             tempOut
