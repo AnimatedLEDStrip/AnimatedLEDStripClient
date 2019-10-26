@@ -316,7 +316,7 @@ class AnimationSenderFactoryTest {
         assertTrue {
             Regex(
                 "WARNING: Connection attempt 1: Error connecting to server at 0.0.0.0:$port: " +
-                        "java.net.ConnectException: Connection refused: .*\n"
+                        "java.net.ConnectException: Connection refused.*\n"
             ).matches(
                 tempOut
                     .toString("utf-8")
@@ -353,9 +353,9 @@ class AnimationSenderFactoryTest {
         assertTrue {
             Regex(
                 "WARNING: Connection attempt 1: Error connecting to server at 0.0.0.0:$port: " +
-                        "java.net.ConnectException: Connection refused: .*\n" +
+                        "java.net.ConnectException: Connection refused.*\n" +
                         "WARNING: Connection attempt 2: Error connecting to server at 0.0.0.0:$port: " +
-                        "java.net.ConnectException: Connection refused: .*\n" +
+                        "java.net.ConnectException: Connection refused.*\n" +
                         "ERROR:   Could not locate server at 0.0.0.0:$port after 2 tries\n"
             ).matches(
                 tempOut
