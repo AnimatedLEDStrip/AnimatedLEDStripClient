@@ -250,20 +250,20 @@ object AnimationSenderFactory {
             return withContext(Dispatchers.IO) {
                 try {
                     socket.connect(InetSocketAddress(ipAddress, port), 5000)
-                    Logger.info { "Connected to server at $ipAddress:$port" }
+                    Logger.info("Connected to server at $ipAddress:$port")
                     connected = true
                     connectAction?.invoke(ipAddress)
                     connectionTries = 0
                     ipAddress
                 } catch (e: SocketException) {
                     connectionTries++
-                    Logger.warn { "Connection attempt $connectionTries: Error connecting to server at $ipAddress:$port: $e" }
-                    delay(10000)
+                    Logger.warn("Connection attempt $connectionTries: Error connecting to server at $ipAddress:$port: $e")
                     if (connectionTries < connectAttemptLimit) {
+                        delay(10000)
                         socket = Socket()
                         connect()
                     } else {
-                        Logger.error { "Could not locate server at $ipAddress:$port after $connectionTries tries" }
+                        Logger.error("Could not locate server at $ipAddress:$port after $connectionTries tries")
                         connectionTries = 0
                         end()
                     }
@@ -286,7 +286,7 @@ object AnimationSenderFactory {
                     }
                 }
             } catch (e: Exception) {
-                Logger.error { "Error sending animation: $e" }
+                Logger.error("Error sending animation: $e")
             }
         }
     }
