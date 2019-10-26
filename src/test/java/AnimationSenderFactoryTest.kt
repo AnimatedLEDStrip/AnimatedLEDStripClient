@@ -27,15 +27,25 @@ import animatedledstrip.animationutils.Animation
 import animatedledstrip.animationutils.AnimationData
 import animatedledstrip.animationutils.animation
 import animatedledstrip.client.AnimationSenderFactory
+import animatedledstrip.client.send
 import animatedledstrip.utils.json
 import kotlinx.coroutines.*
-import org.junit.Ignore
 import org.junit.Test
+import org.pmw.tinylog.Configurator
+import org.pmw.tinylog.Level
+import java.io.ByteArrayOutputStream
+import java.io.PrintStream
 import java.net.InetAddress
 import java.net.ServerSocket
 import kotlin.test.assertTrue
 
 class AnimationSenderFactoryTest {
+
+    init {
+        Configurator.defaultConfig()
+            .level(Level.OFF)
+            .activate()
+    }
 
     @Test
     fun testDefaultSender() {
@@ -207,17 +217,66 @@ class AnimationSenderFactoryTest {
 
     @Test
     fun testMultipleStarts() {
-        val testSender = AnimationSenderFactory.create("0.0.0.0").start()
+        val stderr: PrintStream = System.err
+        val tempOut = ByteArrayOutputStream()
+        System.setErr(PrintStream(tempOut))
+
+        tempOut.reset()
+
+        Configurator.defaultConfig()
+            .formatPattern("{{level}:|min-size=8} {message}")
+            .level(Level.WARNING)
+            .activate()
+        val testSender = AnimationSenderFactory.create("0.0.0.0", 1107).start()
 
         testSender.start()
+        assertTrue {
+            tempOut
+                .toString("utf-8")
+                .replace("\r\n", "\n") ==
+                    "WARNING: Sender started already\n"
+        }
+
+        System.setErr(stderr)
+        Configurator.defaultConfig()
+            .level(Level.OFF)
+            .activate()
     }
 
     @Test
-    @Ignore
-    fun testAutoReconnect() {
-        AnimationSenderFactory.create("0.0.0.0", 0, 1).start()
+    fun testSendToNullOutput() {
+        val stderr: PrintStream = System.err
+        val tempOut = ByteArrayOutputStream()
+        System.setErr(PrintStream(tempOut))
 
-        runBlocking { delay(1) }
+        tempOut.reset()
+
+        Configurator.defaultConfig()
+            .formatPattern("{{level}:|min-size=8} {message}")
+            .level(Level.WARNING)
+            .activate()
+
+        val testAnimation = AnimationData()
+
+        val sender =
+            AnimationSenderFactory
+                .create("0.0.0.0", 0)
+
+        testAnimation.send(sender)
+
+        runBlocking { delay(2000) }
+
+        assertTrue {
+            tempOut
+                .toString("utf-8")
+                .replace("\r\n", "\n") ==
+                    "WARNING: Output stream null\n"
+        }
+
+        System.setErr(stderr)
+        Configurator.defaultConfig()
+            .level(Level.OFF)
+            .activate()
     }
 
 }

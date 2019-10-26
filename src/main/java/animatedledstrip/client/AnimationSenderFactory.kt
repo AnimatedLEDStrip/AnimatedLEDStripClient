@@ -56,6 +56,7 @@ object AnimationSenderFactory {
     fun create(ipAddress: String = "10.0.0.254", port: Int = 5, connectAttemptLimit: Int = 5) =
         AnimationSender(ipAddress, port, connectAttemptLimit)
 
+
     class AnimationSender(var ipAddress: String, val port: Int, val connectAttemptLimit: Int) {
         private var socket: Socket = Socket()
         private var out: OutputStream? = null
@@ -278,16 +279,14 @@ object AnimationSenderFactory {
          * @param args The animation
          */
         fun send(args: AnimationData) {
-            try {
-                GlobalScope.launch {
-                    withContext(Dispatchers.IO) {
-                        out?.write(args.json()) ?: Logger.warn("Output stream null")
-                        Logger.debug(args)
-                    }
+            GlobalScope.launch {
+                withContext(Dispatchers.IO) {
+                    out?.write(args.json()) ?: Logger.warn("Output stream null")
+                    Logger.debug(args)
                 }
-            } catch (e: Exception) {
-                Logger.error("Error sending animation: $e")
             }
         }
     }
+
+
 }
