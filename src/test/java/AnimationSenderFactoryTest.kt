@@ -28,6 +28,7 @@ import animatedledstrip.animationutils.AnimationData
 import animatedledstrip.animationutils.animation
 import animatedledstrip.client.AnimationSenderFactory
 import animatedledstrip.client.send
+import animatedledstrip.utils.delayBlocking
 import animatedledstrip.utils.json
 import kotlinx.coroutines.*
 import org.junit.Test
@@ -197,7 +198,7 @@ class AnimationSenderFactoryTest {
             }
         }
 
-        runBlocking { delay(2000) }
+        delayBlocking(2000)
 
         AnimationSenderFactory.create("0.0.0.0", port)
             .setOnNewAnimationCallback {
@@ -208,7 +209,7 @@ class AnimationSenderFactoryTest {
             }
             .start()
 
-        runBlocking { delay(2000) }
+        delayBlocking(2000)
 
         assertTrue { testBoolean1 }
         assertTrue { testBoolean2 }
@@ -217,6 +218,7 @@ class AnimationSenderFactoryTest {
 
     @Test
     fun testMultipleStarts() {
+        val port = 1107
         val stderr: PrintStream = System.err
         val tempOut = ByteArrayOutputStream()
         System.setErr(PrintStream(tempOut))
@@ -227,7 +229,7 @@ class AnimationSenderFactoryTest {
             .formatPattern("{{level}:|min-size=8} {message}")
             .level(Level.WARNING)
             .activate()
-        val testSender = AnimationSenderFactory.create("0.0.0.0", 1107).start()
+        val testSender = AnimationSenderFactory.create("0.0.0.0", port).start()
 
         testSender.start()
         assertTrue {
@@ -264,13 +266,96 @@ class AnimationSenderFactoryTest {
 
         testAnimation.send(sender)
 
-        runBlocking { delay(2000) }
+        delayBlocking(2000)
 
         assertTrue {
             tempOut
                 .toString("utf-8")
                 .replace("\r\n", "\n") ==
                     "WARNING: Output stream null\n"
+        }
+
+        System.setErr(stderr)
+        Configurator.defaultConfig()
+            .level(Level.OFF)
+            .activate()
+    }
+
+    @Test
+    fun testConnectRetry() {
+        val port = 1108
+        var testBoolean = false
+
+        val stderr: PrintStream = System.err
+        val tempOut = ByteArrayOutputStream()
+        System.setErr(PrintStream(tempOut))
+
+        tempOut.reset()
+
+        Configurator.defaultConfig()
+            .formatPattern("{{level}:|min-size=8} {message}")
+            .level(Level.WARNING)
+            .activate()
+
+        val job = GlobalScope.launch {
+            withContext(Dispatchers.IO) {
+                delay(5000)
+                ServerSocket(port, 0, InetAddress.getByName("0.0.0.0")).accept()
+            }
+        }
+
+        AnimationSenderFactory.create("0.0.0.0", port, connectAttemptLimit = 2)
+            .setOnConnectCallback {
+                testBoolean = true
+            }
+            .start()
+
+        runBlocking { job.join() }
+        assertTrue { testBoolean }
+
+        assertTrue {
+            tempOut
+                .toString("utf-8")
+                .replace("\r\n", "\n") ==
+                    "WARNING: Connection attempt 1: Error connecting to server at 0.0.0.0:$port: java.net.ConnectException: " +
+                    "Connection refused: connect\n"
+        }
+
+        System.setErr(stderr)
+        Configurator.defaultConfig()
+            .level(Level.OFF)
+            .activate()
+    }
+
+    @Test
+    fun testFailedConnectRetry() {
+        val port = 1109
+
+        val stderr: PrintStream = System.err
+        val tempOut = ByteArrayOutputStream()
+        System.setErr(PrintStream(tempOut))
+
+        tempOut.reset()
+
+        Configurator.defaultConfig()
+            .formatPattern("{{level}:|min-size=8} {message}")
+            .level(Level.WARNING)
+            .activate()
+
+        AnimationSenderFactory.create("0.0.0.0", port, connectAttemptLimit = 2)
+            .start()
+
+        delayBlocking(25000)
+
+        assertTrue {
+            tempOut
+                .toString("utf-8")
+                .replace("\r\n", "\n") ==
+                    "WARNING: Connection attempt 1: Error connecting to server at 0.0.0.0:$port: java.net.ConnectException: " +
+                    "Connection refused: connect\n" +
+                    "WARNING: Connection attempt 2: Error connecting to server at 0.0.0.0:$port: java.net.ConnectException: " +
+                    "Connection refused: connect\n" +
+                    "ERROR:   Could not locate server at 0.0.0.0:$port after 2 tries\n"
         }
 
         System.setErr(stderr)
