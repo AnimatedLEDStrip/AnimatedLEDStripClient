@@ -27,17 +27,26 @@ import animatedledstrip.animationutils.Animation
 import animatedledstrip.animationutils.AnimationData
 import animatedledstrip.animationutils.animation
 import animatedledstrip.client.AnimationSenderFactory
+import animatedledstrip.client.send
+import animatedledstrip.utils.delayBlocking
+import animatedledstrip.utils.json
 import kotlinx.coroutines.*
-import org.junit.Ignore
 import org.junit.Test
-import java.io.BufferedInputStream
-import java.io.ObjectInputStream
-import java.io.ObjectOutputStream
+import org.pmw.tinylog.Configurator
+import org.pmw.tinylog.Level
+import java.io.ByteArrayOutputStream
+import java.io.PrintStream
 import java.net.InetAddress
 import java.net.ServerSocket
 import kotlin.test.assertTrue
 
 class AnimationSenderFactoryTest {
+
+    init {
+        Configurator.defaultConfig()
+            .level(Level.OFF)
+            .activate()
+    }
 
     @Test
     fun testDefaultSender() {
@@ -54,8 +63,7 @@ class AnimationSenderFactoryTest {
 
         val job = GlobalScope.launch {
             withContext(Dispatchers.IO) {
-                val socket = ServerSocket(port, 0, InetAddress.getByName("0.0.0.0")).accept()
-                ObjectOutputStream(socket.getOutputStream())
+                ServerSocket(port, 0, InetAddress.getByName("0.0.0.0")).accept()
             }
         }
 
@@ -73,9 +81,7 @@ class AnimationSenderFactoryTest {
 
         GlobalScope.launch {
             withContext(Dispatchers.IO) {
-                val socket = ServerSocket(port, 0, InetAddress.getByName("0.0.0.0")).accept()
-                ObjectInputStream(BufferedInputStream(socket!!.getInputStream()))
-                ObjectOutputStream(socket.getOutputStream())
+                ServerSocket(port, 0, InetAddress.getByName("0.0.0.0")).accept()
             }
         }
 
@@ -100,18 +106,15 @@ class AnimationSenderFactoryTest {
         val job = GlobalScope.launch {
             withContext(Dispatchers.IO) {
                 val socket = ServerSocket(port, 0, InetAddress.getByName("0.0.0.0")).accept()
-                ObjectInputStream(BufferedInputStream(socket!!.getInputStream()))
-                ObjectOutputStream(socket.getOutputStream())
-
-//                    socIn.readObject()
-
-                socket.shutdownOutput()
+                delay(3000)
+                socket.close()
             }
         }
 
-        runBlocking { delay(5000) }
+        runBlocking { delay(2000) }
 
-        AnimationSenderFactory.create("0.0.0.0", port)
+        AnimationSenderFactory
+            .create("0.0.0.0", port)
             .setAsDefaultSender()
             .setOnDisconnectCallback {
                 testBoolean = true
@@ -132,9 +135,8 @@ class AnimationSenderFactoryTest {
         GlobalScope.launch {
             withContext(Dispatchers.IO) {
                 val socket = ServerSocket(port, 0, InetAddress.getByName("0.0.0.0")).accept()
-                ObjectInputStream(BufferedInputStream(socket!!.getInputStream()))
-                val out = ObjectOutputStream(socket.getOutputStream())
-                out.writeObject(AnimationData().animation(Animation.COLOR))
+                val out = socket.getOutputStream()
+                out.write(AnimationData().animation(Animation.COLOR).json())
             }
         }
 
@@ -160,9 +162,8 @@ class AnimationSenderFactoryTest {
         GlobalScope.launch {
             withContext(Dispatchers.IO) {
                 val socket = ServerSocket(port, 0, InetAddress.getByName("0.0.0.0")).accept()
-                ObjectInputStream(BufferedInputStream(socket!!.getInputStream()))
-                val out = ObjectOutputStream(socket.getOutputStream())
-                out.writeObject(AnimationData().animation(Animation.COLOR))
+                val out = socket.getOutputStream()
+                out.write(AnimationData().animation(Animation.COLOR).json())
             }
         }
 
@@ -192,13 +193,12 @@ class AnimationSenderFactoryTest {
         GlobalScope.launch {
             withContext(Dispatchers.IO) {
                 val socket = ServerSocket(port, 0, InetAddress.getByName("0.0.0.0")).accept()
-                ObjectInputStream(BufferedInputStream(socket!!.getInputStream()))
-                val out = ObjectOutputStream(socket.getOutputStream())
-                out.writeObject(AnimationData().animation(Animation.ENDANIMATION))
+                val out = socket.getOutputStream()
+                out.write(AnimationData().animation(Animation.ENDANIMATION).json())
             }
         }
 
-        runBlocking { delay(2000) }
+        delayBlocking(2000)
 
         AnimationSenderFactory.create("0.0.0.0", port)
             .setOnNewAnimationCallback {
@@ -209,7 +209,7 @@ class AnimationSenderFactoryTest {
             }
             .start()
 
-        runBlocking { delay(2000) }
+        delayBlocking(2000)
 
         assertTrue { testBoolean1 }
         assertTrue { testBoolean2 }
@@ -218,17 +218,155 @@ class AnimationSenderFactoryTest {
 
     @Test
     fun testMultipleStarts() {
-        val testSender = AnimationSenderFactory.create("0.0.0.0").start()
+        val port = 1107
+        val stderr: PrintStream = System.err
+        val tempOut = ByteArrayOutputStream()
+        System.setErr(PrintStream(tempOut))
 
+        tempOut.reset()
+        Configurator.defaultConfig()
+            .formatPattern("{{level}:|min-size=8} {message}")
+            .level(Level.WARNING)
+            .activate()
+
+        val testSender = AnimationSenderFactory.create("0.0.0.0", port).start()
         testSender.start()
+        assertTrue {
+            tempOut
+                .toString("utf-8")
+                .replace("\r\n", "\n") ==
+                    "WARNING: Sender started already\n"
+        }
+
+        System.setErr(stderr)
+        Configurator.defaultConfig()
+            .level(Level.OFF)
+            .activate()
     }
 
     @Test
-    @Ignore
-    fun testAutoReconnect() {
-        AnimationSenderFactory.create("0.0.0.0", 0, 1).start()
+    fun testSendToNullOutput() {
+        val stderr: PrintStream = System.err
+        val tempOut = ByteArrayOutputStream()
+        System.setErr(PrintStream(tempOut))
 
-        runBlocking { delay(1) }
+        tempOut.reset()
+
+        Configurator.defaultConfig()
+            .formatPattern("{{level}:|min-size=8} {message}")
+            .level(Level.WARNING)
+            .activate()
+
+        val testAnimation = AnimationData()
+
+        val sender =
+            AnimationSenderFactory
+                .create("0.0.0.0", 0)
+
+        testAnimation.send(sender)
+
+        delayBlocking(2000)
+
+        assertTrue {
+            tempOut
+                .toString("utf-8")
+                .replace("\r\n", "\n") ==
+                    "WARNING: Output stream null\n"
+        }
+
+        System.setErr(stderr)
+        Configurator.defaultConfig()
+            .level(Level.OFF)
+            .activate()
+    }
+
+    @Test
+    fun testConnectRetry() {
+        val port = 1108
+        var testBoolean = false
+
+        val stderr: PrintStream = System.err
+        val tempOut = ByteArrayOutputStream()
+        System.setErr(PrintStream(tempOut))
+
+        tempOut.reset()
+
+        Configurator.defaultConfig()
+            .formatPattern("{{level}:|min-size=8} {message}")
+            .level(Level.WARNING)
+            .activate()
+
+        val job = GlobalScope.launch {
+            withContext(Dispatchers.IO) {
+                delay(5000)
+                ServerSocket(port, 0, InetAddress.getByName("0.0.0.0")).accept()
+            }
+        }
+
+        AnimationSenderFactory.create("0.0.0.0", port, connectAttemptLimit = 2)
+            .setOnConnectCallback {
+                testBoolean = true
+            }
+            .start()
+
+        runBlocking { job.join() }
+        assertTrue { testBoolean }
+
+        assertTrue {
+            Regex(
+                "WARNING: Connection attempt 1: Error connecting to server at 0.0.0.0:$port: " +
+                        "java.net.ConnectException: Connection refused.*\n"
+            ).matches(
+                tempOut
+                    .toString("utf-8")
+                    .replace("\r\n", "\n")
+            )
+        }
+
+        System.setErr(stderr)
+        Configurator.defaultConfig()
+            .level(Level.OFF)
+            .activate()
+    }
+
+    @Test
+    fun testFailedConnectRetry() {
+        val port = 1109
+
+        val stderr: PrintStream = System.err
+        val tempOut = ByteArrayOutputStream()
+        System.setErr(PrintStream(tempOut))
+
+        tempOut.reset()
+
+        Configurator.defaultConfig()
+            .formatPattern("{{level}:|min-size=8} {message}")
+            .level(Level.WARNING)
+            .activate()
+
+        AnimationSenderFactory.create("0.0.0.0", port, connectAttemptLimit = 2)
+            .start()
+
+        delayBlocking(25000)
+
+        assertTrue {
+            Regex(
+                "WARNING: Connection attempt 1: Error connecting to server at 0.0.0.0:$port: " +
+                        "java.net.ConnectException: Connection refused.*\n" +
+                        "WARNING: Connection attempt 2: Error connecting to server at 0.0.0.0:$port: " +
+                        "java.net.ConnectException: Connection refused.*\n" +
+                        "ERROR:   Could not locate server at 0.0.0.0:$port after 2 tries\n"
+            ).matches(
+                tempOut
+                    .toString("utf-8")
+                    .replace("\r\n", "\n")
+            )
+        }
+
+        System.setErr(stderr)
+        Configurator.defaultConfig()
+            .level(Level.OFF)
+            .activate()
     }
 
 }

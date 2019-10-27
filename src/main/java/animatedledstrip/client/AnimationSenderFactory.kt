@@ -26,11 +26,13 @@ package animatedledstrip.client
 import animatedledstrip.animationutils.Animation
 import animatedledstrip.animationutils.AnimationData
 import animatedledstrip.leds.StripInfo
+import animatedledstrip.utils.getDataTypePrefix
+import animatedledstrip.utils.json
+import animatedledstrip.utils.jsonToAnimationData
+import animatedledstrip.utils.jsonToStripInfo
 import kotlinx.coroutines.*
 import org.pmw.tinylog.Logger
-import java.io.BufferedInputStream
-import java.io.ObjectInputStream
-import java.io.ObjectOutputStream
+import java.io.OutputStream
 import java.net.InetSocketAddress
 import java.net.Socket
 import java.net.SocketException
@@ -54,9 +56,10 @@ object AnimationSenderFactory {
     fun create(ipAddress: String = "10.0.0.254", port: Int = 5, connectAttemptLimit: Int = 5) =
         AnimationSender(ipAddress, port, connectAttemptLimit)
 
+
     class AnimationSender(var ipAddress: String, val port: Int, val connectAttemptLimit: Int) {
         private var socket: Socket = Socket()
-        private var out: ObjectOutputStream? = null
+        private var out: OutputStream? = null
         private var connectionTries = 0
 
         private var stopSocket = false
@@ -78,6 +81,131 @@ object AnimationSenderFactory {
         val runningAnimations = mutableMapOf<String, AnimationData>()
 
         var stripInfo: StripInfo? = null
+
+        /**
+         * Start this connection
+         *
+         * @return this
+         */
+        fun start(): AnimationSender {
+            if (!started) {
+                stopSocket = false
+                loopThread = GlobalScope.launch(senderCoroutineScope) {
+                    loop()
+                }
+                started = true
+            } else Logger.warn("Sender started already")
+            return this
+        }
+
+        /**
+         * Stop this connection
+         */
+        fun end() {
+            loopThread?.cancel()
+            started = false
+            stopSocket = true
+            socket.close()
+            socket = Socket()
+            assert(!connected)
+        }
+
+        /**
+         * Attempt to create a connection to the server
+         */
+        private suspend fun connect(): String {
+            return withContext(Dispatchers.IO) {
+                try {
+                    socket.connect(InetSocketAddress(ipAddress, port), 5000)
+                    Logger.info("Connected to server at $ipAddress:$port")
+                    connected = true
+                    connectAction?.invoke(ipAddress)
+                    connectionTries = 0
+                    ipAddress
+                } catch (e: SocketException) {
+                    connectionTries++
+                    Logger.warn("Connection attempt $connectionTries: Error connecting to server at $ipAddress:$port: $e")
+                    if (connectionTries < connectAttemptLimit) {
+                        delay(10000)
+                        socket = Socket()
+                        connect()
+                    } else {
+                        Logger.error("Could not locate server at $ipAddress:$port after $connectionTries tries")
+                        connectionTries = 0
+                        end()
+                    }
+                    ""
+                }
+            }
+        }
+
+        private suspend fun loop() {
+            while (!stopSocket) {
+                val connectedIp = connect()
+                withContext(Dispatchers.IO) {
+                    try {
+                        out = socket.getOutputStream()
+                        val socIn = socket.getInputStream()
+                        var input = ByteArray(1000)
+                        read@ while (true) {
+                            checkNotNull(out)
+                            val count = socIn.read(input) // Wait for input
+                            if (count == -1) throw SocketException("Connection closed")
+
+                            val data: AnimationData
+                            when (input.getDataTypePrefix()) {
+                                "DATA" -> {
+                                    data = input.jsonToAnimationData(count)
+                                }
+                                "INFO" -> {
+                                    stripInfo = input.jsonToStripInfo(count)
+                                    continue@read
+                                }
+                                else -> continue@read
+                            }
+                            Logger.debug("Received: $data")
+                            receiveAction?.invoke(data) ?: Logger.debug("No receive action defined")
+                            when (data.animation) {    // Run new or end animation action
+                                Animation.ENDANIMATION -> {
+                                    endAnimationAction?.invoke(data)
+                                        ?: Logger.debug("No end animation action defined")
+                                    runningAnimations.remove(data.id)
+                                }
+                                else -> {
+                                    newAnimationAction?.invoke(data)
+                                        ?: Logger.debug("No new animation action defined")
+                                    runningAnimations[data.id] = data
+                                }
+                            }
+                            input = ByteArray(1000)
+                        }
+                    } catch (e: SocketException) {            // TODO: Limit types of exceptions
+                        socket = Socket()               // Reset socket
+                        Logger.error("Exception occurred: $ipAddress:$port: $e")
+                        connected = false
+                        disconnectAction?.invoke(connectedIp)      // Run disconnect action
+                        runningAnimations.clear()
+                    }
+                }
+            }
+        }
+
+        /**
+         * Send an animation via this connection
+         *
+         * @param args The animation
+         */
+        fun send(args: AnimationData) {
+            GlobalScope.launch {
+                withContext(Dispatchers.IO) {
+                    out?.write(args.json()) ?: Logger.warn("Output stream null")
+                    Logger.debug(args)
+                }
+            }
+        }
+
+
+        /* Set methods for callbacks and IP */
 
         /**
          * Specify an action to perform when data is received from the server
@@ -162,124 +290,6 @@ object AnimationSenderFactory {
             return this
         }
 
-        /**
-         * Start this connection
-         *
-         * @return this
-         */
-        fun start(): AnimationSender {
-            if (!started) {
-                stopSocket = false
-                loopThread = GlobalScope.launch(senderCoroutineScope) {
-                    loop()
-                }
-                started = true
-            } else Logger.warn("Sender started already")
-            return this
-        }
-
-        /**
-         * Stop this connection
-         */
-        fun end() {
-            loopThread?.cancel()
-            started = false
-            stopSocket = true
-            socket.close()
-            socket = Socket()
-            assert(!connected)
-        }
-
-        private suspend fun loop() {
-            while (!stopSocket) {
-                val connectedIp = connect()
-                withContext(Dispatchers.IO) {
-                    try {
-                        out = ObjectOutputStream(socket.getOutputStream())
-                        val socIn = ObjectInputStream(BufferedInputStream(socket.getInputStream()))
-                        var input: Any?
-                        read@ while (true) {
-                            checkNotNull(out)
-                            input = socIn.readObject() // Wait for input
-                            when (input) {
-                                is AnimationData -> {}
-                                is StripInfo -> {
-                                    stripInfo = input
-                                    continue@read
-                                }
-                                else -> continue@read
-                            }
-                            Logger.info("Received: $input")
-                            receiveAction?.invoke(input) ?: Logger.debug("No receive action defined")
-                            when (input.animation) {    // Run new or end animation action
-                                Animation.ENDANIMATION -> {
-                                    endAnimationAction?.invoke(input)
-                                        ?: Logger.debug("No end animation action defined")
-                                    runningAnimations.remove(input.id)
-                                }
-                                else -> {
-                                    newAnimationAction?.invoke(input)
-                                        ?: Logger.debug("No new animation action defined")
-                                    runningAnimations[input.id] = input
-                                }
-                            }
-                        }
-                    } catch (e: Exception) {            // TODO: Limit types of exceptions
-                        socket = Socket()               // Reset socket
-                        Logger.error("Exception $e occurred: $ipAddress:$port")
-                        connected = false
-                        disconnectAction?.invoke(connectedIp)      // Run disconnect action
-                        runningAnimations.clear()
-                    }
-                }
-            }
-        }
-
-        /**
-         * Attempt to create a connection to the server
-         */
-        private suspend fun connect(): String {
-            return withContext(Dispatchers.IO) {
-                try {
-                    socket.connect(InetSocketAddress(ipAddress, port), 5000)
-                    Logger.info { "Connected to server at $ipAddress port $port" }
-                    connected = true
-                    connectAction?.invoke(ipAddress)
-                    connectionTries = 0
-                    ipAddress
-                } catch (e: SocketException) {
-                    connectionTries++
-                    Logger.warn { "Connection attempt $connectionTries: Server not found at $ipAddress: $e" }
-                    delay(10000)
-                    if (connectionTries < connectAttemptLimit) {
-                        socket = Socket()
-                        connect()
-                    } else {
-                        Logger.error { "Could not locate server at $ipAddress after $connectionTries tries" }
-                        connectionTries = 0
-                        end()
-                    }
-                    ""
-                }
-            }
-        }
-
-        /**
-         * Send an animation via this connection
-         *
-         * @param args The animation
-         */
-        fun send(args: AnimationData) {
-            try {
-                GlobalScope.launch {
-                    withContext(Dispatchers.IO) {
-                        out?.writeObject(args) ?: Logger.warn("Output stream null")
-                        Logger.debug(args)
-                    }
-                }
-            } catch (e: Exception) {
-                Logger.error { "Error sending animation: $e" }
-            }
-        }
     }
+
 }
