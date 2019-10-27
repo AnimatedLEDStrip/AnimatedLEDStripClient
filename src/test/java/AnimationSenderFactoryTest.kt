@@ -224,13 +224,12 @@ class AnimationSenderFactoryTest {
         System.setErr(PrintStream(tempOut))
 
         tempOut.reset()
-
         Configurator.defaultConfig()
             .formatPattern("{{level}:|min-size=8} {message}")
             .level(Level.WARNING)
             .activate()
-        val testSender = AnimationSenderFactory.create("0.0.0.0", port).start()
 
+        val testSender = AnimationSenderFactory.create("0.0.0.0", port).start()
         testSender.start()
         assertTrue {
             tempOut
