@@ -55,3 +55,7 @@ matrix:
                 script: mvn deploy --settings .maven.xml -DskipTests=true -B
                 on:
                   branch: master
+
+    - language: c++
+      before_script:
+        - cd client-c++
