@@ -63,6 +63,10 @@ matrix:
       jobs:
         include:
           - stage: test
-            script: cmake .
-            install: skip
+            script:
+              - mkdir -p build/run
+              - cd build/run
+              - cmake ../..
+              - make install
+              - cd ../..
 
