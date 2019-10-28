@@ -7,6 +7,7 @@
 #define ANIMATEDLEDSTRIPCLIENT_ANIMATIONDATA_H
 
 #include <string>
+#include "ColorContainer.h"
 
 #define MAX_LEN 10000
 
@@ -35,54 +36,7 @@ enum Animation {
     WIPE
 };
 
-const char *animation_string(Animation a) {
-    switch (a) {
-        case COLOR:
-            return "COLOR";
-        case CUSTOMANIMATION:
-            return "CUSTOMANIMATION";
-        case CUSTOMREPETITIVEANIMATION:
-            return "CUSTOMREPETITIVEANIMATION";
-        case ALTERNATE:
-            return "ALTERNATE";
-        case BOUNCE:
-            return "BOUNCE";
-        case BOUNCETOCOLOR:
-            return "BOUNCETOCOLOR";
-        case CATTOY:
-            return "CATTOY";
-        case METEOR:
-            return "METEOR";
-        case MULTIPIXELRUN:
-            return "MULTIPIXELRUN";
-        case MULTIPIXELRUNTOCOLOR:
-            return "MULTIPIXELRUNTOCOLOR";
-        case RIPPLE:
-            return "RIPPLE";
-        case PIXELMARATHON:
-            return "PIXELMARATHON";
-        case PIXELRUN:
-            return "PIXELRUN";
-        case SMOOTHCHASE:
-            return "SMOOTHCHASE";
-        case SMOOTHFADE:
-            return "SMOOTHFADE";
-        case SPARKLE:
-            return "SPARKLE";
-        case SPARKLEFADE:
-            return "SPARKLEFADE";
-        case SPARKLETOCOLOR:
-            return "SPARKLETOCOLOR";
-        case SPLAT:
-            return "SPLAT";
-        case STACK:
-            return "STACK";
-        case STACKOVERFLOW:
-            return "STACKOVERFLOW";
-        case WIPE:
-            return "WIPE";
-    }
-}
+const char *animation_string(Animation a);
 
 enum Continuous {
     CONTINUOUS,
@@ -90,35 +44,19 @@ enum Continuous {
     DEFAULT
 };
 
-const char *continuous_string(enum Continuous c) {
-    switch (c) {
-        case CONTINUOUS:
-            return "true";
-        case NONCONTINUOUS:
-            return "false";
-        case DEFAULT:
-            return "null";
-    }
-}
+const char *continuous_string(enum Continuous c);
 
 enum Direction {
     FORWARD,
     BACKWARD
 };
 
-const char *direction_string(enum Direction d) {
-    switch (d) {
-        case FORWARD:
-            return "FORWARD";
-        case BACKWARD:
-            return "BACKWARD";
-    }
-}
+const char *direction_string(enum Direction d);
 
 struct AnimationData {
 
     Animation animation = COLOR;
-    // colors
+    std::vector<ColorContainer> colors;
     int center = -1;
     Continuous continuous = DEFAULT;
     long delay = -1;
@@ -130,6 +68,32 @@ struct AnimationData {
     int spacing = -1;
     int start_pixel = 0;
 
+    AnimationData *setAnimation(enum Animation a);
+
+    AnimationData *addColor(struct ColorContainer &c);
+
+    AnimationData *setCenter(int c);
+
+    AnimationData *setContinuous(enum Continuous c);
+
+    AnimationData *setDelay(long d);
+
+    AnimationData *setDelayMod(double d);
+
+    AnimationData *setDirection(enum Direction d);
+
+    AnimationData *setDistance(int d);
+
+    AnimationData *setEndPixel(int p);
+
+    AnimationData *setId(std::string &i);
+
+    AnimationData *setId(char *i);
+
+    AnimationData *setSpacing(int s);
+
+    AnimationData *setStartPixel(int p);
+
 
     int json(char **buff) {
         std::string data = "DATA:{";
@@ -137,7 +101,19 @@ struct AnimationData {
         data.append(R"("animation":")");
         data.append(animation_string(animation));
 
-        data.append(R"(","center":")");
+        data.append(R"(","colors":[)");
+
+        char *cBuff = new char[MAX_LEN];
+        for (ColorContainer c : colors) {
+            cBuff[0] = 0;
+            c.json(&cBuff);
+            data.append(cBuff);
+            data.append(",");
+        }
+
+        data.pop_back();
+
+        data.append(R"(],"center":")");
         data.append(std::to_string(center));
 
         data.append(R"(","continuous":")");
@@ -169,8 +145,7 @@ struct AnimationData {
 
         data.append(R"("})");
 
-        strcpy(*buff, data.c_str());
-        printf("%s", *buff);
+        std::strcpy(*buff, data.c_str());
         return data.size();
     }
 };

@@ -5,3 +5,5 @@ set(AnimatedLEDStripClient_VERSION_MINOR 6)
 
 set(CMAKE_C_COMPILER gcc)
 set(CMAKE_CXX_COMPILER g++)
+
+add_library(animation_data AnimationData.cpp)
