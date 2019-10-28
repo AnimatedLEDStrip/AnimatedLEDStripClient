@@ -52,4 +52,6 @@ Because we use the dokka plugin to generate our documentation, we must use Java 
 > https://www.oracle.com/technetwork/java/javase/downloads/java-archive-javase9-3934878.html
 
 ## C++ (WIP)
-Currently only supports sending animations to the server (but without colors).
+Currently only supports sending animations to the server.
+See the [wiki](https://github.com/AnimatedLEDStrip/AnimatedLEDStripClient/wiki) for details.
+
