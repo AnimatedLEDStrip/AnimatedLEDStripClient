@@ -17,21 +17,20 @@
 
 class AnimationSender {
 
-    char *host_name;
+    std::string host_name;
     int socket_desc;    // socket descriptor
     int port_num;
     struct sockaddr_in sa;
 
 public:
-    AnimationSender(char *host, int port) {
+    AnimationSender(std::string host, int port) {
         host_name = host;
         port_num = port;
         if ((socket_desc = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
             perror("socket()");
         }
-        printf("%s %d", host, port);
         struct hostent *hp;
-        if ((hp = gethostbyname(host)) == nullptr) {
+        if ((hp = gethostbyname(host.c_str())) == nullptr) {
             perror("gethostbyname()");
         }
         memset((char *) &sa, '\0', sizeof(sa));
@@ -40,19 +39,34 @@ public:
         sa.sin_port = htons(port);
     }
 
+    int start() {
+        if (connect() < 0) {
+            perror("Could not connect");
+            return -1;
+        }
+        return 0;
+    }
+
+    int end() {
+        if (close(socket_desc)<0) {
+            perror("Could not close socket");
+            return -1;
+        }
+        return 0;
+    }
+
     int connect() {
         if (::connect(socket_desc, (struct sockaddr *) &sa, sizeof(sa)) < 0) {
             perror("connect()");
             return -1;
         }
-        printf("Connected");
+        printf("Connected\n");
         return 0;
     }
 
-    int sendAnimation(struct AnimationData d) {
+    int sendAnimation(struct AnimationData &d) {
         char *buff = new char[MAX_LEN];
         int size = d.json(&buff);
-        printf("%s", buff);
         int ret;
         if ((ret = write(socket_desc, buff, size)) < 0)
             printf("error %d", ret);

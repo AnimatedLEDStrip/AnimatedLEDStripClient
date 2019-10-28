@@ -110,40 +110,40 @@ struct AnimationData {
             data.append(cBuff);
             data.append(",");
         }
+        if (!colors.empty())
+            data.pop_back();
 
-        data.pop_back();
-
-        data.append(R"(],"center":")");
+        data.append(R"(],"center":)");
         data.append(std::to_string(center));
 
-        data.append(R"(","continuous":")");
+        data.append(R"(,"continuous":)");
         data.append(continuous_string(continuous));
 
-        data.append(R"(","delay":")");
+        data.append(R"(,"delay":)");
         data.append(std::to_string(delay));
 
-        data.append(R"(","delayMod":")");
+        data.append(R"(,"delayMod":)");
         data.append(std::to_string(delay_mod));
 
-        data.append(R"(","direction":")");
+        data.append(R"(,"direction":")");
         data.append(direction_string(direction));
 
-        data.append(R"(","distance":")");
+        data.append(R"(","distance":)");
         data.append(std::to_string(distance));
 
-        data.append(R"(","endPixel":")");
+        data.append(R"(,"endPixel":)");
         data.append(std::to_string(end_pixel));
 
-        data.append(R"(","id":")");
+        data.append(R"(,"id":")");
         data.append(id);
 
-        data.append(R"(","spacing":")");
+        data.append(R"(","spacing":)");
         data.append(std::to_string(spacing));
 
-        data.append(R"(","startPixel":")");
+        data.append(R"(,"startPixel":)");
         data.append(std::to_string(start_pixel));
 
-        data.append(R"("})");
+        data.append("}");
 
         std::strcpy(*buff, data.c_str());
         return data.size();

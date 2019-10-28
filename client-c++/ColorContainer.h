@@ -26,7 +26,8 @@ struct ColorContainer {
             data.append(std::to_string(c));
             data.append(",");
         }
-        data.pop_back();
+        if (!colors.empty())
+            data.pop_back();
         data.append("]}");
 
         strcpy(*buff, data.c_str());
