@@ -1,5 +1,5 @@
-from Animation import *
-from Direction import *
+from client.Animation import *
+from client.Direction import *
 
 
 class AnimationData(object):
