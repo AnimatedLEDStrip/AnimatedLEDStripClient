@@ -60,13 +60,11 @@ matrix:
       before_script:
         - cd client-c++
 
-      jobs:
-        include:
-          - stage: test
-            script:
-              - mkdir -p build/run
-              - cd build/run
-              - cmake ../..
-              - make install
-              - cd ../..
+
+      script:
+        - mkdir -p build/run
+        - cd build/run
+        - cmake ../..
+        - make install
+        - cd ../..
 
