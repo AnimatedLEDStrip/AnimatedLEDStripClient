@@ -1,6 +1,6 @@
 /out
 /target
-/.idea
+.idea
 *.xml
 *.iml
 !pom.xml

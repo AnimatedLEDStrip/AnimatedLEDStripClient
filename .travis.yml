@@ -59,3 +59,10 @@ matrix:
     - language: c++
       before_script:
         - cd client-c++
+
+      jobs:
+        include:
+          - stage: test
+            script: cmake .
+            install: skip
+
