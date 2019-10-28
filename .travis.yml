@@ -67,6 +67,7 @@ matrix:
         - cmake ../..
 
     - language: python
+      before_script: cd client-python3
       python: 3.7
       install: pip install tox tox-travis
       script: tox
