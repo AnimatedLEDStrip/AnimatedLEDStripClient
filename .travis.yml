@@ -65,6 +65,4 @@ matrix:
         - mkdir -p build/run
         - cd build/run
         - cmake ../..
-        - make install
-        - cd ../..
 
