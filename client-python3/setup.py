@@ -7,5 +7,4 @@ setup(name='animatedledstrip-client',
       author='Max Narvaez',
       author_email='mnmax.narvaez3@gmail.com',
       description='Helper library for connecting to an AnimatedLEDStripServer to run animations on a LED strip',
-      long_description=open('../README.md').read(),
       packages=find_packages())
