@@ -1,26 +1,29 @@
-[![KDoc](https://img.shields.io/badge/KDoc-read-green.svg)](https://animatedledstrip.github.io/AnimatedLEDStripClient/animatedledstrip-client/index.html)
 [![Build Status](https://travis-ci.com/AnimatedLEDStrip/AnimatedLEDStripClient.svg?branch=master)](https://travis-ci.com/AnimatedLEDStrip/AnimatedLEDStripClient)
+
+Kotlin/Java:
+[![KDoc](https://img.shields.io/badge/KDoc-read-green.svg)](https://animatedledstrip.github.io/AnimatedLEDStripClient/animatedledstrip-client/index.html)
 [![codecov](https://codecov.io/gh/AnimatedLEDStrip/AnimatedLEDStripClient/branch/master/graph/badge.svg)](https://codecov.io/gh/AnimatedLEDStrip/AnimatedLEDStripClient)
 
 # AnimatedLEDStripClient
 Helper library for connecting to an [AnimatedLEDStripServer](https://github.com/AnimatedLEDStrip/AnimatedLEDStripServer)
+Supports Kotlin, Java and C++ clients.
 
-## Uses Java 9
-Because we use the dokka plugin to generate our documentation, we must use Java <=9
-> https://www.oracle.com/technetwork/java/javase/downloads/java-archive-javase9-3934878.html
+## Kotlin/Java
+Supports sending animations to the server as well as receiving currently running animations from the server.
+See the [wiki](https://github.com/AnimatedLEDStrip/AnimatedLEDStripClient/wiki) for details.
 
-## Maven Coordinates/Dependency
+### Maven Coordinates/Dependency
 Use the following dependency to use this library in your project
 > ```
 > <dependency>
 >   <groupId>io.github.animatedledstrip</groupId>
 >   <artifactId>animatedledstrip-client</artifactId>
->   <version>0.4</version>
+>   <version>0.5</version>
 > </dependency>
 > ```
 
 
-## Snapshots
+### Snapshots
 Development versions of the AnimatedLEDStripClient library are available from the Sonatype snapshot repository:
 
 > ```
@@ -38,6 +41,13 @@ Development versions of the AnimatedLEDStripClient library are available from th
 >   <dependency>
 >     <groupId>io.github.animatedledstrip</groupId>
 >     <artifactId>animatedledstrip-client</artifactId>
->     <version>0.5-SNAPSHOT</version>
+>     <version>0.6-SNAPSHOT</version>
 >   </dependency>
 > </dependencies>
+
+### Note About Building
+Because we use the dokka plugin to generate our documentation, we must use Java <=9
+> https://www.oracle.com/technetwork/java/javase/downloads/java-archive-javase9-3934878.html
+
+## C++ (WIP)
+Currently only supports sending animations to the server (but without colors).
