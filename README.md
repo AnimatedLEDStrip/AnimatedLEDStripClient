@@ -1,8 +1,10 @@
 [![Build Status](https://travis-ci.com/AnimatedLEDStrip/AnimatedLEDStripClient.svg?branch=master)](https://travis-ci.com/AnimatedLEDStrip/AnimatedLEDStripClient)
 
-Kotlin/Java:
-[![KDoc](https://img.shields.io/badge/KDoc-read-green.svg)](https://animatedledstrip.github.io/AnimatedLEDStripClient/animatedledstrip-client/index.html)
-[![codecov](https://codecov.io/gh/AnimatedLEDStrip/AnimatedLEDStripClient/branch/master/graph/badge.svg)](https://codecov.io/gh/AnimatedLEDStrip/AnimatedLEDStripClient)
+
+|Kotlin/Java|
+|-|
+|[![KDoc](https://img.shields.io/badge/KDoc-read-green.svg)](https://animatedledstrip.github.io/AnimatedLEDStripClient/animatedledstrip-client/index.html)|
+|[![codecov](https://codecov.io/gh/AnimatedLEDStrip/AnimatedLEDStripClient/branch/master/graph/badge.svg)](https://codecov.io/gh/AnimatedLEDStrip/AnimatedLEDStripClient)||
 
 # AnimatedLEDStripClient
 Helper library for connecting to an [AnimatedLEDStripServer](https://github.com/AnimatedLEDStrip/AnimatedLEDStripServer)
