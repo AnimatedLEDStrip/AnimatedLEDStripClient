@@ -56,6 +56,7 @@ matrix:
                 on:
                   branch: master
 
+
     - language: c++
       before_script:
         - cd client-c++
@@ -66,9 +67,10 @@ matrix:
         - cd build/run
         - cmake ../..
 
+
     - language: python
-      python: 3.7
-      before_script: cd client-python3
+      before_script:
+        - cd client-python3
 
       cache:
         pip: true
@@ -85,6 +87,7 @@ matrix:
       jobs:
         include:
           - stage: test
+            python: 3.7
             install: pip install tox tox-travis coveralls
             script: tox
             after_success: coveralls
