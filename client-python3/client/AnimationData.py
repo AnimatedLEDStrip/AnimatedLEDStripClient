@@ -1,4 +1,5 @@
 from client.Animation import *
+from client.ColorContainer import ColorContainer
 from client.Direction import *
 
 
@@ -6,7 +7,7 @@ class AnimationData(object):
 
     def __init__(self):
         self.animation = Animation.COLOR
-        # self.colors
+        self.colors = []
         self.center = -1
         self.continuous = None
         self.delay = -1
@@ -17,6 +18,11 @@ class AnimationData(object):
         self.id = ""
         self.spacing = -1
         self.startPixel = 0
+
+    def addColor(self, color):
+        if not isinstance(color, ColorContainer):
+            raise ValueError("Bad data type: color")
+        self.colors.append(color)
 
     def json(self):
         if not isinstance(self.animation, Animation):

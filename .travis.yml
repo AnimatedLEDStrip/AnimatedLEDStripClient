@@ -68,6 +68,23 @@ matrix:
 
     - language: python
       before_script: cd client-python3
-      python: 3.7
-      install: pip install tox tox-travis
-      script: tox
+
+      cache:
+        pip: true
+
+      branches:
+        only:
+          - master
+          - /^travis.*/
+          - /^v.*/
+
+      stages:
+        - name: test
+
+      jobs:
+        include:
+          - stage: test
+            python: 3.7
+            install: pip install tox tox-travis coveralls
+            script: tox
+            after_success: coveralls
