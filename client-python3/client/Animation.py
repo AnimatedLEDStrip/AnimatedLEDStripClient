@@ -1,0 +1,26 @@
+from enum import Enum, auto
+
+
+class Animation(Enum):
+    COLOR = auto()
+    CUSTOMANIMATION = auto()
+    CUSTOMREPETITIVEANIMATION = auto()
+    ALTERNATE = auto()
+    BOUNCE = auto()
+    BOUNCETOCOLOR = auto()
+    CATTOY = auto()
+    METEOR = auto()
+    MULTIPIXELRUN = auto()
+    MULTIPIXELRUNTOCOLOR = auto()
+    RIPPLE = auto()
+    PIXELMARATHON = auto()
+    PIXELRUN = auto()
+    SMOOTHCHASE = auto()
+    SMOOTHFADE = auto()
+    SPARKLE = auto()
+    SPARKLEFADE = auto()
+    SPARKLETOCOLOR = auto()
+    SPLAT = auto()
+    STACK = auto()
+    STACKOVERFLOW = auto()
+    WIPE = auto()
