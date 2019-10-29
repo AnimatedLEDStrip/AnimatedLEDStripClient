@@ -67,6 +67,7 @@ matrix:
         - cmake ../..
 
     - language: python
+      python: 3.7
       before_script: cd client-python3
 
       cache:
@@ -84,7 +85,6 @@ matrix:
       jobs:
         include:
           - stage: test
-            python: 3.7
             install: pip install tox tox-travis coveralls
             script: tox
             after_success: coveralls
