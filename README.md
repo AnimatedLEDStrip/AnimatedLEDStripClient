@@ -4,7 +4,7 @@
 |Kotlin/Java|C++|Python|
 |:-:|:-:|:-:|
 |[![KDoc](https://img.shields.io/badge/KDoc-read-green.svg)](https://animatedledstrip.github.io/AnimatedLEDStripClient/animatedledstrip-client/index.html)|||
-|[![codecov](https://codecov.io/gh/AnimatedLEDStrip/AnimatedLEDStripClient/branch/master/graph/badge.svg)](https://codecov.io/gh/AnimatedLEDStrip/AnimatedLEDStripClient)||[![Coverage Status](https://coveralls.io/repos/github/AnimatedLEDStrip/AnimatedLEDStripClient/badge.svg?branch=master)](https://coveralls.io/github/AnimatedLEDStrip/AnimatedLEDStripClient?branch=master)|
+|[![codecov](https://codecov.io/gh/AnimatedLEDStrip/AnimatedLEDStripClient/branch/master/graph/badge.svg?flag=kotlinjava)](https://codecov.io/gh/AnimatedLEDStrip/AnimatedLEDStripClient)||[![codecov](https://codecov.io/gh/AnimatedLEDStrip/AnimatedLEDStripClient/branch/master/graph/badge.svg?flag=python3)](https://codecov.io/gh/AnimatedLEDStrip/AnimatedLEDStripClient)|
 
 # AnimatedLEDStripClient
 Helper library for connecting to an [AnimatedLEDStripServer](https://github.com/AnimatedLEDStrip/AnimatedLEDStripServer)
