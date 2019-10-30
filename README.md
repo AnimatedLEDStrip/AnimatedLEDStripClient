@@ -55,3 +55,6 @@ Because we use the dokka plugin to generate our documentation, we must use Java 
 Currently only supports sending animations to the server.
 See the [wiki](https://github.com/AnimatedLEDStrip/AnimatedLEDStripClient/wiki) for details.
 
+## Python 3 (WIP)
+Currently only supports sending animations to the server.
+See the [wiki](https://github.com/AnimatedLEDStrip/AnimatedLEDStripClient/wiki) for details.
