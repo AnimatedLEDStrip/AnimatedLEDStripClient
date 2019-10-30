@@ -19,7 +19,7 @@ class AnimationData(object):
         self.spacing = -1
         self.startPixel = 0
 
-    def addColor(self, color):
+    def add_color(self, color):
         if not isinstance(color, ColorContainer):
             raise ValueError("Bad data type: color")
         self.colors.append(color)
