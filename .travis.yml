@@ -83,6 +83,6 @@ matrix:
           - /^v.*/
 
 
-      install: pip install tox tox-travis codecov
+      install: pip install tox tox-travis coveragepy
       script: tox
-      after_success: codecov
+      after_success: bash <(curl -s https://codecov.io/bash) -F python3 -s ./client-python3
