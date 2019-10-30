@@ -28,7 +28,7 @@ jobs:
         - cd client-kotlin-java
 
       install: skip
-      after_success: bash <(curl -s https://codecov.io/bash) -F kotlinjava -f client-kotlin-java/target/site/jacoco.xml
+      after_success: bash <(curl -s https://codecov.io/bash) -F kotlinjava -f client-kotlin-java/target/site/jacoco/jacoco.xml
 
     - stage: deploy
       language: java
