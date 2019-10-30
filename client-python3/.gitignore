@@ -2,3 +2,5 @@
 test.py
 /animatedledstrip_client.egg-info
 /dist
+/.tox
+.coverage

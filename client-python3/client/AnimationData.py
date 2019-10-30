@@ -27,6 +27,7 @@ class AnimationData(object):
     def json(self):
         if not isinstance(self.animation, Animation):
             raise ValueError("Bad data type: animation")
+        # TODO: add color test
         if not isinstance(self.center, int):
             raise ValueError("Bad data type: center")
         if not isinstance(self.continuous, bool) and self.continuous is not None:

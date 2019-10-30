@@ -30,7 +30,7 @@ matrix:
         include:
           - stage: test
             install: skip
-            after_success: bash <(curl -s https://codecov.io/bash)
+            after_success: bash <(curl -s https://codecov.io/bash) -c -F kotlinjava
           - stage: deploy
             script: skip
             install: skip
@@ -83,6 +83,6 @@ matrix:
           - /^v.*/
 
 
-      install: pip install tox tox-travis coveralls
+      install: pip install tox tox-travis
       script: tox
-      after_success: coveralls
+      after_success: bash <(curl -s https://codecov.io/bash) -c -F python3
