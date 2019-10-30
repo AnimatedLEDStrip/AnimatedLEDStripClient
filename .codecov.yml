@@ -1,9 +1,0 @@
-flags:
-  kotlinjava:
-    paths:
-      - client-kotlin-java
-
-  python3:
-    paths:
-      - client-python3
-

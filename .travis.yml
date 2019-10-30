@@ -85,4 +85,4 @@ matrix:
 
       install: pip install tox tox-travis
       script: tox
-      after_success: bash <(curl -s https://codecov.io/bash) -F python3 -s client-python3
+      after_success: bash <(curl -s https://codecov.io/bash) -F python3
