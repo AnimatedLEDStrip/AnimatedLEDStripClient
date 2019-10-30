@@ -17,6 +17,9 @@ stages:
 
 jobs:
   include:
+
+    # Kotlin/Java
+
     - stage: test
       language: java
       jdk: openjdk9
@@ -68,7 +71,7 @@ jobs:
           on:
             branch: master
 
-
+    # C++
 
     - stage: test
       language: c++
@@ -81,6 +84,7 @@ jobs:
         - cd build/run
         - cmake ../..
 
+    # Python
 
     - stage: test
       language: python
