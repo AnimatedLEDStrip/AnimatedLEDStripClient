@@ -53,6 +53,9 @@ def test_continuous():
     data.continuous = True
     assert data.continuous
 
+    data.continuous = None
+    assert data.continuous is None
+
     try:
         data.continuous = 5
         data.json()
@@ -125,6 +128,48 @@ def test_endpixel():
 
     try:
         data.endPixel = 30.0
+        data.json()
+        raise AssertionError
+    except ValueError:
+        pass
+
+
+def test_id():
+    data = AnimationData()
+
+    data.id = "TEST"
+    assert data.id == "TEST"
+
+    try:
+        data.id = 5
+        data.json()
+        raise AssertionError
+    except ValueError:
+        pass
+
+
+def test_spacing():
+    data = AnimationData()
+
+    data.spacing = 10
+    assert data.spacing == 10
+
+    try:
+        data.spacing = 3.0
+        data.json()
+        raise AssertionError
+    except ValueError:
+        pass
+
+
+def test_start_pixel():
+    data = AnimationData()
+
+    data.startPixel = 5
+    assert data.startPixel == 5
+
+    try:
+        data.startPixel = 1.0
         data.json()
         raise AssertionError
     except ValueError:
