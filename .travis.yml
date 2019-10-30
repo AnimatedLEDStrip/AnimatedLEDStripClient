@@ -30,7 +30,7 @@ matrix:
         include:
           - stage: test
             install: skip
-            after_success: bash <(curl -s https://codecov.io/bash) -F kotlinjava -s client-kotlin-java
+            after_success: bash <(curl -s https://codecov.io/bash) -F kotlinjava -s client-kotlin-java/target/
           - stage: deploy
             script: skip
             install: skip
