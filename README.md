@@ -8,7 +8,7 @@
 
 # AnimatedLEDStripClient
 Helper library for connecting to an [AnimatedLEDStripServer](https://github.com/AnimatedLEDStrip/AnimatedLEDStripServer)
-Supports Kotlin, Java and C++ clients.
+Supports Kotlin, Java, C++ and Python clients.
 
 ## Kotlin/Java
 Supports sending animations to the server as well as receiving currently running animations from the server.
