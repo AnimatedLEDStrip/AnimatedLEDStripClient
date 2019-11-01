@@ -29,6 +29,7 @@ import animatedledstrip.client.endAnimation
 import animatedledstrip.client.send
 import animatedledstrip.colors.ColorContainer
 import animatedledstrip.utils.jsonToAnimationData
+import animatedledstrip.utils.toUTF8
 import kotlinx.coroutines.*
 import org.junit.Test
 import org.pmw.tinylog.Configurator
@@ -70,7 +71,7 @@ class AnimationDataExtensionTest {
                 val inStr = socket!!.getInputStream()
                 val input = ByteArray(1000)
                 val count = inStr.read(input)
-                if (input.jsonToAnimationData(count) == testAnimation) testBoolean = true
+                if (input.toUTF8(count).jsonToAnimationData() == testAnimation) testBoolean = true
             }
         }
 
@@ -115,7 +116,7 @@ class AnimationDataExtensionTest {
                 val inStr = socket!!.getInputStream()
                 val input = ByteArray(1000)
                 val count = inStr.read(input)
-                val data = input.jsonToAnimationData(count)
+                val data = input.toUTF8(count).jsonToAnimationData()
                 if (data.animation == Animation.ENDANIMATION) testBoolean = true
             }
         }

@@ -20,7 +20,7 @@ endif ()
 
 add_library(animation_data AnimationData.cpp)
 add_library(animation_sender AnimationSender.cpp)
-add_executable(testexec test.cpp)
+#add_executable(testexec test.cpp)
 #target_link_libraries(testexec animation_sender)
 #target_link_libraries(testexec animation_data)
 #target_link_libraries(testexec Threads::Threads)

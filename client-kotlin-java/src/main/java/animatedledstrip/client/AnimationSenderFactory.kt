@@ -26,16 +26,14 @@ package animatedledstrip.client
 import animatedledstrip.animationutils.Animation
 import animatedledstrip.animationutils.AnimationData
 import animatedledstrip.leds.StripInfo
-import animatedledstrip.utils.getDataTypePrefix
-import animatedledstrip.utils.json
-import animatedledstrip.utils.jsonToAnimationData
-import animatedledstrip.utils.jsonToStripInfo
+import animatedledstrip.utils.*
 import kotlinx.coroutines.*
 import org.pmw.tinylog.Logger
 import java.io.OutputStream
 import java.net.InetSocketAddress
 import java.net.Socket
 import java.net.SocketException
+import java.nio.charset.Charset
 
 object AnimationSenderFactory {
 
@@ -146,44 +144,45 @@ object AnimationSenderFactory {
                     try {
                         out = socket.getOutputStream()
                         val socIn = socket.getInputStream()
-                        var input = ByteArray(1000)
+                        var input: ByteArray
                         read@ while (true) {
                             checkNotNull(out)
-                            val count = socIn.read(input) // Wait for input
+                            input = ByteArray(10000)
+                            val count = socIn.read(input)       // Wait for message
                             if (count == -1) throw SocketException("Connection closed")
-
-                            val data: AnimationData
-                            when (input.getDataTypePrefix()) {
-                                "DATA" -> {
-                                    data = input.jsonToAnimationData(count)
+                            parse@for (d in input.toUTF8(count).split(";")) {
+                                val data: AnimationData
+                                when (d.getDataTypePrefix()) {
+                                    "DATA" -> {
+                                        data = d.jsonToAnimationData()
+                                    }
+                                    "INFO" -> {
+                                        stripInfo = d.jsonToStripInfo()
+                                        continue@parse
+                                    }
+                                    else -> continue@parse
                                 }
-                                "INFO" -> {
-                                    stripInfo = input.jsonToStripInfo(count)
-                                    continue@read
+                                Logger.debug("Received: $data")
+                                receiveAction?.invoke(data) ?: Logger.debug("No receive action defined")
+                                when (data.animation) {             // Run new or end animation action
+                                    Animation.ENDANIMATION -> {
+                                        endAnimationAction?.invoke(data)
+                                            ?: Logger.debug("No end animation action defined")
+                                        runningAnimations.remove(data.id)
+                                    }
+                                    else -> {
+                                        newAnimationAction?.invoke(data)
+                                            ?: Logger.debug("No new animation action defined")
+                                        runningAnimations[data.id] = data
+                                    }
                                 }
-                                else -> continue@read
                             }
-                            Logger.debug("Received: $data")
-                            receiveAction?.invoke(data) ?: Logger.debug("No receive action defined")
-                            when (data.animation) {    // Run new or end animation action
-                                Animation.ENDANIMATION -> {
-                                    endAnimationAction?.invoke(data)
-                                        ?: Logger.debug("No end animation action defined")
-                                    runningAnimations.remove(data.id)
-                                }
-                                else -> {
-                                    newAnimationAction?.invoke(data)
-                                        ?: Logger.debug("No new animation action defined")
-                                    runningAnimations[data.id] = data
-                                }
-                            }
-                            input = ByteArray(1000)
                         }
-                    } catch (e: SocketException) {            // TODO: Limit types of exceptions
-                        socket = Socket()               // Reset socket
+                    } catch (e: SocketException) {
+                        socket = Socket()                           // Reset socket
                         Logger.error("Exception occurred: $ipAddress:$port: $e")
                         connected = false
-                        disconnectAction?.invoke(connectedIp)      // Run disconnect action
+                        disconnectAction?.invoke(connectedIp)       // Run disconnect action
                         runningAnimations.clear()
                     }
                 }
