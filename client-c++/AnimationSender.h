@@ -13,6 +13,7 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <pthread.h>
 #include "AnimationData.h"
 
 class AnimationSender {
@@ -22,8 +23,10 @@ class AnimationSender {
     int port_num;
     struct sockaddr_in sa;
 
+    pthread_t receiver_handle;
+
 public:
-    AnimationSender(std::string host, int port) {
+    AnimationSender(const std::string &host, int port) {
         host_name = host;
         port_num = port;
         if ((socket_desc = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
@@ -39,42 +42,17 @@ public:
         sa.sin_port = htons(port);
     }
 
-    int start() {
-        if (connect() < 0) {
-            perror("Could not connect");
-            return -1;
-        }
-        return 0;
-    }
+    int start();
 
-    int end() {
-        if (close(socket_desc)<0) {
-            perror("Could not close socket");
-            return -1;
-        }
-        return 0;
-    }
-
-    int connect() {
-        if (::connect(socket_desc, (struct sockaddr *) &sa, sizeof(sa)) < 0) {
-            perror("connect()");
-            return -1;
-        }
-        printf("Connected\n");
-        return 0;
-    }
-
-    int sendAnimation(struct AnimationData &d) {
-        char *buff = new char[MAX_LEN];
-        int size = d.json(&buff);
-        int ret;
-        if ((ret = write(socket_desc, buff, size)) < 0)
-            printf("error %d", ret);
-        sleep(5);
-        return 0;
-    }
+    int end();
 
 
+    int sendAnimation(struct AnimationData &);
+
+private:
+    int connect();
+
+    static void *receiverLoop(void *);
 };
 
 #endif // ANIMATEDLEDSTRIPCLIENT_ANIMATIONSENDER_H
