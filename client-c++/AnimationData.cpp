@@ -50,6 +50,8 @@ const char *animation_string(Animation a) {
             return "STACKOVERFLOW";
         case WIPE:
             return "WIPE";
+        case ENDANIMATION:
+            return "ENDANIMATION";
     }
 }
 
@@ -98,6 +100,8 @@ Animation animation_from_string(const char *anim) {
         return STACKOVERFLOW;
     else if (std::strcmp(anim, "WIPE") == 0)
         return WIPE;
+    else if (std::strcmp(anim, "ENDANIMATION") == 0)
+        return ENDANIMATION;
     else return COLOR;
 }
 
@@ -129,7 +133,7 @@ const char *direction_string(enum Direction d) {
     }
 }
 
-Direction direction_from_string(const char * dir) {
+Direction direction_from_string(const char *dir) {
     if (std::strcmp(dir, "FORWARD") == 0)
         return FORWARD;
     else if (std::strcmp(dir, "BACKWARD") == 0)

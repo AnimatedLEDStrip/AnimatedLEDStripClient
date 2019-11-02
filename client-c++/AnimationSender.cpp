@@ -57,8 +57,10 @@ void *AnimationSender::receiverLoop(void *args) {
             } else if (strcmp(s.substr(0, 4).c_str(), "DATA") == 0) {
                 json data = json::parse(s.substr(5));
                 AnimationData *d = get_data_from_json(data);
-
-                sender.running_animations->push_back(d);
+                if (d->animation == ENDANIMATION)
+                    sender.running_animations->erase(d->id);
+                else
+                    sender.running_animations->insert(std::pair<std::string, AnimationData *>(d->id, d));
             }
         }
         for (int i = 0; i < MAX_LEN; i++) buff[i] = 0;

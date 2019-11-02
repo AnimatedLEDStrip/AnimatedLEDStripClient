@@ -33,7 +33,8 @@ enum Animation {
     SPLAT,
     STACK,
     STACKOVERFLOW,
-    WIPE
+    WIPE,
+    ENDANIMATION
 };
 
 const char *animation_string(Animation);

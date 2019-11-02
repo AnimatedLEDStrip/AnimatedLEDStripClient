@@ -16,6 +16,7 @@
 #include <pthread.h>
 #include <sstream>
 #include <vector>
+#include <map>
 #include "external/json/single_include/nlohmann/json.hpp"
 #include "AnimationData.h"
 #include "StripInfo.h"
@@ -34,10 +35,10 @@ class AnimationSender {
 
 
 public:
-    std::vector<AnimationData *> *running_animations;
+    std::map<std::string, AnimationData *> *running_animations;
 
     AnimationSender(const std::string &host, int port) {
-        running_animations = new std::vector<AnimationData *>;
+        running_animations = new std::map<std::string, AnimationData *>;
         host_name = host;
         port_num = port;
         if ((socket_desc = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
