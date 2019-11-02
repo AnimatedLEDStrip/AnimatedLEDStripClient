@@ -14,7 +14,11 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <pthread.h>
+#include <sstream>
+#include <vector>
+#include "external/json/single_include/nlohmann/json.hpp"
 #include "AnimationData.h"
+#include "StripInfo.h"
 
 class AnimationSender {
 
@@ -22,11 +26,18 @@ class AnimationSender {
     int socket_desc;    // socket descriptor
     int port_num;
     struct sockaddr_in sa;
+    bool running = false;
 
     pthread_t receiver_handle;
 
+    StripInfo *info;
+
+
 public:
+    std::vector<AnimationData *> *running_animations;
+
     AnimationSender(const std::string &host, int port) {
+        running_animations = new std::vector<AnimationData *>;
         host_name = host;
         port_num = port;
         if ((socket_desc = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
@@ -41,6 +52,7 @@ public:
         sa.sin_family = AF_INET;
         sa.sin_port = htons(port);
     }
+
 
     int start();
 

@@ -53,6 +53,54 @@ const char *animation_string(Animation a) {
     }
 }
 
+Animation animation_from_string(const char *anim) {
+    if (std::strcmp(anim, "COLOR") == 0)
+        return COLOR;
+    else if (std::strcmp(anim, "CUSTOMANIMATION") == 0)
+        return CUSTOMANIMATION;
+    else if (std::strcmp(anim, "CUSTOMREPETITIVEANIMATION") == 0)
+        return CUSTOMREPETITIVEANIMATION;
+    else if (std::strcmp(anim, "ALTERNATE") == 0)
+        return ALTERNATE;
+    else if (std::strcmp(anim, "BOUNCE") == 0)
+        return BOUNCE;
+    else if (std::strcmp(anim, "BOUNCETOCOLOR") == 0)
+        return BOUNCETOCOLOR;
+    else if (std::strcmp(anim, "CATTOY") == 0)
+        return CATTOY;
+    else if (std::strcmp(anim, "METEOR") == 0)
+        return METEOR;
+    else if (std::strcmp(anim, "MULTIPIXELRUN") == 0)
+        return MULTIPIXELRUN;
+    else if (std::strcmp(anim, "MULTIPIXELRUNTOCOLOR") == 0)
+        return MULTIPIXELRUNTOCOLOR;
+    else if (std::strcmp(anim, "RIPPLE") == 0)
+        return RIPPLE;
+    else if (std::strcmp(anim, "PIXELMARATHON") == 0)
+        return PIXELMARATHON;
+    else if (std::strcmp(anim, "PIXELRUN") == 0)
+        return PIXELRUN;
+    else if (std::strcmp(anim, "SMOOTHCHASE") == 0)
+        return SMOOTHCHASE;
+    else if (std::strcmp(anim, "SMOOTHFADE") == 0)
+        return SMOOTHFADE;
+    else if (std::strcmp(anim, "SPARKLE") == 0)
+        return SPARKLE;
+    else if (std::strcmp(anim, "SPARKLEFADE") == 0)
+        return SPARKLEFADE;
+    else if (std::strcmp(anim, "SPARKLETOCOLOR") == 0)
+        return SPARKLETOCOLOR;
+    else if (std::strcmp(anim, "SPLAT") == 0)
+        return SPLAT;
+    else if (std::strcmp(anim, "STACK") == 0)
+        return STACK;
+    else if (std::strcmp(anim, "STACKOVERFLOW") == 0)
+        return STACKOVERFLOW;
+    else if (std::strcmp(anim, "WIPE") == 0)
+        return WIPE;
+    else return COLOR;
+}
+
 const char *continuous_string(enum Continuous c) {
     switch (c) {
         case CONTINUOUS:
@@ -64,6 +112,14 @@ const char *continuous_string(enum Continuous c) {
     }
 }
 
+Continuous continuous_from_string(const char *cont) {
+    if (std::strcmp(cont, "true") == 0)
+        return CONTINUOUS;
+    else if (std::strcmp(cont, "false") == 0)
+        return NONCONTINUOUS;
+    else return DEFAULT;
+}
+
 const char *direction_string(enum Direction d) {
     switch (d) {
         case FORWARD:
@@ -71,6 +127,14 @@ const char *direction_string(enum Direction d) {
         case BACKWARD:
             return "BACKWARD";
     }
+}
+
+Direction direction_from_string(const char * dir) {
+    if (std::strcmp(dir, "FORWARD") == 0)
+        return FORWARD;
+    else if (std::strcmp(dir, "BACKWARD") == 0)
+        return BACKWARD;
+    else return FORWARD;
 }
 
 AnimationData *AnimationData::setAnimation(enum Animation a) {

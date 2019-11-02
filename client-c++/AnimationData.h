@@ -36,7 +36,9 @@ enum Animation {
     WIPE
 };
 
-const char *animation_string(Animation a);
+const char *animation_string(Animation);
+
+Animation animation_from_string(const char *);
 
 enum Continuous {
     CONTINUOUS,
@@ -46,12 +48,16 @@ enum Continuous {
 
 const char *continuous_string(enum Continuous c);
 
+Continuous continuous_from_string(const char *);
+
 enum Direction {
     FORWARD,
     BACKWARD
 };
 
 const char *direction_string(enum Direction d);
+
+Direction direction_from_string(const char *);
 
 struct AnimationData {
 
