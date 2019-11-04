@@ -1,0 +1,82 @@
+package main
+
+type Animation int
+
+const (
+	COLOR Animation = iota
+	CUSTOMANIMATION
+	CUSTOMREPETITIVEANIMATION
+	ALTERNATE
+	BOUNCE
+	BOUNCETOCOLOR
+	CATTOY
+	METEOR
+	MULTIPIXELRUN
+	MULTIPIXELRUNTOCOLOR
+	RIPPLE
+	PIXELMARATHON
+	PIXELRUN
+	SMOOTHCHASE
+	SMOOTHFADE
+	SPARKLE
+	SPARKLEFADE
+	SPARKLETOCOLOR
+	SPLAT
+	STACK
+	STACKOVERFLOW
+	WIPE
+	ENDANIMATION
+)
+
+func (a Animation) String() string {
+	switch a {
+	case COLOR:
+		return "COLOR"
+	case CUSTOMANIMATION:
+		return "CUSTOMANIMATION"
+	case CUSTOMREPETITIVEANIMATION:
+		return "CUSTOMREPETITIVEANIMATION"
+	case ALTERNATE:
+		return "ALTERNATE"
+	case BOUNCE:
+		return "BOUNCE"
+	case BOUNCETOCOLOR:
+		return "BOUNCETOCOLOR"
+	case CATTOY:
+		return "CATTOY"
+	case METEOR:
+		return "METEOR"
+	case MULTIPIXELRUN:
+		return "MULTIPIXELRUN"
+	case MULTIPIXELRUNTOCOLOR:
+		return "MULTIPIXELRUNTOCOLOR"
+	case RIPPLE:
+		return "RIPPLE"
+	case PIXELMARATHON:
+		return "PIXELMARATHON"
+	case PIXELRUN:
+		return "PIXELRUN"
+	case SMOOTHCHASE:
+		return "SMOOTHCHASE"
+	case SMOOTHFADE:
+		return "SMOOTHFADE"
+	case SPARKLE:
+		return "SPARKLE"
+	case SPARKLEFADE:
+		return "SPARKLEFADE"
+	case SPARKLETOCOLOR:
+		return "SPARKLETOCOLOR"
+	case SPLAT:
+		return "SPLAT"
+	case STACK:
+		return "STACK"
+	case STACKOVERFLOW:
+		return "STACKOVERFLOW"
+	case WIPE:
+		return "WIPE"
+	case ENDANIMATION:
+		return "ENDANIMATION"
+	default:
+		return "COLOR"
+	}
+}
