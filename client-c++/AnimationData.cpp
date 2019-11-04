@@ -141,68 +141,68 @@ Direction direction_from_string(const char *dir) {
     else return FORWARD;
 }
 
-AnimationData *AnimationData::setAnimation(enum Animation a) {
+AnimationData &AnimationData::setAnimation(enum Animation a) {
     animation = a;
-    return this;
+    return *this;
 }
 
-AnimationData *AnimationData::addColor(struct ColorContainer &c) {
+AnimationData &AnimationData::addColor(struct ColorContainer &c) {
     colors.push_back(c);
-    return this;
+    return *this;
 }
 
-AnimationData *AnimationData::setCenter(int c) {
+AnimationData &AnimationData::setCenter(int c) {
     center = c;
-    return this;
+    return *this;
 }
 
-AnimationData *AnimationData::setContinuous(enum Continuous c) {
+AnimationData &AnimationData::setContinuous(enum Continuous c) {
     continuous = c;
-    return this;
+    return *this;
 }
 
-AnimationData *AnimationData::setDelay(long d) {
+AnimationData &AnimationData::setDelay(long d) {
     delay = d;
-    return this;
+    return *this;
 }
 
-AnimationData *AnimationData::setDelayMod(double d) {
+AnimationData &AnimationData::setDelayMod(double d) {
     delay_mod = d;
-    return this;
+    return *this;
 }
 
-AnimationData *AnimationData::setDirection(enum Direction d) {
+AnimationData &AnimationData::setDirection(enum Direction d) {
     direction = d;
-    return this;
+    return *this;
 }
 
-AnimationData *AnimationData::setDistance(int d) {
+AnimationData &AnimationData::setDistance(int d) {
     distance = d;
-    return this;
+    return *this;
 }
 
-AnimationData *AnimationData::setEndPixel(int p) {
+AnimationData &AnimationData::setEndPixel(int p) {
     end_pixel = p;
-    return this;
+    return *this;
 }
 
-AnimationData *AnimationData::setId(std::string &i) {
+AnimationData &AnimationData::setId(std::string &i) {
     id.assign(i);
-    return this;
+    return *this;
 }
 
-AnimationData *AnimationData::setId(char *i) {
+AnimationData &AnimationData::setId(char *i) {
     id.assign(i);
-    return this;
+    return *this;
 }
 
-AnimationData *AnimationData::setSpacing(int s) {
+AnimationData &AnimationData::setSpacing(int s) {
     spacing = s;
-    return this;
+    return *this;
 }
 
-AnimationData *AnimationData::setStartPixel(int p) {
+AnimationData &AnimationData::setStartPixel(int p) {
     start_pixel = p;
-    return this;
+    return *this;
 }
 

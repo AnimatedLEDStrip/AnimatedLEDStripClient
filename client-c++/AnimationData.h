@@ -75,31 +75,31 @@ struct AnimationData {
     int spacing = -1;
     int start_pixel = 0;
 
-    AnimationData *setAnimation(enum Animation a);
+    AnimationData &setAnimation(enum Animation a);
 
-    AnimationData *addColor(struct ColorContainer &c);
+    AnimationData &addColor(struct ColorContainer &c);
 
-    AnimationData *setCenter(int c);
+    AnimationData &setCenter(int c);
 
-    AnimationData *setContinuous(enum Continuous c);
+    AnimationData &setContinuous(enum Continuous c);
 
-    AnimationData *setDelay(long d);
+    AnimationData &setDelay(long d);
 
-    AnimationData *setDelayMod(double d);
+    AnimationData &setDelayMod(double d);
 
-    AnimationData *setDirection(enum Direction d);
+    AnimationData &setDirection(enum Direction d);
 
-    AnimationData *setDistance(int d);
+    AnimationData &setDistance(int d);
 
-    AnimationData *setEndPixel(int p);
+    AnimationData &setEndPixel(int p);
 
-    AnimationData *setId(std::string &i);
+    AnimationData &setId(std::string &i);
 
-    AnimationData *setId(char *i);
+    AnimationData &setId(char *i);
 
-    AnimationData *setSpacing(int s);
+    AnimationData &setSpacing(int s);
 
-    AnimationData *setStartPixel(int p);
+    AnimationData &setStartPixel(int p);
 
 
     int json(char **buff) {

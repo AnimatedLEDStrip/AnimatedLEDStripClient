@@ -14,9 +14,9 @@
 struct ColorContainer {
     std::vector<long> colors;
 
-    ColorContainer *addColor(long c) {
+    ColorContainer &addColor(long c) {
         colors.push_back(c);
-        return this;
+        return *this;
     }
 
     int json(char **buff) {
