@@ -6,6 +6,8 @@
 
 using json = nlohmann::json;
 
+#define DEBUG true
+
 AnimationData *get_data_from_json(json data) {
     auto *d = new AnimationData();
     d->setAnimation(animation_from_string(((std::string) data["animation"]).c_str()));
@@ -38,10 +40,14 @@ void *AnimationSender::receiverLoop(void *args) {
     char *buff = new char[MAX_LEN];
 
     while (sender.running) {
+#if DEBUG
         printf("Waiting\n");
+#endif
         if ((ret = recv(sender.socket_desc, buff, MAX_LEN - 1, 0)) < 0)
             printf("error %d", ret);
+#if DEBUG
         printf("%s\n", buff);
+#endif
         std::stringstream ss(buff);
         std::string token;
         tokens.clear();
@@ -103,6 +109,32 @@ int AnimationSender::connect() {
 }
 
 int AnimationSender::sendAnimation(struct AnimationData &d) {
+    char *buff = new char[MAX_LEN];
+    int size = d.json(&buff);
+    int ret;
+    if ((ret = write(socket_desc, buff, size)) < 0)
+        printf("error %d", ret);
+    return 0;
+}
+
+int AnimationSender::endAnimation(const std::string& id) {
+    if (running_animations->count(id) == 0)
+        return 1;
+    else {
+        AnimationData * d = (*running_animations)[id];
+        d->setAnimation(ENDANIMATION);
+        char *buff = new char[MAX_LEN];
+
+        int size = d->json(&buff);
+        int ret;
+        if ((ret = write(socket_desc, buff, size)) < 0)
+            printf("error %d", ret);
+        sleep(1);
+        return 0;
+    }
+}
+
+int AnimationSender::endAnimation(struct AnimationData &d) {
     char *buff = new char[MAX_LEN];
     int size = d.json(&buff);
     int ret;

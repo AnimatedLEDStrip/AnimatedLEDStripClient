@@ -35,7 +35,7 @@ class AnimationSender {
 
 
 public:
-    std::map<std::string, AnimationData *> *running_animations;
+    std::map<std::string, AnimationData *> *running_animations;     // TODO: Make thread safe
 
     AnimationSender(const std::string &host, int port) {
         running_animations = new std::map<std::string, AnimationData *>;
@@ -60,7 +60,11 @@ public:
     int end();
 
 
-    int sendAnimation(struct AnimationData &);
+    int sendAnimation(struct AnimationData &d);
+
+    int endAnimation(const std::string& id);
+
+    int endAnimation(struct AnimationData &d);
 
 private:
     int connect();
