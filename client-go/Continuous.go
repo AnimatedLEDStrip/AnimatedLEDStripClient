@@ -1,4 +1,4 @@
-package main
+package animatedledstrip
 
 type Continuous int
 
