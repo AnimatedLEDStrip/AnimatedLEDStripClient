@@ -14,6 +14,7 @@ if ((NOT JSON_INCLUDE_DIR) OR (NOT EXISTS ${JSON_INCLUDE_DIR}))
             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
     set(JSON_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/json
             CACHE PATH "json include dir")
+    add_subdirectory(external/json)
 else ()
     add_subdirectory(external/json)
 endif ()
