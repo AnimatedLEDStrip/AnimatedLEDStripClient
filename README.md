@@ -1,61 +1,27 @@
 [![Build Status](https://travis-ci.com/AnimatedLEDStrip/AnimatedLEDStripClient.svg?branch=master)](https://travis-ci.com/AnimatedLEDStrip/AnimatedLEDStripClient)
 
 |Language(s)|Documentation|Coverage|
-|:-:|:-:|:-:|
+|-|:-:|:-:|
 |Kotlin/Java|[![KDoc](https://img.shields.io/badge/KDoc-read-green.svg)](https://animatedledstrip.github.io/AnimatedLEDStripClient/animatedledstrip-client/index.html)|[![codecov](https://codecov.io/gh/AnimatedLEDStrip/AnimatedLEDStripClient/branch/master/graph/badge.svg?flag=kotlinjava)](https://codecov.io/gh/AnimatedLEDStrip/AnimatedLEDStripClient)|
 |C++|||
 |Python 3||[![codecov](https://codecov.io/gh/AnimatedLEDStrip/AnimatedLEDStripClient/branch/master/graph/badge.svg?flag=python3)](https://codecov.io/gh/AnimatedLEDStrip/AnimatedLEDStripClient)
 |Go||[![codecov](https://codecov.io/gh/AnimatedLEDStrip/AnimatedLEDStripClient/branch/master/graph/badge.svg?flag=go)](https://codecov.io/gh/AnimatedLEDStrip/AnimatedLEDStripClient)
 
 # AnimatedLEDStripClient
-Helper library for connecting to an [AnimatedLEDStripServer](https://github.com/AnimatedLEDStrip/AnimatedLEDStripServer)
-Supports Kotlin, Java, C++ and Python clients.
+This is a set of helper libraries for connecting to an [AnimatedLEDStripServer](https://github.com/AnimatedLEDStrip/AnimatedLEDStripServer) from clients, allowing the client to send animations to the server and (if supported) receive currently running animations from the server.
+Supports clients written Kotlin, Java, C++, Python and Go.
 
-## Kotlin/Java
-Supports sending animations to the server as well as receiving currently running animations from the server.
-See the [wiki](https://github.com/AnimatedLEDStrip/AnimatedLEDStripClient/wiki) for details.
+## Supported Functionality by Library
 
-### Maven Coordinates/Dependency
-Use the following dependency to use this library in your project
-> ```
-> <dependency>
->   <groupId>io.github.animatedledstrip</groupId>
->   <artifactId>animatedledstrip-client</artifactId>
->   <version>0.5</version>
-> </dependency>
-> ```
+|Language(s)|Send Data|Receive Data|Event Callbacks|
+|-|:-:|:-:|:-:|
+|Kotlin/Java|Yes|Yes|Yes|
+|C++|Yes|Yes*|No|
+|Python 3|Yes|No|No|
+|Go|Yes|No|No|
 
+*\*In Development*
 
-### Snapshots
-Development versions of the AnimatedLEDStripClient library are available from the Sonatype snapshot repository:
+Even if a library does not currently support a feature, it will likely be added in the future (if supported by the language).
 
-> ```
-> <repositories>
->    <repository>
->        <id>sonatype-snapshots</id>
->        <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
->        <snapshots>
->            <enabled>true</enabled>
->        </snapshots>
->    </repository>
-> </repositories>
-> 
-> <dependencies>
->   <dependency>
->     <groupId>io.github.animatedledstrip</groupId>
->     <artifactId>animatedledstrip-client</artifactId>
->     <version>0.6-SNAPSHOT</version>
->   </dependency>
-> </dependencies>
-
-### Note About Building
-Because we use the dokka plugin to generate our documentation, we must use Java <=9
-> https://www.oracle.com/technetwork/java/javase/downloads/java-archive-javase9-3934878.html
-
-## C++ (WIP)
-Currently only supports sending animations to the server.
-See the [wiki](https://github.com/AnimatedLEDStrip/AnimatedLEDStripClient/wiki) for details.
-
-## Python 3 (WIP)
-Currently only supports sending animations to the server.
-See the [wiki](https://github.com/AnimatedLEDStrip/AnimatedLEDStripClient/wiki) for details.
+See the individual wiki pages for each language for usage instructions.
