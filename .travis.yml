@@ -107,8 +107,8 @@ jobs:
         - tip
 
       before_install:
-        - go get -t -v ./...
         - cd client-go
+        - go get -t -v ./...
         - chmod +x ./test.sh
 
       script:
