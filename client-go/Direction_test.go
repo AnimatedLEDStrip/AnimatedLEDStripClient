@@ -12,4 +12,9 @@ func TestDirection_String(t *testing.T) {
 	if d.String() != "BACKWARD" {
 		t.Fail()
 	}
+
+	d = -1
+	if d.String() != "FORWARD" {
+		t.Fail()
+	}
 }

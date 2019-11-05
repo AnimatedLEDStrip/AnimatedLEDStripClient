@@ -17,4 +17,9 @@ func TestContinuous_String(t *testing.T) {
 	if c.String() != "false" {
 		t.Fail()
 	}
+
+	c = -1
+	if c.String() != "null" {
+		t.Fail()
+	}
 }
