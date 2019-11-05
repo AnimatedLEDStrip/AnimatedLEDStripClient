@@ -6,146 +6,122 @@ import (
 
 func TestAnimation_String(t *testing.T) {
 	anim := COLOR
-	str := anim.String()
-	if str != "COLOR" {
+	if anim.String() != "COLOR" {
 		t.Fail()
 	}
 
 	anim = CUSTOMANIMATION
-	str = anim.String()
-	if str != "CUSTOMANIMATION" {
+	if anim.String() != "CUSTOMANIMATION" {
 		t.Fail()
 	}
 
 	anim = CUSTOMREPETITIVEANIMATION
-	str = anim.String()
-	if str != "CUSTOMREPETITIVEANIMATION" {
+	if anim.String() != "CUSTOMREPETITIVEANIMATION" {
 		t.Fail()
 	}
 
 	anim = ALTERNATE
-	str = anim.String()
-	if str != "ALTERNATE" {
+	if anim.String() != "ALTERNATE" {
 		t.Fail()
 	}
 
 	anim = BOUNCE
-	str = anim.String()
-	if str != "BOUNCE" {
+	if anim.String() != "BOUNCE" {
 		t.Fail()
 	}
 
 	anim = BOUNCETOCOLOR
-	str = anim.String()
-	if str != "BOUNCETOCOLOR" {
+	if anim.String() != "BOUNCETOCOLOR" {
 		t.Fail()
 	}
 
 	anim = CATTOY
-	str = anim.String()
-	if str != "CATTOY" {
+	if anim.String() != "CATTOY" {
 		t.Fail()
 	}
 
 	anim = METEOR
-	str = anim.String()
-	if str != "METEOR" {
+	if anim.String() != "METEOR" {
 		t.Fail()
 	}
 
 	anim = MULTIPIXELRUN
-	str = anim.String()
-	if str != "MULTIPIXELRUN" {
+	if anim.String() != "MULTIPIXELRUN" {
 		t.Fail()
 	}
 
 	anim = MULTIPIXELRUNTOCOLOR
-	str = anim.String()
-	if str != "MULTIPIXELRUNTOCOLOR" {
+	if anim.String() != "MULTIPIXELRUNTOCOLOR" {
 		t.Fail()
 	}
 
 	anim = RIPPLE
-	str = anim.String()
-	if str != "RIPPLE" {
+	if anim.String() != "RIPPLE" {
 		t.Fail()
 	}
 
 	anim = PIXELMARATHON
-	str = anim.String()
-	if str != "PIXELMARATHON" {
+	if anim.String() != "PIXELMARATHON" {
 		t.Fail()
 	}
 
 	anim = PIXELRUN
-	str = anim.String()
-	if str != "PIXELRUN" {
+	if anim.String() != "PIXELRUN" {
 		t.Fail()
 	}
 
 	anim = SMOOTHCHASE
-	str = anim.String()
-	if str != "SMOOTHCHASE" {
+	if anim.String() != "SMOOTHCHASE" {
 		t.Fail()
 	}
 
 	anim = SMOOTHFADE
-	str = anim.String()
-	if str != "SMOOTHFADE" {
+	if anim.String() != "SMOOTHFADE" {
 		t.Fail()
 	}
 
 	anim = SPARKLE
-	str = anim.String()
-	if str != "SPARKLE" {
+	if anim.String() != "SPARKLE" {
 		t.Fail()
 	}
 
 	anim = SPARKLEFADE
-	str = anim.String()
-	if str != "SPARKLEFADE" {
+	if anim.String() != "SPARKLEFADE" {
 		t.Fail()
 	}
 
 	anim = SPARKLETOCOLOR
-	str = anim.String()
-	if str != "SPARKLETOCOLOR" {
+	if anim.String() != "SPARKLETOCOLOR" {
 		t.Fail()
 	}
 
 	anim = SPLAT
-	str = anim.String()
-	if str != "SPLAT" {
+	if anim.String() != "SPLAT" {
 		t.Fail()
 	}
 
 	anim = STACK
-	str = anim.String()
-	if str != "STACK" {
+	if anim.String() != "STACK" {
 		t.Fail()
 	}
 
 	anim = STACKOVERFLOW
-	str = anim.String()
-	if str != "STACKOVERFLOW" {
+	if anim.String() != "STACKOVERFLOW" {
 		t.Fail()
 	}
 
 	anim = WIPE
-	str = anim.String()
-	if str != "WIPE" {
+	if anim.String() != "WIPE" {
 		t.Fail()
 	}
 
 	anim = ENDANIMATION
-	str = anim.String()
-	if str != "ENDANIMATION" {
+	if anim.String() != "ENDANIMATION" {
 		t.Fail()
 	}
 
 	anim = -1
-	str = anim.String()
-	if str != "COLOR" {
+	if anim.String() != "COLOR" {
 		t.Fail()
 	}
 }
