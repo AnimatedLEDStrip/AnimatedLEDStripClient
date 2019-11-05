@@ -142,4 +142,10 @@ func TestAnimation_String(t *testing.T) {
 	if str != "ENDANIMATION" {
 		t.Fail()
 	}
+
+	anim = -1
+	str = anim.String()
+	if str != "COLOR" {
+		t.Fail()
+	}
 }
