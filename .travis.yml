@@ -96,3 +96,23 @@ jobs:
       install: pip install tox tox-travis coverage
       script: tox
       after_success: bash <(curl -s https://codecov.io/bash) -F python3 -s ./client-python3
+
+    # Go
+    - stage: test
+      language: go
+
+      go:
+        - 1.8.x
+        - tip
+
+      before_script:
+        - cd client-go
+
+      before_install:
+        - go get -t -v ./...
+
+      script:
+        - ./test.sh
+
+      after_success:
+        - bash <(curl -s https://codecov.io/bash)
