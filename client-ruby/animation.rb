@@ -1,0 +1,80 @@
+module Animation
+  COLOR = 0
+  CUSTOM_ANIMATION = 1
+  CUSTOM_REPETITIVE_ANIMATION = 2
+  ALTERNATE = 3
+  BOUNCE = 4
+  BOUNCE_TO_COLOR = 5
+  CAT_TOY = 6
+  METEOR = 7
+  MULTIPIXEL_RUN = 8
+  MULTIPIXEL_RUN_TO_COLOR = 9
+  RIPPLE = 10
+  PIXEL_MARATHON = 11
+  PIXEL_RUN = 12
+  SMOOTH_CHASE = 13
+  SMOOTH_FADE = 14
+  SPARKLE = 15
+  SPARKLE_FADE = 16
+  SPARKLE_TO_COLOR = 17
+  SPLAT = 18
+  STACK = 19
+  STACK_OVERFLOW = 20
+  WIPE = 21
+  END_ANIMATION = 22
+
+  # @return [String]
+  def self.string(animation)
+    case animation
+    when COLOR
+      'COLOR'
+    when CUSTOM_ANIMATION
+      'CUSTOMANIMATION'
+    when CUSTOM_REPETITIVE_ANIMATION
+      'CUSTOMREPETITIVEANIMATION'
+    when ALTERNATE
+      'ALTERNATE'
+    when BOUNCE
+      'BOUNCE'
+    when BOUNCE_TO_COLOR
+      'BOUNCETOCOLOR'
+    when CAT_TOY
+      'CATTOY'
+    when METEOR
+      'METEOR'
+    when MULTIPIXEL_RUN
+      'MULTIPIXELRUN'
+    when MULTIPIXEL_RUN_TO_COLOR
+      'MULTIPIXELRUNTOCOLOR'
+    when RIPPLE
+      'RIPPLE'
+    when PIXEL_MARATHON
+      'PIXELMARATHON'
+    when PIXEL_RUN
+      'PIXELRUN'
+    when SMOOTH_CHASE
+      'SMOOTHCHASE'
+    when SMOOTH_FADE
+      'SMOOTHFADE'
+    when SPARKLE
+      'SPARKLE'
+    when SPARKLE_FADE
+      'SPARKLEFADE'
+    when SPARKLE_TO_COLOR
+      'SPARKLETOCOLOR'
+    when SPLAT
+      'SPLAT'
+    when STACK
+      'STACK'
+    when STACK_OVERFLOW
+      'STACKOVERFLOW'
+    when WIPE
+      'WIPE'
+    when END_ANIMATION
+      'ENDANIMATION'
+    else
+      'COLOR'
+    end
+  end
+
+end
