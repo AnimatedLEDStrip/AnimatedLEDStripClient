@@ -4,6 +4,9 @@ cache:
     - $HOME/.m2
   pip: true
 
+git:
+  submodules: false
+
 branches:
   only:
     - master
@@ -75,6 +78,9 @@ jobs:
 
     - stage: test
       language: c++
+
+      git:
+        submodules: true
 
       before_script:
         - cd client-c++
