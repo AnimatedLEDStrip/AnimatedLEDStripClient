@@ -110,6 +110,7 @@ jobs:
 
       before_install:
         - go get -t -v ./...
+        - chmod +x test.sh
 
       script:
         - ./test.sh
