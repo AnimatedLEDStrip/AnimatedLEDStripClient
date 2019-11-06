@@ -127,6 +127,12 @@ jobs:
     - stage: test
       language: ruby
 
-      before_script: cd client-ruby
+      rvm:
+        - 2.6.5
+
+      before_install:
+        - cd client-ruby
+        - gem update --system
+        - gem install bundler --no-document
 
       script: bundle exec rake
