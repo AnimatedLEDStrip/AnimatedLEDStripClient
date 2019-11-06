@@ -32,8 +32,11 @@ class AnimationData
   # @return [String]
   def json
     raise TypeError unless @animation.is_a? Integer
+    raise TypeError unless @colors.is_a? Array
     raise TypeError unless @center.is_a? Integer
-    raise TypeError unless @continuous.is_a?(Integer) || @continuous.nil?
+    unless @continuous.is_a?(TrueClass) || @continuous.is_a?(FalseClass) || @continuous.nil?
+      raise TypeError
+    end
     raise TypeError unless @delay.is_a? Integer
     raise TypeError unless @delay_mod.is_a? Float
     raise TypeError unless @direction.is_a? Integer
