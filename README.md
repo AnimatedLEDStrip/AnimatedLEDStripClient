@@ -6,7 +6,7 @@
 |C++|||
 |Python 3||[![codecov](https://codecov.io/gh/AnimatedLEDStrip/AnimatedLEDStripClient/branch/master/graph/badge.svg?flag=python3)](https://codecov.io/gh/AnimatedLEDStrip/AnimatedLEDStripClient)|
 |Go||[![codecov](https://codecov.io/gh/AnimatedLEDStrip/AnimatedLEDStripClient/branch/master/graph/badge.svg?flag=go)](https://codecov.io/gh/AnimatedLEDStrip/AnimatedLEDStripClient)|
-|Ruby|||
+|Ruby||[![codecov](https://codecov.io/gh/AnimatedLEDStrip/AnimatedLEDStripClient/branch/master/graph/badge.svg?flag=ruby)](https://codecov.io/gh/AnimatedLEDStrip/AnimatedLEDStripClient)|
 
 # AnimatedLEDStripClient
 This is a set of helper libraries for connecting to an [AnimatedLEDStripServer](https://github.com/AnimatedLEDStrip/AnimatedLEDStripServer) from clients, allowing the client to send animations to the server and (if supported) receive currently running animations from the server.
