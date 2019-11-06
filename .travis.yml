@@ -140,3 +140,5 @@ jobs:
 
       script: bundle exec rake
 
+      after_success: ruby ./upload_coverage.rb
+
