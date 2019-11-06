@@ -2,7 +2,6 @@ require 'rake/testtask'
 
 Rake::TestTask.new(:test) do |t|
   t.libs << 'test'
-  t.add_filter '/test/'
   t.verbose = true
 end
 
