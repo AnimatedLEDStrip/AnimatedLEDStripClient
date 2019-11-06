@@ -1,4 +1,4 @@
-source 'https://rubygems.org'
-gemspec
-gem 'codecov', require: false, group: :test
-gem 'rake', require: false, group: :test
+source 'https://rubygems.org' do
+  gemspec
+  gem 'codecov', require: false
+end
