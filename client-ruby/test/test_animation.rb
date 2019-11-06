@@ -1,5 +1,6 @@
 require 'minitest/autorun'
 require_relative '../lib/animation'
+require_relative 'helper'
 
 class AnimationTest < Minitest::Test
   def test_color_string

@@ -1,19 +1,19 @@
 require 'rake/testtask'
 
-Rake::TestTask.new do |t|
+Rake::TestTask.new(:test) do |t|
   t.libs << 'test'
 end
 
 desc 'Run tests'
 task default: :test
 
-namespace :codecov do
-  desc 'Uploads the latest simplecov result set to codecov.io'
-  task upload: :environment do
-    require 'simplecov'
-    require 'codecov'
-
-    formatter = SimpleCov::Formatter::Codecov.new
-    formatter.format(SimpleCov::ResultMerger.merged_result)
-  end
-end
+# namespace :codecov do
+#   desc 'Uploads the latest simplecov result set to codecov.io'
+#   task upload: :environment do
+#     require 'simplecov'
+#     require 'codecov'
+#
+#     formatter = SimpleCov::Formatter::Codecov.new
+#     formatter.format(SimpleCov::ResultMerger.merged_result)
+#   end
+# end
