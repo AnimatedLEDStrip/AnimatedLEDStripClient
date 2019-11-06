@@ -1,5 +1,5 @@
 require 'simplecov'
-SimpleCov.root '../..'
+SimpleCov.root '..'
 SimpleCov.start
 
 require 'codecov'
