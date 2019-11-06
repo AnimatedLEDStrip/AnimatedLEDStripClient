@@ -1,5 +1,5 @@
 require 'socket'
-require_relative './animation_sender.rb'
+require_relative 'animation_data'
 
 class AnimationSender
   attr_accessor :address, :port

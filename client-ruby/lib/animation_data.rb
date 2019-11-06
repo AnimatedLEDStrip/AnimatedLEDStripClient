@@ -1,6 +1,6 @@
-require_relative './imation.rb'
-require_relative './rection.rb'
-require_relative './lor_container.rb'
+require_relative 'animation'
+require_relative 'direction'
+require_relative 'color_container'
 
 class AnimationData
   attr_accessor :animation, :colors, :center,
