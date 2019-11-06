@@ -130,6 +130,9 @@ jobs:
       rvm:
         - 2.6.5
 
+      env:
+        - CODECOV_FLAG="-F ruby"
+
       before_install:
         - cd client-ruby
         - gem update --system
@@ -137,4 +140,3 @@ jobs:
 
       script: bundle exec rake test
 
-      after_success: rake codecov:upload
