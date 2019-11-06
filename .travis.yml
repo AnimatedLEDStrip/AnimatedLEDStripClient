@@ -131,7 +131,7 @@ jobs:
         - 2.6.5
 
       env:
-        - CODECOV_FLAG="-F ruby"
+        - CODECOV_FLAG=ruby
 
       before_install:
         - cd client-ruby
