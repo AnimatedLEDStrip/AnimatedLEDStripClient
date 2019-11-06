@@ -5,3 +5,5 @@ flags:
       paths: client-kotlin-java
   - go:
       paths: client-go
+  - ruby:
+      paths: client-ruby

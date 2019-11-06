@@ -121,3 +121,12 @@ jobs:
         - ./test.sh
 
       after_success: bash <(curl -s https://codecov.io/bash) -F go
+
+      # Ruby
+
+    - stage: test
+      language: ruby
+
+      before_script: cd client-ruby
+
+      script: bundle exec rake
