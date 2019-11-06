@@ -7,3 +7,5 @@ flags:
       paths: client-go
   - ruby:
       paths: client-ruby
+fixes:
+  - "lib/::client-ruby/lib/"

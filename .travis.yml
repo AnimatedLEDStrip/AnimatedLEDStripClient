@@ -139,6 +139,3 @@ jobs:
         - gem install bundler --no-document
 
       script: bundle exec rake
-
-#      after_success: ruby ./upload_coverage.rb
-
