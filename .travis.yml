@@ -136,3 +136,5 @@ jobs:
         - gem install bundler --no-document
 
       script: bundle exec rake test
+
+      after_success: bash <(curl -s https://codecov.io/bash) -F ruby
