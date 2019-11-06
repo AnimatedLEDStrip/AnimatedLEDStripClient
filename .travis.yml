@@ -135,4 +135,4 @@ jobs:
         - gem update --system
         - gem install bundler --no-document
 
-      script: bundle exec rake
+      script: bundle exec rake test
