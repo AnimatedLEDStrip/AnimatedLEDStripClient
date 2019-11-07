@@ -82,6 +82,9 @@ jobs:
       git:
         submodules: true
 
+      apt_packages:
+        - lcov
+
       before_script:
         - cd client-c++
 
