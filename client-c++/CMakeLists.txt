@@ -45,12 +45,10 @@ add_subdirectory(src)
 #target_link_libraries(testexec gtest_main)
 
 option (BUILD_TESTING "Build the testing tree." ON)
-# Only build tests if we are the top-level project
-# Allows this to be used by super projects with `add_subdirectory`
 if (BUILD_TESTING AND (PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR))
     enable_testing()
     APPEND_COVERAGE_COMPILER_FLAGS()
-    set(COVERAGE_LCOV_EXCLUDES '/usr/include/c++/*')
+    set(COVERAGE_LCOV_EXCLUDES '/usr/include/c++/*' 'test/*')
     SETUP_TARGET_FOR_COVERAGE_LCOV(
             NAME    test_coverage
             EXECUTABLE test/animation_data_test

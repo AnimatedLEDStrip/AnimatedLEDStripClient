@@ -1,4 +1,4 @@
-add_executable(animation_data_test AnimationDataTest.cpp)
+add_executable(animation_data_test run_tests.cpp)
 
 target_link_libraries(animation_data_test animation_data)
 target_link_libraries(animation_data_test gtest_main)

@@ -2,7 +2,7 @@
 // Created by mnmax on 11/6/2019.
 //
 
-#include "../src/AnimationData.h"
+#include "AnimationData.h"
 #include "gtest/gtest.h"
 
 
