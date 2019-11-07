@@ -20,6 +20,7 @@ download_project(PROJ               googletest
                  GIT_TAG            master
         )
 
+
 download_project(PROJ               json
                  GIT_REPOSITORY     https://github.com/nlohmann/json.git
                  GIT_TAG            master
@@ -27,8 +28,7 @@ download_project(PROJ               json
 
 include(CodeCoverage.cmake)
 
-
-set(JSON_BuildTests OFF)
+set(JSON_BuildTests OFF CACHE INTERNAL "")
 #add_library(coverage_config INTERFACE)
 #target_link_libraries(coverage_config gtest_main)
 #option(CODE_COVERAGE "Enable coverage reporting" ON)
