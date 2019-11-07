@@ -82,8 +82,14 @@ jobs:
       git:
         submodules: true
 
-      before_script:
+      addons:
+        apt:
+          update: true
+
+      before_install:
         - sudo apt install lcov
+
+      before_script:
         - cd client-c++
 
       script:
