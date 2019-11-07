@@ -29,24 +29,6 @@ download_project(PROJ               json
 include(CodeCoverage.cmake)
 
 set(JSON_BuildTests OFF CACHE INTERNAL "")
-#add_library(coverage_config INTERFACE)
-#target_link_libraries(coverage_config gtest_main)
-#option(CODE_COVERAGE "Enable coverage reporting" ON)
-#if(CODE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-#    # Add required flags (GCC & LLVM/Clang)
-#    target_compile_options(coverage_config INTERFACE
-#            -O0        # no optimization
-#            -g         # generate debug info
-##            --coverage # sets all required flags
-#            -fprofile-arcs
-#            -ftest-coverage
-#            )
-#    if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.13)
-#        target_link_options(coverage_config INTERFACE --coverage)
-#    else()
-#        target_link_libraries(coverage_config INTERFACE --coverage)
-#    endif()
-#endif()
 
 add_subdirectory(${googletest_SOURCE_DIR} ${googletest_BINARY_DIR})
 add_subdirectory(${json_SOURCE_DIR} ${json_BINARY_DIR})
@@ -75,7 +57,3 @@ if (BUILD_TESTING AND (PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR))
     )
     add_subdirectory(test)
 endif()
-
-
-#
-#add_test(NAME test_code COMMAND testexec)
