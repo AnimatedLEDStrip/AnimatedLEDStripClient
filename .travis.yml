@@ -89,6 +89,8 @@ jobs:
         - mkdir -p build/run
         - cd build/run
         - cmake ../..
+        - make
+        - make test_coverage
 
     # Python
 

@@ -1,0 +1,7 @@
+add_executable(animation_data_test AnimationDataTest.cpp)
+
+target_link_libraries(animation_data_test animation_data)
+target_link_libraries(animation_data_test gtest_main)
+target_link_libraries(animation_data_test gcov)
+
+add_test(NAME animationdatatest COMMAND animation_data_test)

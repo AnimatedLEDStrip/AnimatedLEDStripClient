@@ -17,7 +17,7 @@
 #include <sstream>
 #include <vector>
 #include <map>
-#include "external/json/single_include/nlohmann/json.hpp"
+#include "../cmake-build-debug/json-src/single_include/nlohmann/json.hpp"       // TODO: Fix include paths so this is cleaner
 #include "AnimationData.h"
 #include "StripInfo.h"
 
