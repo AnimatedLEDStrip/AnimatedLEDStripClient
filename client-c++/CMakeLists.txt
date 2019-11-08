@@ -32,7 +32,7 @@ option(BUILD_TESTING "Build the testing tree." ON)
 if (BUILD_TESTING AND (PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR))
     enable_testing()
     APPEND_COVERAGE_COMPILER_FLAGS()
-    set(COVERAGE_LCOV_EXCLUDES '/usr/include/*' 'test/*' 'build/*')
+    set(COVERAGE_LCOV_EXCLUDES '/usr/include/*' 'test/*' 'build/run/*')
     SETUP_TARGET_FOR_COVERAGE_LCOV(
             NAME test_with_coverage
             EXECUTABLE test/run_tests
