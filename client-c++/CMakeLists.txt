@@ -15,30 +15,30 @@ find_package(Threads REQUIRED)
 include(CTest)
 
 include(DownloadProject.cmake)
-download_project(PROJ               googletest
-                 GIT_REPOSITORY     https://github.com/google/googletest.git
-                 GIT_TAG            master
+download_project(PROJ googletest
+        GIT_REPOSITORY https://github.com/google/googletest.git
+        GIT_TAG master
         )
 
 
-download_project(PROJ               json
-                 GIT_REPOSITORY     https://github.com/nlohmann/json.git
-                 GIT_TAG            master
+download_project(PROJ json
+        GIT_REPOSITORY https://github.com/nlohmann/json.git
+        GIT_TAG master
         )
 
 include(CodeCoverage.cmake)
 
-option (BUILD_TESTING "Build the testing tree." ON)
+option(BUILD_TESTING "Build the testing tree." ON)
 if (BUILD_TESTING AND (PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR))
     enable_testing()
     APPEND_COVERAGE_COMPILER_FLAGS()
-    set(COVERAGE_LCOV_EXCLUDES '/usr/include/c++/*' 'test/*')
+    set(COVERAGE_LCOV_EXCLUDES '/usr/include/*' 'test/*' 'build/*')
     SETUP_TARGET_FOR_COVERAGE_LCOV(
-            NAME    test_with_coverage
+            NAME test_with_coverage
             EXECUTABLE test/run_tests
     )
     add_subdirectory(test)
-endif()
+endif ()
 
 set(JSON_BuildTests OFF CACHE INTERNAL "")
 
