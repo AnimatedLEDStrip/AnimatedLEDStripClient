@@ -28,13 +28,6 @@ download_project(PROJ               json
 
 include(CodeCoverage.cmake)
 
-set(JSON_BuildTests OFF CACHE INTERNAL "")
-
-add_subdirectory(${googletest_SOURCE_DIR} ${googletest_BINARY_DIR})
-add_subdirectory(${json_SOURCE_DIR} ${json_BINARY_DIR})
-
-add_subdirectory(src)
-
 option (BUILD_TESTING "Build the testing tree." ON)
 if (BUILD_TESTING AND (PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR))
     enable_testing()
@@ -46,3 +39,10 @@ if (BUILD_TESTING AND (PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR))
     )
     add_subdirectory(test)
 endif()
+
+set(JSON_BuildTests OFF CACHE INTERNAL "")
+
+add_subdirectory(${googletest_SOURCE_DIR} ${googletest_BINARY_DIR})
+add_subdirectory(${json_SOURCE_DIR} ${json_BINARY_DIR})
+
+add_subdirectory(src)
