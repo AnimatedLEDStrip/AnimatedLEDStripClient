@@ -9,7 +9,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(THREADS_PREFER_PTHREAD_FLAG_ON)
 
 set(CMAKE_CXX_FLAGS="-g -O0 -Wall -fprofile-arcs -ftest-coverage")
-set(CMAKE_EXE_LINKER_FLAGS="-fprofile-arcs -ftest-coverage")
+set(CMAKE_EXE_LINKER_FLAGS="-lgcov")
 find_package(Threads REQUIRED)
 
 include(CTest)
@@ -35,23 +35,14 @@ add_subdirectory(${json_SOURCE_DIR} ${json_BINARY_DIR})
 
 add_subdirectory(src)
 
-#add_library(animation_data src/AnimationData.cpp)
-#add_library(animation_sender src/AnimationSender.cpp)
-#add_executable(testexec test/AnimationDataTest.cpp)
-#target_link_libraries(testexec animation_sender)
-#target_link_libraries(testexec animation_data)
-#target_link_libraries(testexec Threads::Threads)
-#target_link_libraries(testexec nlohmann_json::nlohmann_json)
-#target_link_libraries(testexec gtest_main)
-
 option (BUILD_TESTING "Build the testing tree." ON)
 if (BUILD_TESTING AND (PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR))
     enable_testing()
     APPEND_COVERAGE_COMPILER_FLAGS()
     set(COVERAGE_LCOV_EXCLUDES '/usr/include/c++/*' 'test/*')
     SETUP_TARGET_FOR_COVERAGE_LCOV(
-            NAME    test_coverage
-            EXECUTABLE test/animation_data_test
+            NAME    test_with_coverage
+            EXECUTABLE test/run_tests
     )
     add_subdirectory(test)
 endif()

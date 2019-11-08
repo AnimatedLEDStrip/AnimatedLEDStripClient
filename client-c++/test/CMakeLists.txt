@@ -1,7 +1,7 @@
-add_executable(animation_data_test run_tests.cpp)
+add_executable(run_tests run_tests.cpp)
 
-target_link_libraries(animation_data_test animation_data)
-target_link_libraries(animation_data_test gtest_main)
-target_link_libraries(animation_data_test gcov)
+target_link_libraries(run_tests animation_data)
+target_link_libraries(run_tests gtest)
+target_link_libraries(run_tests gcov)
 
-add_test(NAME animationdatatest COMMAND animation_data_test)
+add_test(NAME runtests COMMAND run_tests)

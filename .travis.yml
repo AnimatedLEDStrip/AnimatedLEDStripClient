@@ -95,9 +95,9 @@ jobs:
       script:
         - mkdir -p build/run
         - cd build/run
-        - cmake ../..
+        - cmake -DCMAKE_BUILD_TYPE=Debug ../..
         - make
-        - make test_coverage
+        - make test_with_coverage
 
     # Python
 
