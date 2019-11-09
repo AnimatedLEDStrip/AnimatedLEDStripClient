@@ -9,6 +9,3 @@ flags:
       paths: client-ruby
   - cpp:
       paths: client-c++
-
-ignore:
-  - "client-c++/test"
