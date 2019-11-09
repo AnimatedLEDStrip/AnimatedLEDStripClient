@@ -85,9 +85,8 @@ jobs:
       addons:
         apt:
           update: true
-
-      before_install:
-        - sudo apt-get -y install lcov
+          packages:
+            - lcov
 
       before_script:
         - cd client-c++
@@ -99,7 +98,7 @@ jobs:
         - make
         - make test_with_coverage
 
-      after_success: bash <(curl -s https://codecov.io/bash) -F cpp
+      after_success: bash <(curl -s https://codecov.io/bash) -F cpp -f test_with_coverage.info
 
     # Python
 
