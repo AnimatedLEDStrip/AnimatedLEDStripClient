@@ -7,3 +7,5 @@ flags:
       paths: client-go
   - ruby:
       paths: client-ruby
+  - cpp:
+      paths: client-c++
