@@ -39,7 +39,7 @@ namespace {
     TEST(Direction, DirectionFromString) {
         std::string str_f = "FORWARD";
         std::string str_b = "BACKWARD";
-        std::string str = "FORWARD";
+        std::string str = "TEST";
 
         EXPECT_EQ(direction_from_string(str_f.c_str()), FORWARD);
         EXPECT_EQ(direction_from_string(str_b.c_str()), BACKWARD);

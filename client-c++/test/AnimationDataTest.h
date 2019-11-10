@@ -49,6 +49,14 @@ namespace {
         EXPECT_EQ(data.animation, METEOR);
     }
 
+    TEST(AnimationData, AddColor) {
+        AnimationData data = AnimationData();
+        ColorContainer cc = ColorContainer();
+        cc.addColor(0xFFFF);
+        data.addColor(cc);
+        EXPECT_TRUE(data.colors.size() == 1);
+    }
+
     TEST(AnimationData, SetCenter) {
         AnimationData data = AnimationData();
         EXPECT_EQ(data.center, -1);
@@ -128,5 +136,37 @@ namespace {
         EXPECT_EQ(data.start_pixel, 0);
         data.setStartPixel(3);
         EXPECT_EQ(data.start_pixel, 3);
+    }
+
+    TEST(AnimationData, JSON) {
+        AnimationData data = AnimationData();
+
+        data.setAnimation(METEOR);
+
+        ColorContainer cc = ColorContainer();
+        cc.addColor(0xFF);
+        cc.addColor(0xFF00);
+
+        ColorContainer cc2 = ColorContainer();
+        cc2.addColor(0xFF0000);
+
+        data.addColor(cc);
+        data.addColor(cc2);
+        data.setCenter(50);
+        data.setContinuous(NONCONTINUOUS);
+        data.setDelay(10);
+        data.setDelayMod(1.5);
+        data.setDirection(BACKWARD);
+        data.setDistance(45);
+        data.setEndPixel(200);
+        std::string test_str = "TEST";
+        data.setId(test_str);
+        data.setSpacing(5);
+        data.setStartPixel(15);
+
+        char *data_str = new char[1000];
+        data.json(&data_str);
+        EXPECT_STREQ(data_str,
+                     "DATA:{\"animation\":\"METEOR\",\"colors\":[{\"colors\":[255,65280]},{\"colors\":[16711680]}],\"center\":50,\"continuous\":false,\"delay\":10,\"delayMod\":1.500000,\"direction\":\"BACKWARD\",\"distance\":45,\"endPixel\":200,\"id\":\"TEST\",\"spacing\":5,\"startPixel\":15}");
     }
 }

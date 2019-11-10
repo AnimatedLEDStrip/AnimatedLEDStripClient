@@ -123,6 +123,7 @@ namespace {
         std::string anim_stack_of = "STACKOVERFLOW";
         std::string anim_wipe = "WIPE";
         std::string anim_end = "ENDANIMATION";
+        std::string anim_non_anim = "TEST";
 
         EXPECT_EQ(animation_from_string(anim_color.c_str()), COLOR);
         EXPECT_EQ(animation_from_string(anim_custom.c_str()), CUSTOMANIMATION);
@@ -147,6 +148,7 @@ namespace {
         EXPECT_EQ(animation_from_string(anim_stack_of.c_str()), STACKOVERFLOW);
         EXPECT_EQ(animation_from_string(anim_wipe.c_str()), WIPE);
         EXPECT_EQ(animation_from_string(anim_end.c_str()), ENDANIMATION);
+        EXPECT_EQ(animation_from_string(anim_non_anim.c_str()), COLOR);
     }
 
 }

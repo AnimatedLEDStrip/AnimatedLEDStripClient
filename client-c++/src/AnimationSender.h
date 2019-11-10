@@ -23,21 +23,22 @@
 #ifndef ANIMATEDLEDSTRIPCLIENT_ANIMATIONSENDER_H
 #define ANIMATEDLEDSTRIPCLIENT_ANIMATIONSENDER_H
 
-#include <netdb.h>
-#include <netinet/in.h>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <map>
+#include <netdb.h>
+#include <netinet/in.h>
+#include <pthread.h>
+#include <sstream>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
-#include <pthread.h>
-#include <sstream>
 #include <vector>
-#include <map>
-#include "nlohmann/json.hpp"
 #include "AnimationData.h"
-#include "StripInfo.h"
+#include "nlohmann/json.hpp"
+
+struct StripInfo;
 
 class AnimationSender {
 
@@ -80,7 +81,7 @@ public:
 
     int sendAnimation(struct AnimationData &d);
 
-    int endAnimation(const std::string& id);
+    int endAnimation(const std::string &id);
 
     int endAnimation(struct AnimationData &d);
 
@@ -88,6 +89,12 @@ private:
     int connect();
 
     static void *receiverLoop(void *);
+};
+
+struct StripInfo {
+    int numLEDs;
+
+    explicit StripInfo(int led_count) : numLEDs(led_count) {}
 };
 
 #endif // ANIMATEDLEDSTRIPCLIENT_ANIMATIONSENDER_H
