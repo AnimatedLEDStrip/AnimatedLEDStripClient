@@ -1,3 +1,5 @@
+# Copied from https://github.com/bilke/cmake-modules with modifications
+#
 # Copyright (c) 2012 - 2017, Lars Bilke
 # All rights reserved.
 #

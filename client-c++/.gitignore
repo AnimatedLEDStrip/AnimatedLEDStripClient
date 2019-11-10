@@ -6,3 +6,4 @@ CMakeCache.txt
 Makefile
 AnimatedLEDStripClient.cbp
 *.o
+build/
