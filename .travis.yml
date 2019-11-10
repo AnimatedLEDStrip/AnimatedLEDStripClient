@@ -98,7 +98,9 @@ jobs:
         - make
         - make test_with_coverage
 
-      after_success: bash <(curl -s https://codecov.io/bash) -F cpp -f ./client-c++/build/run/test_with_coverage.info
+      after_success:
+        - mv test_with_coverage.info.cleaned test_with_coverage.info
+        - bash <(curl -s https://codecov.io/bash) -F cpp -X gcov
 
     # Python
 
