@@ -2,8 +2,11 @@
 // Created by mnmax on 11/7/2019.
 //
 
+#include "AnimationTest.h"
 #include "AnimationDataTest.h"
 #include "ColorContainerTest.h"
+#include "ContinuousTest.h"
+#include "DirectionTest.h"
 #include "gtest/gtest.h"
 
 
