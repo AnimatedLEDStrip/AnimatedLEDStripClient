@@ -3,6 +3,7 @@
 //
 
 #include "AnimationDataTest.h"
+#include "ColorContainerTest.h"
 #include "gtest/gtest.h"
 
 
