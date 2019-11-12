@@ -38,14 +38,10 @@ namespace {
         EXPECT_STREQ(continuous_string(d), "null");
     }
 
-    TEST(Continuous, ContinuousFromString) {
-        std::string c = "true";
-        std::string nc = "false";
-        std::string d = "null";
-
-        EXPECT_EQ(continuous_from_string(c.c_str()), CONTINUOUS);
-        EXPECT_EQ(continuous_from_string(nc.c_str()), NONCONTINUOUS);
-        EXPECT_EQ(continuous_from_string(d.c_str()), DEFAULT);
+    TEST(Continuous, ContinuousFromBool) {
+        EXPECT_EQ(continuous_from_bool(true), CONTINUOUS);
+        EXPECT_EQ(continuous_from_bool(false), NONCONTINUOUS);
+//        EXPECT_EQ(continuous_from_bool(d.c_str()), DEFAULT);
     }
 
 }

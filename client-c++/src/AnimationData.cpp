@@ -134,12 +134,9 @@ const char *continuous_string(enum Continuous c) {
     }
 }
 
-Continuous continuous_from_string(const char *cont) {
-    if (std::strcmp(cont, "true") == 0)
-        return CONTINUOUS;
-    else if (std::strcmp(cont, "false") == 0)
-        return NONCONTINUOUS;
-    else return DEFAULT;
+Continuous continuous_from_bool(bool cont) {
+    if (cont) return CONTINUOUS;
+    else return NONCONTINUOUS;
 }
 
 const char *direction_string(enum Direction d) {

@@ -17,12 +17,10 @@ Supports clients written Kotlin, Java, C++, Python, Go and Ruby.
 |Language(s)|Send Data|Receive Data|Event Callbacks|
 |-|:-:|:-:|:-:|
 |Kotlin/Java|Yes|Yes|Yes|
-|C++|Yes|Yes*|No|
+|C++|Yes|Yes|No|
 |Python 3|Yes|No|No|
 |Go|Yes|No|No|
 |Ruby|Yes|No|No|
-
-*\*In Development*
 
 Even if a library does not currently support a feature, it will likely be added in the future (if supported by the language).
 

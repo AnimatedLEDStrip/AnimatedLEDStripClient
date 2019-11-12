@@ -39,7 +39,7 @@ AnimationData *get_data_from_json(json data) {
     if (data["continuous"] == nullptr)
         d->setContinuous(DEFAULT);
     else
-        d->setContinuous(continuous_from_string(((std::string) data["continuous"]).c_str()));
+        d->setContinuous(continuous_from_bool(data["continuous"]));
     d->setDelay(data["delay"]);
     d->setDelayMod(data["delayMod"]);
     d->setDirection(direction_from_string(((std::string) data["direction"]).c_str()));

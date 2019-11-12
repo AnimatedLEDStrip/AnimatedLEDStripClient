@@ -66,7 +66,7 @@ enum Continuous {
 
 const char *continuous_string(enum Continuous c);
 
-Continuous continuous_from_string(const char *);
+Continuous continuous_from_bool(bool);
 
 enum Direction {
     FORWARD,

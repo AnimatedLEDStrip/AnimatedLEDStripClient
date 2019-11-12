@@ -21,6 +21,8 @@
  */
 
 #include "AnimationData.h"
+#include "AnimationSender.h"
+#include "nlohmann/json.hpp"
 #include "gtest/gtest.h"
 
 
@@ -168,5 +170,37 @@ namespace {
         data.json(&data_str);
         EXPECT_STREQ(data_str,
                      "DATA:{\"animation\":\"METEOR\",\"colors\":[{\"colors\":[255,65280]},{\"colors\":[16711680]}],\"center\":50,\"continuous\":false,\"delay\":10,\"delayMod\":1.500000,\"direction\":\"BACKWARD\",\"distance\":45,\"endPixel\":200,\"id\":\"TEST\",\"spacing\":5,\"startPixel\":15}");
+    }
+
+    TEST(AnimationData, FromJSON) {
+        std::string data_str = R"({"animation":"METEOR","colors":[{"colors":[255,65280]},{"colors":[16711680]}],"center":50,"continuous":false,"delay":10,"delayMod":1.500000,"direction":"BACKWARD","distance":45,"endPixel":200,"id":"TEST","spacing":5,"startPixel":15})";
+
+        nlohmann::json data_json = nlohmann::json::parse(data_str);
+        AnimationData * data = get_data_from_json(data_json);
+
+        EXPECT_EQ(data->animation, METEOR);
+        EXPECT_TRUE(data->colors.size() == 2);
+        EXPECT_TRUE(data->colors[0].colors.size() == 2);
+        EXPECT_EQ(data->colors[0].colors[0], 0xFF);
+        EXPECT_EQ(data->colors[0].colors[1], 0xFF00);
+        EXPECT_TRUE(data->colors[1].colors.size() == 1);
+        EXPECT_EQ(data->colors[1].colors[0], 0xFF0000);
+        EXPECT_EQ(data->center, 50);
+        EXPECT_EQ(data->continuous, NONCONTINUOUS);
+        EXPECT_EQ(data->delay, 10);
+        EXPECT_EQ(data->delay_mod, 1.5);
+        EXPECT_EQ(data->direction, BACKWARD);
+        EXPECT_EQ(data->distance, 45);
+        EXPECT_EQ(data->end_pixel, 200);
+        EXPECT_STREQ(data->id.c_str(), "TEST");
+        EXPECT_EQ(data->spacing, 5);
+        EXPECT_EQ(data->start_pixel, 15);
+
+        // Test when continuous is null, as this is handled separately from true/false
+        std::string data_str2 = R"({"animation":"METEOR","colors":[],"center":50,"continuous":null,"delay":10,"delayMod":1.500000,"direction":"BACKWARD","distance":45,"endPixel":200,"id":"TEST","spacing":5,"startPixel":15})";
+        nlohmann::json data_json2 = nlohmann::json::parse(data_str2);
+        AnimationData * data2 = get_data_from_json(data_json2);
+
+        EXPECT_EQ(data2->continuous, DEFAULT);
     }
 }

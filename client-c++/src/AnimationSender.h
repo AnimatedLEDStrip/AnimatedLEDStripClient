@@ -38,6 +38,8 @@
 #include "AnimationData.h"
 #include "nlohmann/json.hpp"
 
+using json = nlohmann::json;
+
 struct StripInfo;
 
 class AnimationSender {
@@ -96,5 +98,7 @@ struct StripInfo {
 
     explicit StripInfo(int led_count) : numLEDs(led_count) {}
 };
+
+AnimationData *get_data_from_json(json data);
 
 #endif // ANIMATEDLEDSTRIPCLIENT_ANIMATIONSENDER_H
