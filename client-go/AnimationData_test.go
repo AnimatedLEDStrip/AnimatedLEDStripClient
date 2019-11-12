@@ -142,3 +142,29 @@ func TestAnimationData_SetStartPixel(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestAnimationData_Json(t *testing.T) {
+	data := AnimationData()
+	data.SetAnimation(METEOR)
+	data.SetCenter(50)
+	data.SetContinuous(NONCONTINUOUS)
+	data.SetDelay(10)
+	data.SetDirection(BACKWARD)
+	data.SetDistance(45)
+	data.SetEndPixel(200)
+	data.SetID("TEST")
+	data.SetSpacing(5)
+	data.SetStartPixel(15)
+
+	cc := ColorContainer{}
+	cc.AddColor(0xFF).AddColor(0xFF00)
+	cc2 := ColorContainer{}
+	cc2.AddColor(0xFF0000)
+	data.AddColor(&cc)
+	data.AddColor(&cc2)
+
+	json := data.Json()
+	if json != "DATA:{\"animation\":\"METEOR\",\"colors\":[{\"colors\":[255,65280]},{\"colors\":[16711680]}],\"center\":50,\"continuous\":false,\"delay\":10,\"delayMod\":1.500000,\"direction\":\"BACKWARD\",\"distance\":45,\"endPixel\":200,\"id\":\"TEST\",\"spacing\":5,\"startPixel\":15}" {
+		t.Fail()
+	}
+}
