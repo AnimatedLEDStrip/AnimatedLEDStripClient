@@ -9,3 +9,6 @@ class ColorContainer(object):
         if not isinstance(color, int):
             raise ValueError("Bad data type: color")
         self.colors.append(color)
+
+    def json(self):
+        return "{\"colors\":" + "{}".format(self.colors) + "}"

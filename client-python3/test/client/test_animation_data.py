@@ -1,5 +1,6 @@
 from client.AnimationData import AnimationData
 from client.Animation import *
+from client.ColorContainer import ColorContainer
 from client.Direction import *
 
 
@@ -174,3 +175,32 @@ def test_start_pixel():
         raise AssertionError
     except ValueError:
         pass
+
+
+def test_json():
+    data = AnimationData()
+
+    data.animation = Animation.METEOR
+    data.center = 50
+    data.continuous = False
+    data.delay = 10
+    data.delayMod = 1.5
+    data.direction = Direction.BACKWARD
+    data.distance = 45
+    data.endPixel = 200
+    data.id = "TEST"
+    data.spacing = 5
+    data.startPixel = 15
+
+    cc = ColorContainer()
+    cc.add_color(0xFF)
+    cc.add_color(0xFF00)
+    cc2 = ColorContainer()
+    cc2.add_color(0xFF0000)
+    data.add_color(cc)
+    data.add_color(cc2)
+
+    assert data.json() == "DATA:{\"animation\":\"METEOR\",\"colors\":[{\"colors\":[255, 65280]},{\"colors\":[" \
+                          "16711680]}],\"center\":50,\"continuous\":False,\"delay\":10,\"delayMod\":1.5," \
+                          "\"direction\":\"BACKWARD\",\"distance\":45,\"endPixel\":200,\"id\":\"TEST\",\"spacing\":5," \
+                          "\"startPixel\":15}"

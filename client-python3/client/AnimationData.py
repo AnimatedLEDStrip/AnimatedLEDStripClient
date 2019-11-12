@@ -24,10 +24,18 @@ class AnimationData(object):
             raise ValueError("Bad data type: color")
         self.colors.append(color)
 
+    def colors_json(self):
+        arr_str = ""
+        for color in self.colors:
+            arr_str = arr_str + color.json() + ","
+        return arr_str[:-1]
+
     def json(self):
         if not isinstance(self.animation, Animation):
             raise ValueError("Bad data type: animation")
-        # TODO: add color test
+        for color in self.colors:
+            if not isinstance(color, ColorContainer):
+                raise ValueError("Bad data type: color")
         if not isinstance(self.center, int):
             raise ValueError("Bad data type: center")
         if not isinstance(self.continuous, bool) and self.continuous is not None:
@@ -52,7 +60,7 @@ class AnimationData(object):
         return "DATA:{" + '"animation":"{}","colors":[{}],"center":{},"continuous":{},"delay":{},"delayMod":{},' \
                           '"direction":"{}","distance":{},"endPixel":{},"id":"{}","spacing":{},"startPixel":{}' \
             .format(self.animation.name,
-                    '{"colors":[0]}',
+                    self.colors_json(),
                     str(self.center),
                     "null" if self.continuous is None else str(
                         self.continuous),
