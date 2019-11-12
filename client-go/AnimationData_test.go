@@ -165,6 +165,7 @@ func TestAnimationData_Json(t *testing.T) {
 
 	json := data.Json()
 	if json != "DATA:{\"animation\":\"METEOR\",\"colors\":[{\"colors\":[255,65280]},{\"colors\":[16711680]}],\"center\":50,\"continuous\":false,\"delay\":10,\"delayMod\":1.500000,\"direction\":\"BACKWARD\",\"distance\":45,\"endPixel\":200,\"id\":\"TEST\",\"spacing\":5,\"startPixel\":15}" {
+		t.Error(json)
 		t.Fail()
 	}
 }
