@@ -25,10 +25,13 @@ class AnimationData(object):
         self.colors.append(color)
 
     def colors_json(self):
-        arr_str = ""
-        for color in self.colors:
-            arr_str = arr_str + color.json() + ","
-        return arr_str[:-1]
+        if len(self.colors) == 0:
+            return ""
+        else:
+            arr_str = ""
+            for color in self.colors:
+                arr_str = arr_str + color.json() + ","
+            return arr_str[:-1]
 
     def json(self):
         if not isinstance(self.animation, Animation):

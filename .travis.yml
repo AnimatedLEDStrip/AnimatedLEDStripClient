@@ -74,10 +74,13 @@ jobs:
           on:
             branch: master
 
+
     # C++
 
     - stage: test
       language: c++
+      compiler:
+        - gcc
 
       git:
         submodules: true
@@ -102,6 +105,7 @@ jobs:
         - mv test_with_coverage.info.cleaned test_with_coverage.info
         - bash <(curl -s https://codecov.io/bash) -F cpp -X gcov
 
+
     # Python
 
     - stage: test
@@ -114,6 +118,7 @@ jobs:
       install: pip install tox tox-travis coverage
       script: tox
       after_success: bash <(curl -s https://codecov.io/bash) -F python3 -s ./client-python3
+
 
     # Go
 
@@ -134,7 +139,8 @@ jobs:
 
       after_success: bash <(curl -s https://codecov.io/bash) -F go
 
-      # Ruby
+
+    # Ruby
 
     - stage: test
       language: ruby
@@ -151,3 +157,25 @@ jobs:
         - gem install bundler --no-document
 
       script: bundle exec rake
+
+
+    # Dart
+
+    - stage: test
+      language: dart
+
+      before_install:
+        - cd client-dart
+
+      before_script:
+        - pub global activate coverage
+
+      script:
+        - pub run test
+
+      after_success:
+        - dart --disable-service-auth-codes --enable-vm-service=9292 --pause-isolates-on-exit test/test_all.dart &
+        - pub global run coverage:collect_coverage --port=9292 --out=coverage.json --wait-paused --resume-isolates
+        - pub global run coverage:format_coverage --lcov --packages=.packages --in=coverage.json --out=lcov.info --report-on=lib
+        - rm coverage.json
+        - bash <(curl -s https://codecov.io/bash) -F dart

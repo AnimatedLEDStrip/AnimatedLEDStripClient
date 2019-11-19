@@ -1,11 +1,13 @@
 flags:
-  - python3:
-      paths: client-python3
   - kotlinjava:
       paths: client-kotlin-java
+  - cpp:
+      paths: client-c++
+  - python3:
+      paths: client-python3
   - go:
       paths: client-go
   - ruby:
       paths: client-ruby
-  - cpp:
-      paths: client-c++
+  - dart:
+      paths: client-dart
