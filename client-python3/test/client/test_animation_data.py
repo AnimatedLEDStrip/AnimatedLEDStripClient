@@ -204,3 +204,41 @@ def test_json():
                           "16711680]}],\"center\":50,\"continuous\":False,\"delay\":10,\"delayMod\":1.5," \
                           "\"direction\":\"BACKWARD\",\"distance\":45,\"endPixel\":200,\"id\":\"TEST\",\"spacing\":5," \
                           "\"startPixel\":15}"
+
+
+def test_json_no_cc():
+    data = AnimationData()
+
+    data.animation = Animation.METEOR
+    data.center = 50
+    data.continuous = False
+    data.delay = 10
+    data.delayMod = 1.5
+    data.direction = Direction.BACKWARD
+    data.distance = 45
+    data.endPixel = 200
+    data.id = "TEST"
+    data.spacing = 5
+    data.startPixel = 15
+
+    assert data.json() == "DATA:{\"animation\":\"METEOR\",\"colors\":[],\"center\":50,\"continuous\":False," \
+                          "\"delay\":10,\"delayMod\":1.5,\"direction\":\"BACKWARD\",\"distance\":45," \
+                          "\"endPixel\":200,\"id\":\"TEST\",\"spacing\":5,\"startPixel\":15}"
+
+
+def test_add_bad_color():
+    data = AnimationData()
+
+    try:
+        data.add_color(-1)
+        raise AssertionError
+    except ValueError:
+        pass
+
+    data.colors = [-1]
+
+    try:
+        data.json()
+        raise AssertionError
+    except ValueError:
+        pass
