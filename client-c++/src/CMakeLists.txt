@@ -26,3 +26,10 @@ target_include_directories(animation_sender PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(animation_sender nlohmann_json::nlohmann_json)
 target_link_libraries(animation_sender Threads::Threads)
 target_compile_options(animation_sender PUBLIC -Wall -pedantic)
+
+add_library(running_animation_map RunningAnimationMap.cpp)
+target_include_directories(running_animation_map PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(running_animation_map Threads::Threads)
+target_compile_options(running_animation_map PUBLIC -Wall -pedantic)
+
+

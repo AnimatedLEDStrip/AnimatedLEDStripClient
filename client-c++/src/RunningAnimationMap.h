@@ -20,18 +20,39 @@
  *  THE SOFTWARE.
  */
 
-#include "AnimationTest.h"
-#include "AnimationDataTest.h"
-#include "ColorContainerTest.h"
-#include "ContinuousTest.h"
-#include "DirectionTest.h"
-#include "RunningAnimationMapTest.h"
-#include "StripInfoTest.h"
-#include "gtest/gtest.h"
+#ifndef ANIMATEDLEDSTRIPCLIENT_RUNNINGANIMATIONMAP_H
+#define ANIMATEDLEDSTRIPCLIENT_RUNNINGANIMATIONMAP_H
+
+#include <map>
+#include <shared_mutex>
+#include <string>
+#include <vector>
+#include "AnimationData.h"
+
+class RunningAnimationMap {
+    std::map<std::string, AnimationData *> *running_animations;
+    mutable std::shared_mutex *rwlock{};
+
+public:
+    RunningAnimationMap() {
+        running_animations = new std::map<std::string, AnimationData *>();
+        rwlock = new std::shared_mutex();
+    }
+
+    AnimationData *load(const std::string &id);
+
+    void insert(const std::string &id, AnimationData *data);
+
+    void insert(const std::pair<std::string, AnimationData *> &);
+
+    void erase(const std::string &id);
+
+    std::vector<std::string> *keys();
+
+    int count(const std::string &id);
+
+    int size();
+};
 
 
-int main(int argc, char **argv) {
-    testing::InitGoogleTest(&argc, argv);
-
-    return RUN_ALL_TESTS();
-}
+#endif //ANIMATEDLEDSTRIPCLIENT_RUNNINGANIMATIONMAP_H

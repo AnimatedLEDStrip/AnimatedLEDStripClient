@@ -21,6 +21,7 @@ add_executable(run_tests run_tests.cpp)
 
 target_link_libraries(run_tests animation_data)
 target_link_libraries(run_tests animation_sender)
+target_link_libraries(run_tests running_animation_map)
 target_link_libraries(run_tests gtest)
 target_link_libraries(run_tests gcov)
 

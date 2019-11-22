@@ -37,6 +37,7 @@
 #include <vector>
 #include "AnimationData.h"
 #include "nlohmann/json.hpp"
+#include "RunningAnimationMap.h"
 
 using json = nlohmann::json;
 
@@ -47,19 +48,19 @@ class AnimationSender {
     std::string host_name;
     int socket_desc;    // socket descriptor
     int port_num;
-    struct sockaddr_in sa;
+    struct sockaddr_in sa{};
     bool running = false;
 
-    pthread_t receiver_handle;
+    pthread_t receiver_handle{};
 
-    StripInfo *info;
+    StripInfo *info{};
 
 
 public:
-    std::map<std::string, AnimationData *> *running_animations;     // TODO: Make thread safe
+    RunningAnimationMap *running_animations;
 
     AnimationSender(const std::string &host, int port) {
-        running_animations = new std::map<std::string, AnimationData *>;
+        running_animations = new RunningAnimationMap;
         host_name = host;
         port_num = port;
         if ((socket_desc = socket(AF_INET, SOCK_STREAM, 0)) < 0) {

@@ -88,8 +88,15 @@ jobs:
       addons:
         apt:
           update: true
+          sources:
+            - ubuntu-toolchain-r-test
           packages:
             - lcov
+            - g++-6
+
+      env:
+        - CC=gcc-6
+        - CXX=g++-6
 
       before_script:
         - cd client-c++

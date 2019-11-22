@@ -84,7 +84,7 @@ void *AnimationSender::receiverLoop(void *args) {
                 if (d->animation == ENDANIMATION)
                     sender.running_animations->erase(d->id);
                 else
-                    sender.running_animations->insert(std::pair<std::string, AnimationData *>(d->id, d));
+                    sender.running_animations->insert(d->id, d);
             }
         }
         for (int i = 0; i < MAX_LEN; i++) buff[i] = 0;
@@ -135,11 +135,11 @@ int AnimationSender::sendAnimation(struct AnimationData &d) {
     return 0;
 }
 
-int AnimationSender::endAnimation(const std::string& id) {
+int AnimationSender::endAnimation(const std::string &id) {
     if (running_animations->count(id) == 0)
         return 1;
     else {
-        AnimationData * d = (*running_animations)[id];
+        AnimationData *d = running_animations->load(id);
         d->setAnimation(ENDANIMATION);
         char *buff = new char[MAX_LEN];
 
