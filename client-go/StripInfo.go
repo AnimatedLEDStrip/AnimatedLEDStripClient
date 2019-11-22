@@ -22,38 +22,6 @@ package animatedledstrip
  *  THE SOFTWARE.
  */
 
-import "testing"
-
-func TestDirection_String(t *testing.T) {
-	d := FORWARD
-	if d.String() != "FORWARD" {
-		t.Fail()
-	}
-
-	d = BACKWARD
-	if d.String() != "BACKWARD" {
-		t.Fail()
-	}
-
-	d = -1
-	if d.String() != "FORWARD" {
-		t.Fail()
-	}
-}
-
-func TestDirection_DirectionFromString(t *testing.T) {
-	d := "FORWARD"
-	if DirectionFromString(d) != FORWARD {
-		t.Fail()
-	}
-
-	d = "BACKWARD"
-	if DirectionFromString(d) != BACKWARD {
-		t.Fail()
-	}
-
-	d = "NONDIRECTION"
-	if DirectionFromString(d) != FORWARD {
-		t.Fail()
-	}
+type StripInfo struct {
+	NumLEDs int
 }

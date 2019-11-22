@@ -1,6 +1,9 @@
 package animatedledstrip
 
 /*
+ *  Modified code from
+ *  https://gist.github.com/deckarep/45527da11a10ccb0ca127ca7a82027e2#file-regular_map-go
+ *
  *  Copyright (c) 2019 AnimatedLEDStrip
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,38 +25,44 @@ package animatedledstrip
  *  THE SOFTWARE.
  */
 
-import "testing"
+import "sync"
 
-func TestDirection_String(t *testing.T) {
-	d := FORWARD
-	if d.String() != "FORWARD" {
-		t.Fail()
-	}
+type RunningAnimationMap struct {
+	sync.RWMutex
+	internal map[string]*animationData
+}
 
-	d = BACKWARD
-	if d.String() != "BACKWARD" {
-		t.Fail()
-	}
-
-	d = -1
-	if d.String() != "FORWARD" {
-		t.Fail()
+func NewRunningAnimationMap() *RunningAnimationMap {
+	return &RunningAnimationMap{
+		internal: make(map[string]*animationData),
 	}
 }
 
-func TestDirection_DirectionFromString(t *testing.T) {
-	d := "FORWARD"
-	if DirectionFromString(d) != FORWARD {
-		t.Fail()
-	}
+func (rm *RunningAnimationMap) Load(key string) (value *animationData, ok bool) {
+	rm.RLock()
+	result, ok := rm.internal[key]
+	rm.RUnlock()
+	return result, ok
+}
 
-	d = "BACKWARD"
-	if DirectionFromString(d) != BACKWARD {
-		t.Fail()
-	}
+func (rm *RunningAnimationMap) Delete(key string) {
+	rm.Lock()
+	delete(rm.internal, key)
+	rm.Unlock()
+}
 
-	d = "NONDIRECTION"
-	if DirectionFromString(d) != FORWARD {
-		t.Fail()
+func (rm *RunningAnimationMap) Store(key string, value *animationData) {
+	rm.Lock()
+	rm.internal[key] = value
+	rm.Unlock()
+}
+
+func (rm *RunningAnimationMap) Keys() []string {
+	rm.RLock()
+	keys := make([]string, 0, len(rm.internal))
+	for key := range rm.internal {
+		keys = append(keys, key)
 	}
+	rm.RUnlock()
+	return keys
 }
