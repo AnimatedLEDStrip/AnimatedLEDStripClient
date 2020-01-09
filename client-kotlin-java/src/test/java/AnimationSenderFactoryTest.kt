@@ -303,7 +303,7 @@ class AnimationSenderFactoryTest {
             }
         }
 
-        AnimationSenderFactory.create("0.0.0.0", port, connectAttemptLimit = 2)
+        AnimationSenderFactory.create("0.0.0.0", port)
             .setOnConnectCallback {
                 testBoolean = true
             }
@@ -344,7 +344,7 @@ class AnimationSenderFactoryTest {
             .level(Level.WARNING)
             .activate()
 
-        AnimationSenderFactory.create("0.0.0.0", port, connectAttemptLimit = 2)
+        AnimationSenderFactory.create("0.0.0.0", port)
             .start()
 
         delayBlocking(25000)
