@@ -254,33 +254,37 @@ object AnimationSenderFactory {
         }
 
         /**
-         * Set this connection's IP address. Starts/restarts connection.
+         * Set this connection's IP address.
+         * Will start/restart connection if start = true or if start = null
+         * and connection is running.
          *
          * @param address A string representing an IPv4 address
          */
-        fun setIPAddress(address: String): AnimationSender {
+        fun setIPAddress(address: String, start: Boolean? = null): AnimationSender {
             GlobalScope.launch {
                 if (started) {
                     end()
                     delayBlocking(2000)
                 }
                 ipAddress = address
-                start()
+                if (start ?: started) start()
             }
             return this
         }
 
         /**
-         * Set this connection's port. Starts/restarts connection.
+         * Set this connection's port.
+         * Will start/restart connection if start = true or if start = null
+         * and connection is running.
          */
-        fun setPort(newPort: Int): AnimationSender {
+        fun setPort(newPort: Int, start: Boolean? = null): AnimationSender {
             GlobalScope.launch {
                 if (started) {
                     end()
                     delayBlocking(2000)
                 }
                 port = newPort
-                start()
+                if (start ?: started) start()
             }
             return this
         }
