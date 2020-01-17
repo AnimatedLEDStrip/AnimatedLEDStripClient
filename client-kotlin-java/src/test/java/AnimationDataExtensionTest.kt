@@ -1,7 +1,5 @@
-package animatedledstrip.test
-
 /*
- *  Copyright (c) 2019 AnimatedLEDStrip
+ *  Copyright (c) 2018-2020 AnimatedLEDStrip
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -22,6 +20,7 @@ package animatedledstrip.test
  *  THE SOFTWARE.
  */
 
+package animatedledstrip.test
 
 import animatedledstrip.animationutils.*
 import animatedledstrip.client.AnimationSenderFactory
