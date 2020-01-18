@@ -23,6 +23,8 @@ stages:
     if: branch =~ ^v.*-py$
   - name: deploy ruby
     if: branch =~ ^v.*-rb$
+  - name: deploy dart
+    if: branch =~ ^v.*-dart$
 
 jobs:
   include:
