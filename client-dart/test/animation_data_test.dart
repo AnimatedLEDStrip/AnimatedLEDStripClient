@@ -1,4 +1,4 @@
-import 'package:animatedledstripclient/client.dart';
+import 'package:animatedledstripclient/animatedledstripclient.dart';
 import 'package:test/test.dart';
 
 void main() {

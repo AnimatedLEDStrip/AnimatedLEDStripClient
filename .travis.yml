@@ -226,3 +226,19 @@ jobs:
         - pub global run coverage:format_coverage --lcov --packages=.packages --in=coverage.json --out=lcov.info --report-on=lib
         - rm coverage.json
         - bash <(curl -s https://codecov.io/bash) -F dart
+
+    - stage: deploy dart
+      language: dart
+
+      before_install:
+        - cd client-dart
+
+      before_deploy:
+        - mkdir -p ~/.pub-cache
+        - echo $DART_CREDENTIALS > ~/.pub-cache/credentials.json
+
+      install: skip
+      script: skip
+      deploy:
+        - provider: script
+          script: pub publish

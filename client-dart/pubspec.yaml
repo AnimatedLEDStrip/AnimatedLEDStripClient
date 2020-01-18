@@ -1,6 +1,6 @@
 name: animatedledstripclient
 description: Client library for connecting to an AnimatedLEDStripServer
-# version: 1.0.0
+version: 0.6.0
 homepage: https://github.com/AnimatedLEDStrip
 author: Max Narvaez <mnmax.narvaez3@gmail.com>
 
