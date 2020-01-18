@@ -21,6 +21,8 @@ stages:
     if: branch =~ ^v.*-kt$
   - name: deploy python
     if: branch =~ ^v.*-py$
+  - name: deploy ruby
+    if: branch =~ ^v.*-rb$
 
 jobs:
   include:
@@ -204,6 +206,26 @@ jobs:
         - gem install bundler --no-document
 
       script: bundle exec rake
+
+    - stage: deploy ruby
+      language: ruby
+
+      rvm:
+        - 2.6.5
+
+      before_install:
+        - cd client-ruby
+        - gem update --system
+        - gem install bundler --no-document
+
+      install: skip
+      script: skip
+      deploy:
+        - provider: rubygems
+          api_key: $RUBYGEMS_KEY
+          gem: animatedledstrip-client
+          on:
+            all_branches: true
 
 
     # Dart
