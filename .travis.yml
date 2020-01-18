@@ -265,4 +265,6 @@ jobs:
       script: skip
       deploy:
         - provider: script
-          script: pub publish
+          script: pub publish -f
+          on:
+            all_branches: true

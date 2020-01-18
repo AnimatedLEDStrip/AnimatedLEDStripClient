@@ -19,7 +19,7 @@ Supports clients written Kotlin, Java, C++, Python, Go, Ruby and Dart.
 |-|:-:|:-:|:-:|
 |Kotlin/Java|Yes|Yes|Yes|
 |C++|Yes|Yes|No|
-|Dart|Yes|No|No|
+|Dart|Yes|Yes|No|
 |Go|Yes|Yes|No|
 |Python 3|Yes|No|No|
 |Ruby|Yes|No|No|
