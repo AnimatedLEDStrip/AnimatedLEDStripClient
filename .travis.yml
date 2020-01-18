@@ -15,8 +15,12 @@ branches:
 
 stages:
   - name: test
-  - name: deploy
+  - name: deploy kotlin snapshot
     if: branch = master AND type != pull_request
+  - name: deploy kotlin
+    if: branch =~ ^v.*-kt$
+  - name: deploy python
+    if: branch =~ ^v.*-py$
 
 jobs:
   include:
@@ -33,7 +37,7 @@ jobs:
       install: skip
       after_success: bash <(curl -s https://codecov.io/bash) -F kotlinjava -s ./target/site/jacoco/
 
-    - stage: deploy
+    - stage: deploy kotlin
       language: java
       jdk: openjdk9
 
@@ -46,7 +50,7 @@ jobs:
         - provider: script
           script: mvn --settings .maven.xml site -DskipTests=true -B && git add dokka
           on:
-            tags: true
+            all_branches: true
         - provider: pages
           skip-cleanup: true
           github-token: $GITHUB_TOKEN
@@ -54,9 +58,9 @@ jobs:
           verbose: true
           local_dir: ./dokka
           on:
-            tags: true
+            all_branches: true
 
-    - stage: deploy
+    - stage: deploy kotlin
       language: java
       jdk: openjdk9
 
@@ -66,13 +70,31 @@ jobs:
         - echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import
         - echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
 
-      script: skip
       install: skip
+      script: skip
       deploy:
         - provider: script
           script: mvn deploy --settings .maven.xml -DskipTests=true -B
           on:
-            branch: master
+            all_branches: true
+
+    - stage: deploy kotlin snapshot
+      language: java
+      jdk: openjdk9
+
+      before_script:
+        - cd client-kotlin-java
+      before_install:
+        - echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import
+        - echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
+
+      install: skip
+      script: skip
+      deploy:
+        - provider: script
+          script: mvn deploy --settings .maven.xml -DskipTests=true -B
+          on:
+            all_branches: true
 
 
     # C++
@@ -125,6 +147,24 @@ jobs:
       install: pip install tox tox-travis coverage
       script: tox
       after_success: bash <(curl -s https://codecov.io/bash) -F python3 -s ./client-python3
+
+    - stage: deploy python
+      language: python
+      python: 3.7
+
+      before_script:
+        - cd client-python3
+
+      install: skip
+      script: skip
+      deploy:
+        - provider: pypi
+          user: "__token__"
+          password: $PYPI_TOKEN
+          distributions: "sdist bdist_wheel"
+          skip_existing: true
+          on:
+            all_branches: true
 
 
     # Go
