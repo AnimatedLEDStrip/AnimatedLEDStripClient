@@ -42,22 +42,24 @@ class AnimationSender {
 
   void _setStripInfo(String data) {
     var jsonData = jsonDecode(data.substring(5));
+
     var numLEDs = jsonData['numLEDs'];
     var pin = jsonData['pin'];
     var imageDebugging = jsonData['imageDebugging'];
     var fileName = jsonData['fileName'];
-    var rendersBeforeSave = jsonData['rendersBeforeSave'];
+    var renderCnt = jsonData['rendersBeforeSave'];
     var threadCount = jsonData['threadCount'];
+
     // non-nullable properties
     if (numLEDs == null || numLEDs.runtimeType != int) return;
     if (imageDebugging == null || imageDebugging.runtimeType != bool) return;
+
     // nullable properties
     if (pin.runtimeType != int && pin != null) return;
     if (fileName.runtimeType != String && fileName != null) return;
-    if (rendersBeforeSave.runtimeType != int && rendersBeforeSave != null) {
-      return;
-    }
+    if (renderCnt.runtimeType != int && renderCnt != null) return;
     if (threadCount.runtimeType != int && threadCount != null) return;
+
     stripInfo = StripInfo(
         jsonData['numLEDs'],
         jsonData['pin'],
@@ -84,7 +86,14 @@ class AnimationSender {
       for (var token in tokens) {
         if (token == "") continue;
         if (token.startsWith("INFO:")) _setStripInfo(token);
-        running_animations.put(AnimationData().fromJson(token));
+        if (token.startsWith("DATA:")) {
+          var anim = AnimationData().fromJson(token);
+          if (anim.animation == Animation.ENDANIMATION) {
+            running_animations.delete(anim.id);
+          } else {
+            running_animations.put(AnimationData().fromJson(token));
+          }
+        }
       }
     }
   }
