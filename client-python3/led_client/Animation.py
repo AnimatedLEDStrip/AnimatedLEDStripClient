@@ -18,16 +18,33 @@
 #   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #   THE SOFTWARE.
 
-from client.ColorContainer import ColorContainer
+from enum import Enum, auto
 
 
-def test_colorcontainer():
-    color = ColorContainer()
-
-    color.add_color(0xFF)
-
-    try:
-        color.add_color(None)
-        raise AssertionError
-    except ValueError:
-        pass
+class Animation(Enum):
+    COLOR = auto()
+    CUSTOMANIMATION = auto()
+    CUSTOMREPETITIVEANIMATION = auto()
+    ALTERNATE = auto()
+    BOUNCE = auto()
+    BOUNCETOCOLOR = auto()
+    CATTOY = auto()
+    CATTOYTOCOLOR = auto()
+    FADETOCOLOR = auto()
+    FIREWORKS = auto()
+    METEOR = auto()
+    MULTIPIXELRUN = auto()
+    MULTIPIXELRUNTOCOLOR = auto()
+    RIPPLE = auto()
+    PIXELMARATHON = auto()
+    PIXELRUN = auto()
+    SMOOTHCHASE = auto()
+    SMOOTHFADE = auto()
+    SPARKLE = auto()
+    SPARKLEFADE = auto()
+    SPARKLETOCOLOR = auto()
+    SPLAT = auto()
+    STACK = auto()
+    STACKOVERFLOW = auto()
+    WIPE = auto()
+    ENDANIMATION = auto()

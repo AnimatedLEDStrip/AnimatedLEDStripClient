@@ -18,15 +18,11 @@
 #   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #   THE SOFTWARE.
 
-class ColorContainer(object):
+from led_client import AnimationSender
 
-    def __init__(self):
-        self.colors = []
 
-    def add_color(self, color):
-        if not isinstance(color, int):
-            raise ValueError("Bad data type: color")
-        self.colors.append(color)
+def test_constructor():
+    sender = AnimationSender("10.0.0.254", 5)
 
-    def json(self):
-        return "{\"colors\":" + "{}".format(self.colors) + "}"
+    assert sender.address == "10.0.0.254"
+    assert sender.port == 5

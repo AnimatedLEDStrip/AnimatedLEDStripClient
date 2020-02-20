@@ -18,10 +18,7 @@
 #   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #   THE SOFTWARE.
 
-from client.AnimationData import AnimationData
-from client.Animation import *
-from client.ColorContainer import ColorContainer
-from client.Direction import *
+from led_client import *
 
 
 def test_constructor():
@@ -35,7 +32,7 @@ def test_constructor():
     assert data.direction == Direction.FORWARD
     assert data.distance == -1
     assert data.endPixel == -1
-    assert data.id == ""
+    assert data.id == ''
     assert data.spacing == -1
     assert data.startPixel == 0
 
@@ -158,8 +155,8 @@ def test_endpixel():
 def test_id():
     data = AnimationData()
 
-    data.id = "TEST"
-    assert data.id == "TEST"
+    data.id = 'TEST'
+    assert data.id == 'TEST'
 
     try:
         data.id = 5
@@ -208,7 +205,7 @@ def test_json():
     data.direction = Direction.BACKWARD
     data.distance = 45
     data.endPixel = 200
-    data.id = "TEST"
+    data.id = 'TEST'
     data.spacing = 5
     data.startPixel = 15
 
@@ -220,10 +217,10 @@ def test_json():
     data.add_color(cc)
     data.add_color(cc2)
 
-    assert data.json() == "DATA:{\"animation\":\"METEOR\",\"colors\":[{\"colors\":[255, 65280]},{\"colors\":[" \
-                          "16711680]}],\"center\":50,\"continuous\":False,\"delay\":10,\"delayMod\":1.5," \
-                          "\"direction\":\"BACKWARD\",\"distance\":45,\"endPixel\":200,\"id\":\"TEST\",\"spacing\":5," \
-                          "\"startPixel\":15}"
+    assert data.json() == 'DATA:{"animation":"METEOR","colors":[{"colors":[255, 65280]},{"colors":[' \
+                          '16711680]}],"center":50,"continuous":False,"delay":10,"delayMod":1.5,' \
+                          '"direction":"BACKWARD","distance":45,"endPixel":200,"id":"TEST","spacing":5,' \
+                          '"startPixel":15}'
 
 
 def test_json_no_cc():
@@ -237,13 +234,13 @@ def test_json_no_cc():
     data.direction = Direction.BACKWARD
     data.distance = 45
     data.endPixel = 200
-    data.id = "TEST"
+    data.id = 'TEST'
     data.spacing = 5
     data.startPixel = 15
 
-    assert data.json() == "DATA:{\"animation\":\"METEOR\",\"colors\":[],\"center\":50,\"continuous\":False," \
-                          "\"delay\":10,\"delayMod\":1.5,\"direction\":\"BACKWARD\",\"distance\":45," \
-                          "\"endPixel\":200,\"id\":\"TEST\",\"spacing\":5,\"startPixel\":15}"
+    assert data.json() == 'DATA:{"animation":"METEOR","colors":[],"center":50,"continuous":False,' \
+                          '"delay":10,"delayMod":1.5,"direction":"BACKWARD","distance":45,' \
+                          '"endPixel":200,"id":"TEST","spacing":5,"startPixel":15}'
 
 
 def test_add_bad_color():
@@ -262,3 +259,15 @@ def test_add_bad_color():
         raise AssertionError
     except ValueError:
         pass
+
+
+def test_from_json():
+    json_data = 'DATA:{"animation":"METEOR","colors":[{"colors":[255]}],"center":50,"continuous":false,' \
+                '"delay":10,"delayMod":1.5,"direction":"BACKWARD","distance":45,' \
+                '"endPixel":200,"id":"TEST","spacing":5,"startPixel":15}'
+
+    data = AnimationData()
+    data.from_json(json_data)
+    assert data.json() == 'DATA:{"animation":"METEOR","colors":[{"colors":[255]}],"center":50,"continuous":False,' \
+                          '"delay":10,"delayMod":1.5,"direction":"BACKWARD","distance":45,' \
+                          '"endPixel":200,"id":"TEST","spacing":5,"startPixel":15}'

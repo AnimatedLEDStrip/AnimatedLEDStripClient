@@ -18,22 +18,25 @@
 #   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #   THE SOFTWARE.
 
-import socket
 
+class ColorContainer(object):
 
-class AnimationSender(object):
+    def __init__(self):
+        self.colors = []
 
-    def __init__(self, ip_address, port_num):
-        self.address = ip_address
-        self.port = port_num
-        self.connection = socket.socket()
+    def add_color(self, color):
+        if not isinstance(color, int):
+            raise ValueError('Bad data type: color')
+        self.colors.append(color)
 
-    def start(self):
-        self.connection = socket.create_connection((self.address, self.port))
+    def json(self):
+        return '{"colors":' + '{}'.format(self.colors) + '}'
 
-    def end(self):
-        self.connection.close()
+    def from_json(self, input_json):
+        for c in input_json.get('colors', []):
+            if not isinstance(c, int):
+                raise ValueError('Bad data type for color: {}'.format(type(c)))
+            self.add_color(c)
 
-    def send_animation(self, animation_json):
-        json = bytearray(animation_json, "utf-8")
-        self.connection.send(json)
+        return self
+

@@ -18,32 +18,36 @@
 #   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #   THE SOFTWARE.
 
-from enum import Enum, auto
+import json
+
+from led_client import ColorContainer
 
 
-class Animation(Enum):
-    COLOR = auto()
-    CUSTOMANIMATION = auto()
-    CUSTOMREPETITIVEANIMATION = auto()
-    ALTERNATE = auto()
-    BOUNCE = auto()
-    BOUNCETOCOLOR = auto()
-    CATTOY = auto()
-    CATTOYTOCOLOR = auto()
-    FADETOCOLOR = auto()
-    FIREWORKS = auto()
-    METEOR = auto()
-    MULTIPIXELRUN = auto()
-    MULTIPIXELRUNTOCOLOR = auto()
-    RIPPLE = auto()
-    PIXELMARATHON = auto()
-    PIXELRUN = auto()
-    SMOOTHCHASE = auto()
-    SMOOTHFADE = auto()
-    SPARKLE = auto()
-    SPARKLEFADE = auto()
-    SPARKLETOCOLOR = auto()
-    SPLAT = auto()
-    STACK = auto()
-    STACKOVERFLOW = auto()
-    WIPE = auto()
+def test_color_container():
+    color = ColorContainer()
+
+    color.add_color(0xFF)
+
+    assert color.json() == '{"colors":[255]}'
+
+    try:
+        color.add_color(None)
+        raise AssertionError
+    except ValueError:
+        pass
+
+
+def test_from_json():
+    color_json = json.loads('{"colors":[255]}')
+    color = ColorContainer()
+
+    color.from_json(color_json)
+
+    assert color.json() == '{"colors":[255]}'
+
+    color_json = json.loads('{"colors":["test"]}')
+    try:
+        color.from_json(color_json)
+        raise AssertionError
+    except ValueError:
+        pass
