@@ -8,10 +8,11 @@
 |Go|[![](https://godoc.org/github.com/AnimatedLEDStrip/AnimatedLEDStripClient/client-go?status.svg)](http://godoc.org/github.com/AnimatedLEDStrip/AnimatedLEDStripClient/client-go)|[![codecov](https://codecov.io/gh/AnimatedLEDStrip/AnimatedLEDStripClient/branch/master/graph/badge.svg?flag=go)](https://codecov.io/gh/AnimatedLEDStrip/AnimatedLEDStripClient)||
 |Python 3||[![codecov](https://codecov.io/gh/AnimatedLEDStrip/AnimatedLEDStripClient/branch/master/graph/badge.svg?flag=python3)](https://codecov.io/gh/AnimatedLEDStrip/AnimatedLEDStripClient)|[![PyPI](https://img.shields.io/pypi/v/animatedledstrip-client.svg)](https://pypi.python.org/pypi/animatedledstrip-client)|
 |Ruby||[![codecov](https://codecov.io/gh/AnimatedLEDStrip/AnimatedLEDStripClient/branch/master/graph/badge.svg?flag=ruby)](https://codecov.io/gh/AnimatedLEDStrip/AnimatedLEDStripClient)|[![Gem Version](https://badge.fury.io/rb/animatedledstrip-client.svg)](https://badge.fury.io/rb/animatedledstrip-client)|
+|Rust||[![codecov](https://codecov.io/gh/AnimatedLEDStrip/AnimatedLEDStripClient/branch/master/graph/badge.svg?flag=rust)](https://codecov.io/gh/AnimatedLEDStrip/AnimatedLEDStripClient)||
 
 # AnimatedLEDStripClient
 This is a set of helper libraries for connecting to an [AnimatedLEDStripServer](https://github.com/AnimatedLEDStrip/AnimatedLEDStripServer) from clients, allowing the client to send animations to the server and (if supported) receive currently running animations from the server.
-Supports clients written Kotlin, Java, C++, Python, Go, Ruby and Dart.
+Supports clients written Kotlin, Java, C++, Python, Go, Ruby, Dart and Rust.
 
 ## Supported Functionality by Library
 
@@ -23,6 +24,7 @@ Supports clients written Kotlin, Java, C++, Python, Go, Ruby and Dart.
 |Go|Yes|Yes|No|
 |Python 3|Yes|Yes|No|
 |Ruby|Yes|No|No|
+|Rust|Yes|No|No|
 
 
 Even if a library does not currently support a feature, it will likely be added in the future (if supported by the language).

@@ -11,3 +11,5 @@ flags:
       paths: client-ruby
   - dart:
       paths: client-dart
+  - rust:
+      paths: client-rust

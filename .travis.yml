@@ -268,3 +268,31 @@ jobs:
           script: pub publish -f
           on:
             all_branches: true
+
+    # Rust
+
+    - stage: test
+      language: rust
+
+      cache: cargo
+
+      before_cache:
+        - cargo install cargo-tarpaulin
+
+      before_install:
+        - cd client-rust
+        - cargo install cargo-tarpaulin
+
+      addons:
+        apt:
+          packages:
+            - libssl-dev
+
+      script:
+        - cargo clean
+        - cargo build
+        - cargo test
+
+      after_success:
+        - cargo tarpaulin --out Xml
+        - bash <(curl -s https://codecov.io/bash) -F rust
