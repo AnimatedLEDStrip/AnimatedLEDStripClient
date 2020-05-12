@@ -19,35 +19,54 @@
 #   THE SOFTWARE.
 
 import json
+from unittest import mock
 
 from led_client import ColorContainer
 
 
-def test_color_container():
+def test_add_color():
     color = ColorContainer()
 
     color.add_color(0xFF)
+    assert color.colors == [255]
 
-    assert color.json() == '{"colors":[255]}'
+    with mock.patch('led_client.global_vars.STRICT_TYPE_CHECKING', False):
+        # noinspection PyTypeChecker
+        color.add_color(None)
+    assert color.colors == [255]
 
     try:
+        # noinspection PyTypeChecker
         color.add_color(None)
         raise AssertionError
-    except ValueError:
+    except TypeError:
         pass
+
+
+def test_eq():
+    assert ColorContainer().add_color(0xFF) == ColorContainer().add_color(255)
+    assert not ColorContainer().add_color(0xFF) == ColorContainer().add_color(0xFE)
+
+
+def test_json():
+    assert ColorContainer().add_color(0xFF).add_color(0x0F).json() == '{"colors":[255,15]}'
+    assert ColorContainer().add_color(0x0F).json() == '{"colors":[15]}'
+    assert ColorContainer().json() == '{"colors":[]}'
 
 
 def test_from_json():
     color_json = json.loads('{"colors":[255]}')
-    color = ColorContainer()
+    assert ColorContainer.from_json(color_json).colors == [255]
 
-    color.from_json(color_json)
-
-    assert color.json() == '{"colors":[255]}'
+    color_json = json.loads('{"colors":[]}')
+    assert ColorContainer.from_json(color_json).colors == []
 
     color_json = json.loads('{"colors":["test"]}')
+    with mock.patch('led_client.global_vars.STRICT_TYPE_CHECKING', False):
+        assert ColorContainer.from_json(color_json).colors == []
+
     try:
-        color.from_json(color_json)
+        ColorContainer.from_json(color_json)
         raise AssertionError
-    except ValueError:
+    except TypeError:
         pass

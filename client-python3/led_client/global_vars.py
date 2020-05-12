@@ -18,11 +18,4 @@
 #   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #   THE SOFTWARE.
 
-from led_client import AnimationSender
-
-
-def test_constructor():
-    sender = AnimationSender('10.0.0.254', 5)
-
-    assert sender.address == '10.0.0.254'
-    assert sender.port == 5
+STRICT_TYPE_CHECKING = True

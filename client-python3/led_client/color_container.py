@@ -18,25 +18,32 @@
 #   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #   THE SOFTWARE.
 
+from led_client.utils import check_data_type
+
 
 class ColorContainer(object):
 
     def __init__(self):
         self.colors = []
 
-    def add_color(self, color):
-        if not isinstance(color, int):
-            raise ValueError('Bad data type: color')
-        self.colors.append(color)
+    def __eq__(self, other) -> bool:
+        return isinstance(other, ColorContainer) and self.colors == other.colors
 
-    def json(self):
-        return '{"colors":' + '{}'.format(self.colors) + '}'
-
-    def from_json(self, input_json):
-        for c in input_json.get('colors', []):
-            if not isinstance(c, int):
-                raise ValueError('Bad data type for color: {}'.format(type(c)))
-            self.add_color(c)
-
+    def add_color(self, color: int) -> 'ColorContainer':
+        if check_data_type('color', color, int):
+            self.colors.append(color)
         return self
 
+    def json(self) -> str:
+        return ''.join(['{"colors":[',
+                        ','.join([str(color) for color in self.colors]),
+                        ']}'])
+
+    @classmethod
+    def from_json(cls, input_json) -> 'ColorContainer':
+        new_instance = cls()
+        for c in input_json.get('colors', []):
+            if check_data_type('color', c, int):
+                new_instance.add_color(c)
+
+        return new_instance

@@ -18,11 +18,30 @@
 #   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #   THE SOFTWARE.
 
-from led_client import AnimationSender
+import logging
+from typing import TypeVar, Any, Optional
+
+from . import global_vars
 
 
-def test_constructor():
-    sender = AnimationSender('10.0.0.254', 5)
+def nullable_str(value: Optional[Any]) -> str:
+    if value is None:
+        return 'null'
+    else:
+        return str(value)
 
-    assert sender.address == '10.0.0.254'
-    assert sender.port == 5
+
+def check_data_type(name: str, param: Any, correct_type: TypeVar, allow_none: bool = False) -> bool:
+    if not isinstance(param, correct_type) and not (allow_none and param is None):
+        msg = 'Bad data type for {name}: {bad_type} ' \
+              '(should be {cor_type}{none_allowed})'.format(name=name,
+                                                            bad_type=str(type(param)),
+                                                            cor_type=str(correct_type),
+                                                            none_allowed=" or None" if allow_none else "")
+
+        if global_vars.STRICT_TYPE_CHECKING:
+            raise TypeError(msg)
+        else:
+            logging.error(msg)
+        return False
+    return True

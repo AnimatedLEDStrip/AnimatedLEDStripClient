@@ -21,8 +21,8 @@
 import socket
 from threading import Thread
 
-from .Animation import Animation
-from .AnimationData import AnimationData
+from .animation import Animation
+from .animation_data import AnimationData
 
 
 class AnimationSender(object):
@@ -57,8 +57,11 @@ class AnimationSender(object):
                 input_bytes = self.connection.recv(4096)
                 for input_str in input_bytes.split(bytes(';', 'utf-8')):
                     if input_str.startswith(bytes('DATA:', 'utf-8')):
-                        data = AnimationData()
-                        data.from_json(input_str)
+
+                        # Create the AnimationData instance
+                        data = AnimationData.from_json(input_str)
+
+                        # Handle new and ending animations separately
                         if data.animation != Animation.ENDANIMATION:
                             self.running_animations[data.id] = data
                         elif data.id in self.running_animations:
