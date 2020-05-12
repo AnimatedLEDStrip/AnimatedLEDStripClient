@@ -25,6 +25,7 @@ from . import global_vars
 
 
 def nullable_str(value: Optional[Any]) -> str:
+    """Convert values to a string while converting None to 'null'"""
     if value is None:
         return 'null'
     else:
@@ -32,7 +33,16 @@ def nullable_str(value: Optional[Any]) -> str:
 
 
 def check_data_type(name: str, param: Any, correct_type: TypeVar, allow_none: bool = False) -> bool:
+    """Check that a parameter has the correct data type
+
+    If it does not, then when STRICT_TYPE_CHECKING is:
+        True  -> throw a TypeError
+        False -> print a log message and return False"""
+
+    # Check the type of param
+    # If None is an acceptable value, check for that too
     if not isinstance(param, correct_type) and not (allow_none and param is None):
+        # Type was incorrect, prepare message
         msg = 'Bad data type for {name}: {bad_type} ' \
               '(should be {cor_type}{none_allowed})'.format(name=name,
                                                             bad_type=str(type(param)),
@@ -40,8 +50,12 @@ def check_data_type(name: str, param: Any, correct_type: TypeVar, allow_none: bo
                                                             none_allowed=" or None" if allow_none else "")
 
         if global_vars.STRICT_TYPE_CHECKING:
+            # Type was incorrect and STRICT_TYPE_CHECKING is True, raise TypeError with message
             raise TypeError(msg)
         else:
+            # Type was incorrect and STRICT_TYPE_CHECKING is False, print log message and return False
             logging.error(msg)
-        return False
+            return False
+
+    # Type was correct, return True
     return True

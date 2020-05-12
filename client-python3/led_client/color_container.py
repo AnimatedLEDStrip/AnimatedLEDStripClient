@@ -22,6 +22,7 @@ from led_client.utils import check_data_type
 
 
 class ColorContainer(object):
+    """Stores an array of colors"""
 
     def __init__(self):
         self.colors = []
@@ -30,19 +31,29 @@ class ColorContainer(object):
         return isinstance(other, ColorContainer) and self.colors == other.colors
 
     def add_color(self, color: int) -> 'ColorContainer':
+        """Add a color to the ColorContainer's list of colors"""
+        # Make sure that the color is the right data type
         if check_data_type('color', color, int):
             self.colors.append(color)
+
+        # Return this instance so method calls can be chained
         return self
 
     def json(self) -> str:
+        """Create a JSON representation of this instance"""
         return ''.join(['{"colors":[',
                         ','.join([str(color) for color in self.colors]),
                         ']}'])
 
     @classmethod
     def from_json(cls, input_json) -> 'ColorContainer':
+        """Create a ColorContainer instance from a JSON representation"""
+        # Create a new ColorContainer instance
         new_instance = cls()
+
+        # Iterate through each color in the array
         for c in input_json.get('colors', []):
+            # Make sure that the color is the right data type
             if check_data_type('color', c, int):
                 new_instance.add_color(c)
 

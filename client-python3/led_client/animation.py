@@ -22,6 +22,7 @@ from enum import Enum, auto
 
 
 class Animation(Enum):
+    """Enum representing each type of animation"""
     COLOR = auto()
     CUSTOMANIMATION = auto()
     CUSTOMREPETITIVEANIMATION = auto()

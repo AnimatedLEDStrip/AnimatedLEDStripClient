@@ -22,5 +22,6 @@ from enum import Enum, auto
 
 
 class Direction(Enum):
+    """Enum representing each direction"""
     FORWARD = auto()
     BACKWARD = auto()

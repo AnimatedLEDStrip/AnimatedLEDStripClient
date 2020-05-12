@@ -18,4 +18,7 @@
 #   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #   THE SOFTWARE.
 
-STRICT_TYPE_CHECKING = True
+
+# Should incorrect data types cause a TypeError (True)
+#  or a log message (False)
+STRICT_TYPE_CHECKING: bool = True

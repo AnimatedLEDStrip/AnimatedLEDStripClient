@@ -28,6 +28,7 @@ from .utils import check_data_type, nullable_str
 
 
 class AnimationData(object):
+    """Stores data about an animation"""
 
     def __init__(self):
         self.animation: 'Animation' = Animation.COLOR
@@ -44,17 +45,25 @@ class AnimationData(object):
         self.start_pixel: int = 0
 
     def add_color(self, color: 'ColorContainer') -> 'AnimationData':
+        """Add a new ColorContainer to colors"""
+        # Make sure that the color is the right data type
         if check_data_type('color', color, ColorContainer) is True:
             self.colors.append(color)
+
+        # Return this instance so method calls can be chained
         return self
 
     def colors_json(self) -> str:
+        """Create a JSON representation of colors"""
         return ','.join([color.json() for color in self.colors])
 
     def json(self) -> str:
+        """Create a JSON representation of this instance"""
         if self.check_data_types() is False:
+            # If something has a bad data type (and STRICT_TYPE_CHECKING is False), return an empty string
             return ''
         else:
+            # Otherwise, create the JSON representation and return it
             return ''.join(['DATA:{',
                             ','.join([
                                 '"animation":"{}"'.format(self.animation.name),
@@ -73,9 +82,14 @@ class AnimationData(object):
 
     @classmethod
     def from_json(cls, input_str: AnyStr) -> 'AnimationData':
+        """Create an AnimationData instance from a JSON representation"""
+        # Parse the JSON
         input_json = json.loads(input_str[5:])
 
+        # Create a new AnimationData instance
         new_instance = cls()
+
+        # Get each property from the JSON, reverting to defaults if it can't be found
         new_instance.animation = Animation[input_json.get('animation', new_instance.animation.name)]
         new_instance.colors = [ColorContainer.from_json(cc_arr) for cc_arr in input_json.get('colors', [])]
         new_instance.center = input_json.get('center', new_instance.center)
@@ -89,10 +103,13 @@ class AnimationData(object):
         new_instance.spacing = input_json.get('spacing', new_instance.spacing)
         new_instance.start_pixel = input_json.get('startPixel', new_instance.start_pixel)
 
+        # Double check that everything has the right data type
         new_instance.check_data_types()
+
         return new_instance
 
     def check_data_types(self) -> bool:
+        """Check that all parameter types are correct"""
         good_types = True
 
         good_types = good_types and check_data_type('animation', self.animation, Animation)
