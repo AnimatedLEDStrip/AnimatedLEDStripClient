@@ -45,6 +45,7 @@ class AnimationSender(var ipAddress: String, var port: Int) {
     private var socket: Socket = Socket()
     private var socIn: InputStream? = null
     private var socOut: OutputStream? = null
+
     @Suppress("EXPERIMENTAL_API_USAGE")
     private val senderCoroutineScope = newSingleThreadContext("Animation Sender port $port")
 
@@ -101,6 +102,9 @@ class AnimationSender(var ipAddress: String, var port: Int) {
         supportedAnimations.clear()
     }
 
+
+    /* Handle receiving data from server */
+
     private suspend fun openConnection() {
         var connectedIp = ""
         socket = Socket()
@@ -128,7 +132,7 @@ class AnimationSender(var ipAddress: String, var port: Int) {
         Logger.info("Connected to server at $connectedIp:$port")
 
         try {
-
+            processData(receiveData())
         } catch (e: IOException) {
             Logger.error("Exception occurred: $ipAddress:$port: $e")
             connected = false
@@ -137,13 +141,14 @@ class AnimationSender(var ipAddress: String, var port: Int) {
         }
     }
 
-    private suspend fun receiveData(inputArray: ByteArray): Int {
+    private suspend fun receiveData(): String {
+        val input = ByteArray(INPUT_SIZE)
         var count: Int = -1
 
         while (true)
             try {
                 withContext(Dispatchers.IO) {
-                    count = socIn?.read(inputArray) ?: throw SocketException("Socket null")
+                    count = socIn?.read(input) ?: throw SocketException("Socket null")
                 }
                 break
             } catch (e: SocketTimeoutException) {
@@ -151,35 +156,13 @@ class AnimationSender(var ipAddress: String, var port: Int) {
                 continue
             }
 
-        return count
+        if (count == -1) throw SocketException("Connection closed")
+        return input.toUTF8(count)
     }
 
-    private val partialData = StringBuilder()
-
-    private fun handlePartialData(inputData: List<String>): List<String> {
-        partialData.append(inputData.last())
-        return inputData.dropLast(1)
-    }
-
-    private fun splitData(input: String): List<String> {
-        val inputStr = partialData.toString() + input
-        partialData.clear()
-
-        var inputData = inputStr.split(DELIMITER)
-        if (!inputStr.endsWith(DELIMITER)) inputData = handlePartialData(inputData)
-        return inputData
-    }
-
-    private suspend fun processData() {
-        var input = ByteArray(INPUT_SIZE)
-
+    private fun processData(input: String) {
         while (connected) {
-            val count = receiveData(input)
-            if (count == -1) throw SocketException("Connection closed")
-
-            val inputData = splitData(input.toUTF8(count))
-
-            parse@ for (d in inputData) {
+            parse@ for (d in splitData(input)) {
                 when (d.getDataTypePrefix()) {
                     AnimationData.prefix -> {
                         val data = d.jsonToAnimationData()
@@ -211,10 +194,30 @@ class AnimationSender(var ipAddress: String, var port: Int) {
                 Logger.debug("Received: $d")
 
                 receiveAction?.invoke(d)
-
-                input = ByteArray(INPUT_SIZE)
             }
         }
+    }
+
+    private val partialData = StringBuilder()
+
+    private fun String.withPartialData(): String {
+        val newStr = partialData.toString() + this
+        partialData.clear()
+        return newStr
+    }
+
+    private fun handlePartialData(inputData: List<String>): List<String> {
+        partialData.append(inputData.last())
+        return inputData.dropLast(1)
+    }
+
+    private fun splitData(input: String): List<String> {
+        val inputData = input.withPartialData().split(DELIMITER)
+
+        return if (!input.endsWith(DELIMITER))
+            handlePartialData(inputData)
+        else
+            inputData
     }
 
 
@@ -222,11 +225,9 @@ class AnimationSender(var ipAddress: String, var port: Int) {
      * Send data via this connection
      */
     fun send(args: SendableData) {
-        GlobalScope.launch {
-            withContext(Dispatchers.IO) {
-                socOut?.write(args.json()) ?: Logger.warn("Output stream null")
-                Logger.debug(args)
-            }
+        GlobalScope.launch(Dispatchers.IO) {
+            socOut?.write(args.json()) ?: Logger.warn("Output stream null")
+            Logger.debug(args)
         }
     }
 
