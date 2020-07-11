@@ -22,13 +22,12 @@
 
 package animatedledstrip.test
 
-import animatedledstrip.animationutils.Animation
 import animatedledstrip.animationutils.AnimationData
+import animatedledstrip.animationutils.EndAnimation
 import animatedledstrip.animationutils.animation
-import animatedledstrip.client.AnimationSenderFactory
+import animatedledstrip.client.AnimationSender
 import animatedledstrip.client.send
 import animatedledstrip.utils.delayBlocking
-import animatedledstrip.utils.json
 import kotlinx.coroutines.*
 import org.junit.Test
 import org.pmw.tinylog.Configurator
@@ -50,10 +49,9 @@ class AnimationSenderFactoryTest {
     @Test
     fun testDefaultSender() {
         val port = 1100
-        AnimationSenderFactory
 
-        val testSender = AnimationSenderFactory.create("0.0.0.0", port).setAsDefaultSender()
-        assertTrue { AnimationSenderFactory.defaultSender === testSender }
+        val testSender = AnimationSender("0.0.0.0", port).setAsDefaultSender()
+        assertTrue { AnimationSender.defaultSender === testSender }
     }
 
     @Test
@@ -68,7 +66,7 @@ class AnimationSenderFactoryTest {
 
         runBlocking { delay(2000) }
 
-        AnimationSenderFactory.create("0.0.0.0", port).start()
+        AnimationSender("0.0.0.0", port).start()
 
         runBlocking { job.join() }
     }
@@ -86,7 +84,7 @@ class AnimationSenderFactoryTest {
 
         runBlocking { delay(2000) }
 
-        AnimationSenderFactory.create("0.0.0.0", port)
+        AnimationSender("0.0.0.0", port)
             .setOnConnectCallback {
                 testBoolean = true
             }
@@ -112,12 +110,11 @@ class AnimationSenderFactoryTest {
 
         runBlocking { delay(2000) }
 
-        AnimationSenderFactory
-            .create("0.0.0.0", port)
+        AnimationSender("0.0.0.0", port)
             .setAsDefaultSender()
             .setOnDisconnectCallback {
                 testBoolean = true
-                AnimationSenderFactory.defaultSender.end()
+                AnimationSender.defaultSender.end()
             }
             .start()
 
@@ -135,13 +132,13 @@ class AnimationSenderFactoryTest {
             withContext(Dispatchers.IO) {
                 val socket = ServerSocket(port, 0, InetAddress.getByName("0.0.0.0")).accept()
                 val out = socket.getOutputStream()
-                out.write(AnimationData().animation(Animation.COLOR).json())
+                out.write(AnimationData().animation("Color").json())
             }
         }
 
         runBlocking { delay(2000) }
 
-        AnimationSenderFactory.create("0.0.0.0", port)
+        AnimationSender("0.0.0.0", port)
             .setOnReceiveCallback {
                 testBoolean = true
             }
@@ -162,17 +159,17 @@ class AnimationSenderFactoryTest {
             withContext(Dispatchers.IO) {
                 val socket = ServerSocket(port, 0, InetAddress.getByName("0.0.0.0")).accept()
                 val out = socket.getOutputStream()
-                out.write(AnimationData().animation(Animation.COLOR).json())
+                out.write(AnimationData().animation("Color").json())
             }
         }
 
         runBlocking { delay(2000) }
 
-        AnimationSenderFactory.create("0.0.0.0", port)
-            .setOnNewAnimationCallback {
+        AnimationSender("0.0.0.0", port)
+            .setOnNewAnimationDataCallback {
                 testBoolean1 = true
             }
-            .setOnEndAnimationCallback {
+            .setOnNewEndAnimationCallback {
                 testBoolean2 = false
             }
             .start()
@@ -186,24 +183,20 @@ class AnimationSenderFactoryTest {
     @Test
     fun testEndAnimationCallback() {
         var testBoolean1 = false
-        var testBoolean2 = true
         val port = 1106
 
         GlobalScope.launch {
             withContext(Dispatchers.IO) {
                 val socket = ServerSocket(port, 0, InetAddress.getByName("0.0.0.0")).accept()
                 val out = socket.getOutputStream()
-                out.write(AnimationData().animation(Animation.ENDANIMATION).json())
+                out.write(EndAnimation("TEST").json())
             }
         }
 
         delayBlocking(2000)
 
-        AnimationSenderFactory.create("0.0.0.0", port)
-            .setOnNewAnimationCallback {
-                testBoolean2 = false
-            }
-            .setOnEndAnimationCallback {
+        AnimationSender("0.0.0.0", port)
+            .setOnNewEndAnimationCallback {
                 testBoolean1 = true
             }
             .start()
@@ -211,7 +204,6 @@ class AnimationSenderFactoryTest {
         delayBlocking(2000)
 
         assertTrue { testBoolean1 }
-        assertTrue { testBoolean2 }
 
     }
 
@@ -228,7 +220,7 @@ class AnimationSenderFactoryTest {
             .level(Level.WARNING)
             .activate()
 
-        val testSender = AnimationSenderFactory.create("0.0.0.0", port).start()
+        val testSender = AnimationSender("0.0.0.0", port).start()
         testSender.start()
         assertTrue {
             tempOut
@@ -258,9 +250,7 @@ class AnimationSenderFactoryTest {
 
         val testAnimation = AnimationData()
 
-        val sender =
-            AnimationSenderFactory
-                .create("0.0.0.0", 0)
+        val sender = AnimationSender("0.0.0.0", 0)
 
         testAnimation.send(sender)
 

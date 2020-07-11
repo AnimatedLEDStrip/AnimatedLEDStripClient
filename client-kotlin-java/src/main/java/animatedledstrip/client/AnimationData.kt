@@ -22,20 +22,19 @@
 
 package animatedledstrip.client
 
-import animatedledstrip.animationutils.Animation
 import animatedledstrip.animationutils.AnimationData
+import animatedledstrip.utils.endAnimation
 import org.pmw.tinylog.Logger
 
 /**
  * Extension function to send the animation
  */
-fun AnimationData.send(sender: AnimationSenderFactory.AnimationSender = AnimationSenderFactory.defaultSender) {
+fun AnimationData.send(sender: AnimationSender = AnimationSender.defaultSender) {
     sender.send(this)
-    Logger.debug { "$this sent" }
+    Logger.debug("$this sent")
 }
 
-fun AnimationData.endAnimation(sender: AnimationSenderFactory.AnimationSender = AnimationSenderFactory.defaultSender) {
-    animation = Animation.ENDANIMATION
-    Logger.debug { "$this ending" }
-    send(sender)
+fun AnimationData.endAnimation(sender: AnimationSender = AnimationSender.defaultSender) {
+    Logger.debug("$this ending")
+    sender.send(this.endAnimation())
 }
