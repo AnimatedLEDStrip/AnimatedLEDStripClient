@@ -39,12 +39,6 @@ import kotlin.test.assertTrue
 
 class AnimationDataExtensionTest {
 
-    init {
-        Configurator.defaultConfig()
-            .level(Level.OFF)
-            .activate()
-    }
-
     @Test
     fun testSend() {
         var testBoolean = false

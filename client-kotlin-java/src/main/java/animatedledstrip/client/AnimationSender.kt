@@ -132,7 +132,7 @@ class AnimationSender(var ipAddress: String, var port: Int) {
         Logger.info("Connected to server at $connectedIp:$port")
 
         try {
-            processData(receiveData())
+            while (connected) processData(receiveData())
         } catch (e: IOException) {
             Logger.error("Exception occurred: $ipAddress:$port: $e")
             connected = false
@@ -161,40 +161,39 @@ class AnimationSender(var ipAddress: String, var port: Int) {
     }
 
     private fun processData(input: String) {
-        while (connected) {
-            parse@ for (d in splitData(input)) {
-                when (d.getDataTypePrefix()) {
-                    AnimationData.prefix -> {
-                        val data = d.jsonToAnimationData()
-                        newAnimationDataAction?.invoke(data)
-                        runningAnimations[data.id] = data
-                    }
-                    Animation.AnimationInfo.prefix -> {
-                        val info = d.jsonToAnimationInfo()
-                        supportedAnimations[info.name] = info
-                        newAnimationInfoAction?.invoke(info)
-                    }
-                    EndAnimation.prefix -> {
-                        val end = d.jsonToEndAnimation()
-                        newEndAnimationAction?.invoke(end)
-                        runningAnimations.remove(end.id)
-                    }
-                    AnimatedLEDStrip.sectionPrefix -> {     // AnimatedLEDStrip.Section
-                        newSectionAction?.invoke(d.jsonToSection())
-                    }
-                    StripInfo.prefix -> {
-                        val info = d.jsonToStripInfo()
-                        stripInfo = info
-                        newStripInfoAction?.invoke(info)
-                        continue@parse
-                    }
-                    else -> continue@parse
+        for (d in splitData(input)) {
+            when (d.getDataTypePrefix()) {
+                AnimationData.prefix -> {
+                    val data = d.jsonToAnimationData()
+                    newAnimationDataAction?.invoke(data)
+                    runningAnimations[data.id] = data
                 }
-
-                Logger.debug("Received: $d")
-
-                receiveAction?.invoke(d)
+                Animation.AnimationInfo.prefix -> {
+                    val info = d.jsonToAnimationInfo()
+                    supportedAnimations[info.name] = info
+                    newAnimationInfoAction?.invoke(info)
+                }
+                EndAnimation.prefix -> {
+                    val end = d.jsonToEndAnimation()
+                    newEndAnimationAction?.invoke(end)
+                    runningAnimations.remove(end.id)
+                }
+                AnimatedLEDStrip.sectionPrefix -> {     // AnimatedLEDStrip.Section
+                    newSectionAction?.invoke(d.jsonToSection())
+                }
+                StripInfo.prefix -> {
+                    val info = d.jsonToStripInfo()
+                    stripInfo = info
+                    newStripInfoAction?.invoke(info)
+                }
+                else -> {
+                    Logger.debug("Other")
+                }
             }
+
+            Logger.debug("Received: $d")
+
+            receiveAction?.invoke(d)
         }
     }
 
@@ -225,9 +224,14 @@ class AnimationSender(var ipAddress: String, var port: Int) {
      * Send data via this connection
      */
     fun send(args: SendableData) {
+        sendBytes(args.json())
+        Logger.debug(args)
+    }
+
+
+    fun sendBytes(str: ByteArray) {
         GlobalScope.launch(Dispatchers.IO) {
-            socOut?.write(args.json()) ?: Logger.warn("Output stream null")
-            Logger.debug(args)
+            socOut?.write(str) ?: Logger.warn("Output stream null")
         }
     }
 
