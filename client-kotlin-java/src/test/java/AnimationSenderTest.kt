@@ -81,7 +81,7 @@ class AnimationSenderTest {
         delayBlocking(2000)
 
         AnimationSender("0.0.0.0", port)
-            .setOnConnectCallback {
+            .setOnConnectCallback { _, _ ->
                 testBoolean = true
             }
             .start()
@@ -106,7 +106,7 @@ class AnimationSenderTest {
 
         AnimationSender("0.0.0.0", port)
             .setAsDefaultSender()
-            .setOnDisconnectCallback {
+            .setOnDisconnectCallback { _, _ ->
                 testBoolean = true
                 AnimationSender.defaultSender.end()
             }
@@ -123,19 +123,17 @@ class AnimationSenderTest {
         var testBoolean2 = false
         val port = 1104
 
-        delayBlocking(2000)
-
         AnimationSender("0.0.0.0", port)
             .setAsDefaultSender()
-            .setOnUnableToConnectCallback {
+            .setOnUnableToConnectCallback { _, _ ->
                 testBoolean1 = true
             }
-            .setOnConnectCallback {
+            .setOnConnectCallback { _, _ ->
                 testBoolean2 = true
             }
             .start()
 
-        delayBlocking(1000)
+        delayBlocking(2000)
         assertTrue { testBoolean1 }
         assertFalse { testBoolean2 }
     }

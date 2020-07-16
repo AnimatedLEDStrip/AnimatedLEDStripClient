@@ -68,9 +68,9 @@ class AnimationSender(var ipAddress: String, var port: Int) {
     private var newSectionAction: ((AnimatedLEDStrip.Section) -> Any?)? = null
     private var newStripInfoAction: ((StripInfo) -> Any?)? = null
 
-    private var connectAction: ((String) -> Unit)? = null
-    private var disconnectAction: ((String) -> Unit)? = null
-    private var unableToConnectAction: ((String) -> Unit)? = null
+    private var connectAction: ((String, Int) -> Unit)? = null
+    private var disconnectAction: ((String, Int) -> Unit)? = null
+    private var unableToConnectAction: ((String, Int) -> Unit)? = null
 
 
     /* Information about the connected server */
@@ -117,26 +117,27 @@ class AnimationSender(var ipAddress: String, var port: Int) {
                 socOut = socket.getOutputStream()
                 socIn = socket.getInputStream()
                 connected = true
-                connectAction?.invoke(connectedIp)
+                connectAction?.invoke(connectedIp, port)
             } catch (e: SocketException) {
-                unableToConnectAction?.invoke(ipAddress)
+                unableToConnectAction?.invoke(ipAddress, port)
                 started = false
-                return@withContext
             } catch (e: SocketTimeoutException) {
-                unableToConnectAction?.invoke(ipAddress)
+                unableToConnectAction?.invoke(ipAddress, port)
                 started = false
-                return@withContext
             }
         }
+
+        if (!connected) return
 
         Logger.info("Connected to server at $connectedIp:$port")
 
         try {
             while (connected) processData(receiveData())
         } catch (e: IOException) {
-            Logger.error("Exception occurred: $ipAddress:$port: $e")
+            Logger.warn("IOException: $ipAddress:$port: $e")
             connected = false
-            disconnectAction?.invoke(connectedIp)
+            started = false
+            disconnectAction?.invoke(connectedIp, port)
             runningAnimations.clear()
         }
     }
@@ -282,7 +283,7 @@ class AnimationSender(var ipAddress: String, var port: Int) {
     /**
      * Specify an action to perform when a connection is established
      */
-    fun setOnConnectCallback(action: (String) -> Unit): AnimationSender {
+    fun setOnConnectCallback(action: (String, Int) -> Unit): AnimationSender {
         connectAction = action
         return this
     }
@@ -290,12 +291,12 @@ class AnimationSender(var ipAddress: String, var port: Int) {
     /**
      * Specify an action to perform when a connection is lost
      */
-    fun setOnDisconnectCallback(action: (String) -> Unit): AnimationSender {
+    fun setOnDisconnectCallback(action: (String, Int) -> Unit): AnimationSender {
         disconnectAction = action
         return this
     }
 
-    fun setOnUnableToConnectCallback(action: (String) -> Unit): AnimationSender {
+    fun setOnUnableToConnectCallback(action: (String, Int) -> Unit): AnimationSender {
         unableToConnectAction = action
         return this
     }
