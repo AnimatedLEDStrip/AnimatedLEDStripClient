@@ -311,4 +311,75 @@ class AnimationSenderTest {
 
         stopLogCapture()
     }
+
+    @Test
+    fun testSetIPAddress() {
+        val port = 1112
+
+        GlobalScope.launch(Dispatchers.IO) {
+            val s = ServerSocket(port, 0, InetAddress.getByName("0.0.0.0"))
+            s.accept()
+            s.accept()
+        }
+
+        val sender = AnimationSender("0.0.0.0", port)
+
+        assertTrue { sender.ipAddress == "0.0.0.0" }
+
+        sender.setIPAddress("1.1.1.1", start = null)
+        delayBlocking(100)
+        assertTrue { sender.ipAddress == "1.1.1.1" }
+
+        sender.setIPAddress("0.0.0.0", start = true)
+        delayBlocking(1000)
+        assertTrue { sender.ipAddress == "0.0.0.0" }
+        assertTrue { sender.started }
+
+        sender.setIPAddress("0.0.0.0", start = null)
+        delayBlocking(3000)
+        assertTrue { sender.ipAddress == "0.0.0.0" }
+        assertTrue { sender.started }
+
+        sender.setIPAddress("1.1.1.1", start = false)
+        delayBlocking(100)
+        assertTrue { sender.ipAddress == "1.1.1.1" }
+        assertFalse { sender.started }
+    }
+
+    @Test
+    fun testSetPort() {
+        val port1 = 1113
+        val port2 = 1114
+        val port3 = 1115
+        val port4 = 1116
+        val port5 = 1117
+
+        GlobalScope.launch(Dispatchers.IO) {
+            ServerSocket(port3, 0, InetAddress.getByName("0.0.0.0"))
+            ServerSocket(port4, 0, InetAddress.getByName("0.0.0.0"))
+        }
+
+        val sender = AnimationSender("0.0.0.0", port1)
+
+        assertTrue { sender.port == port1 }
+
+        sender.setPort(port2, start = null)
+        delayBlocking(100)
+        assertTrue { sender.port == port2 }
+
+        sender.setPort(port3, start = true)
+        delayBlocking(1000)
+        assertTrue { sender.port == port3 }
+        assertTrue { sender.started }
+
+        sender.setPort(port4, start = null)
+        delayBlocking(3000)
+        assertTrue { sender.port == port4 }
+        assertTrue { sender.started }
+
+        sender.setPort(port5, start = false)
+        delayBlocking(100)
+        assertTrue { sender.port == port5 }
+        assertFalse { sender.started }
+    }
 }

@@ -248,7 +248,7 @@ class AnimationSender(var ipAddress: String, var port: Int) {
     }
 
     /**
-     * Specify an action to perform when an animation starting message is received from the server.
+     * Specify an action to perform when a new AnimationData instance is received from the server.
      * Runs after onReceive callback.
      */
     fun <R> setOnNewAnimationDataCallback(action: (AnimationData) -> R): AnimationSender {
@@ -262,7 +262,7 @@ class AnimationSender(var ipAddress: String, var port: Int) {
     }
 
     /**
-     * Specify an action to perform when an animation ending message is received from the server.
+     * Specify an action to perform when a new EndAnimation instance is received from the server.
      * Runs after onReceive callback.
      */
     fun <R> setOnNewEndAnimationCallback(action: (EndAnimation) -> R): AnimationSender {
@@ -270,11 +270,19 @@ class AnimationSender(var ipAddress: String, var port: Int) {
         return this
     }
 
+    /**
+     * Specify an action to perform when a new Section instance is received from the server.
+     * Runs after onReceive callback.
+     */
     fun <R> setOnNewSectionCallback(action: (AnimatedLEDStrip.Section) -> R): AnimationSender {
         newSectionAction = action
         return this
     }
 
+    /**
+     * Specify an action to perform when a new StripInfo instance is received from the server.
+     * Runs after onReceive callback.
+     */
     fun <R> setOnNewStripInfoCallback(action: (StripInfo) -> R): AnimationSender {
         newStripInfoAction = action
         return this
@@ -296,6 +304,9 @@ class AnimationSender(var ipAddress: String, var port: Int) {
         return this
     }
 
+    /**
+     * Specify an action to perform when a connection cannot be made
+     */
     fun setOnUnableToConnectCallback(action: (String, Int) -> Unit): AnimationSender {
         unableToConnectAction = action
         return this
@@ -309,38 +320,40 @@ class AnimationSender(var ipAddress: String, var port: Int) {
         return this
     }
 
+    private fun restartSenderWithChange(start: Boolean?, change: AnimationSender.() -> Unit) {
+        GlobalScope.launch {
+            val wasStarted = started
+            if (started) {
+                end()
+                if (start != false) delayBlocking(2000)
+            }
+            this@AnimationSender.change()
+            if (start ?: wasStarted) start()
+        }
+    }
+
     /**
      * Set this connection's IP address.
-     * Will start/restart connection if start = true or if start = null
-     * and connection is running.
+     * Will start/restart connection if start = true or if
+     * connection is running and start = null.
      *
      * @param address A string representing an IPv4 address
      */
     fun setIPAddress(address: String, start: Boolean? = null): AnimationSender {
-        GlobalScope.launch {
-            if (started) {
-                end()
-                delayBlocking(2000)
-            }
+        restartSenderWithChange(start) {
             ipAddress = address
-            if (start ?: started) start()
         }
         return this
     }
 
     /**
      * Set this connection's port.
-     * Will start/restart connection if start = true or if start = null
-     * and connection is running.
+     * Will start/restart connection if start = true or if
+     * connection is running and start = null.
      */
     fun setPort(newPort: Int, start: Boolean? = null): AnimationSender {
-        GlobalScope.launch {
-            if (started) {
-                end()
-                delayBlocking(2000)
-            }
+        restartSenderWithChange(start) {
             port = newPort
-            if (start ?: started) start()
         }
         return this
     }
