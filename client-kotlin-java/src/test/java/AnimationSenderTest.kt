@@ -65,6 +65,8 @@ class AnimationSenderTest {
 
         runBlocking { job.join() }
 
+        delayBlocking(500)
+
         assertLogsInclude(setOf(Pair(Level.INFO, "Connected to server at 0.0.0.0:$port")))
         stopLogCapture()
     }
