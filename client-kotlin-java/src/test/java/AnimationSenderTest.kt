@@ -62,10 +62,10 @@ class AnimationSenderTest {
         startLogCapture()
 
         AnimationSender("0.0.0.0", port).start()
-        assertLogsInclude(setOf(Pair(Level.INFO, "Connected to server at 0.0.0.0:$port")))
 
         runBlocking { job.join() }
 
+        assertLogsInclude(setOf(Pair(Level.INFO, "Connected to server at 0.0.0.0:$port")))
         stopLogCapture()
     }
 
